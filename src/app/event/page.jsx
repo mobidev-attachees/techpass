@@ -4,7 +4,7 @@ import React from "react";
 const CreateEvent = () => {
   return (
     <div>
-      <h1>Event Details</h1>
+      <h1>Create Event</h1>
       <form>
         <div>
           <label>
