@@ -30,7 +30,7 @@ export default function Home() {
         />
         <div className={styles.textOverlay}>
           <h2>TechPass</h2>
-          <p>Some additional text can go here.</p>
+          <p>The best platform for online meetings</p>
         </div>
       </div>
 
@@ -38,10 +38,10 @@ export default function Home() {
         <div className={styles.card}>
             <Link href="/event">
             <Image
-              src="/Capture.JPG"
+              src="/223.jpg"
               alt="event 1"
-              width={100}
-              height={100}
+              width={200}
+              height={200}
             />
             </Link>
             <div>
@@ -52,42 +52,48 @@ export default function Home() {
         
 
 
-        <div className={styles.card}>
-          <Image
-            src="/Capture.JPG"
-            alt="event 1"
-            width={100}
-            height={100}
-          />
-          <div>
-            <h2>Event 1</h2>
-            <p>Date:</p>
+          <div className={styles.card}>
+            <Link href="/event">
+            <Image
+              src="/226.jpg"
+              alt="event 2"
+              width={200}
+              height={200}
+            />
+            </Link>
+            <div>
+              <h2>Event 2</h2>
+              <p>Date:</p>
+            </div>
           </div>
-        </div>
-        <div className={styles.card}>
-          <Image
-            src="/Capture.JPG"
-            alt="event 1"
-            width={100}
-            height={100}
-          />
-          <div>
-            <h2>Event 1</h2>
-            <p>Date:</p>
+          <div className={styles.card}>
+            <Link href="/event">
+            <Image
+              src="/223.jpg"
+              alt="event 1"
+              width={200}
+              height={200}
+            />
+            </Link>
+            <div>
+              <h2>Event 1</h2>
+              <p>Date:</p>
+            </div>
           </div>
-        </div>
-        <div className={styles.card}>
-          <Image
-            src="/Capture.JPG"
-            alt="event 1"
-            width={100}
-            height={100}
-          />
-          <div>
-            <h2>Event 1</h2>
-            <p>Date:</p>
+          <div className={styles.card}>
+            <Link href="/event">
+            <Image
+              src="/223.jpg"
+              alt="event 1"
+              width={200}
+              height={200}
+            />
+            </Link>
+            <div>
+              <h2>Event 1</h2>
+              <p>Date:</p>
+            </div>
           </div>
-        </div>
       </div>
       
     </main>
