@@ -8,13 +8,15 @@ html, body {
   padding: 0;
 }
 */
-
+.main{
+  background-color: #f4f8f6;
+}
 .body {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh; /* Ensure it takes up the full height of the viewport */
-  background-color: #f8f9fa; /* Optional: background color for better visibility */
+  background-color: #616362; /* Optional: background color for better visibility */
 }
 
 .main-container {
@@ -45,8 +47,8 @@ html, body {
 /* page.module.css */
 
 .navbar {
-  background-color: #faf4f4; /* Example background color */
-  color: #0c0c0c;
+  background-color: #faf5f5; /* Example background color */
+  color: #030303;
 }
 
 .container {

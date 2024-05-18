@@ -43,9 +43,10 @@ const CreateEvent = () => {
         </div>
       </nav>
     
-      <main style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
-  <div className="main-container" style={{ width: '100%', maxWidth: '1400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-    <div className="form-wrapper" style={{ width: '100%', maxWidth: 'calc(1200px * 0.75)', padding: '20px', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.9)', marginRight: '20px' }}>
+      <main style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh'}}>
+      <h3>Create Event</h3>
+      <div className="main-container" style={{ width: '100%', maxWidth: '1400px', display: 'flex', justifyContent: 'center', alignItems: 'center', margin:'20px 20px 20px 20px' , backgroundColor:'whiteSmoke'}}>
+        <div className="form-wrapper" style={{ width: '100%', maxWidth: 'calc(1200px * 0.75)', padding: '20px', backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.9)', marginRight: '20px' }}>
             <h4>Event Details</h4>
             <form onSubmit={handleCreateEvent} style={{ width: '100%' }}>
             <div className="form-group" style={{ marginBottom: '20px' }}>
@@ -98,18 +99,32 @@ const CreateEvent = () => {
                 <input type="text" name="venueName" className="form-control" id="venueName" />
               </div>
               <div style={{ display: 'flex', marginBottom: '20px' }}>
-                
-                  <select name="title" className="form-control" style={{ marginRight: '10px' }}>
-                        <option value="mr">Virtual</option>
-                        <option value="mrs">Physical</option>
-                      
-                      </select>
-                  <input type="url" name="meetingLink" className="form-control" placeholder="Meeting Link" />
+                <div style={{ display: 'flex', flexDirection: 'column', marginRight: '10px', flex: 1 }}>
+                  <label htmlFor="title">Event Type:</label>
+                  <select name="title" className="form-control" id="title" style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}>
+                    <option value="virtual">Virtual</option>
+                    <option value="physical">Physical</option>
+                  </select>
                 </div>
-              
+                <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                  <label htmlFor="meetingLink">Meeting Link:</label>
+                  <input type="url" name="meetingLink" className="form-control" id="meetingLink" placeholder="Meeting Link" style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }} />
+                </div>
+              </div>
+                <div style={{ display: 'flex', marginBottom: '20px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', marginRight: '10px', flex: 1 }}>
+                    <label htmlFor="email">Email address:</label>
+                    <input type="email" name="email" className="form-control" id="email" style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }} />
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                    <label htmlFor="ticketPrice">Ticket price:</label>
+                    <input type="text" name="ticketPrice" className="form-control" id="ticketPrice" style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }} />
+                  </div>
+                </div>
+
               <h4>Organizers Details</h4>    
               <div style={{ marginBottom: '20px' }}>
-                <h6>What's Your Name?</h6>
+                <h6>What's Your Name?*</h6>
                 <div style={{ display: 'flex', marginBottom: '20px' }}>
                   <select name="title" className="form-control" style={{ marginRight: '10px' }}>
                     <option value="mr">Mr</option>
