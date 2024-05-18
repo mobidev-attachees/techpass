@@ -62,7 +62,8 @@ const previewevent = () => {
       </nav>
     <div style={{ margin: '0 10px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '20px', backgroundColor: '#f8f9fa' }}>
       <div style={{ maxWidth: '1200px', width: '90%', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', padding: '20px' }}>
-        <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>Event Preview</h1>
+        
+        
         {/* Banner Image */}
         <div className="banner-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }}>
           <img src="175.jpg" alt="Banner" className="banner-image" height="200px" width="600px" border-radius="10%" />

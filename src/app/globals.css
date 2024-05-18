@@ -87,7 +87,6 @@ body {
 
 body {
   color: black;
-  background-color: white ;
   height: 100vh;
   background-color: #f8f9fa;
 }
@@ -112,7 +111,7 @@ a {
   width: 100%;
   max-width: 600px;
   padding: 20px;
-  background-color: #fff;
+  background-color: #242323;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   min-height: 50vh; /* Ensure it has some height */

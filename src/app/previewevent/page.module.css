@@ -1,4 +1,7 @@
 /* page.modal.css */
+.body{
+  background-color: beige;
+}
 .banner-container {
     display: flex;
     justify-content: center; /* Horizontally center the content */
