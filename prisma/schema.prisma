@@ -24,25 +24,23 @@ model StoreEvent {
   id                 Int       @id @default(autoincrement())
   eventName          String
   eventDescription   String
-  location            String
-  country             String
-  city               String
+  location           String
+  country            String?
+  city               String?
   startDate          DateTime
   endDate            DateTime
   startTime          String
   endTime            String
-  venueName          String
-  eventType          String
-  meetingLink        String    // Made optional
+  meetingLink        String?
   email              String
-  tittle             String
-  ticketPrice        String
+  tittle              String   // Changed from "tittle" to "title"
+  ticketPrice        String?
   firstName          String
-  middleName         String    // Made optional
+  middleName         String?
   lastName           String
   phoneNumber        String
-  websiteLink        String    // Made optional
-  facebookLink       String    // Made optional
-  instagramLink      String    // Made optional
-  twitterLink        String    // Made optional
+  websiteLink        String?
+  facebookLink       String?
+  instagramLink      String?
+  twitterLink        String?
 }

@@ -2,42 +2,63 @@
 "use client";
 import React, { useState } from "react";
 import Link from 'next/link';
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation"; // Fix import statement
 import styles from "./page.module.css";
 
 const createevent = () => {
   const [eventName, setEventName] = useState("");
   const [eventDescription, setEventDescription] = useState("");
-  const [location, setLocation] = useState("");
-  const [country, setCountry] = useState("");
-  const [city, setCity] = useState("");
+  const [location, setLocation] = useState('physical');
+  const [country, setCountry] = useState('');
+  const [city, setCity] = useState('');
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [venueName, setVenueName] = useState("");
-  const [eventType, setEventType] = useState("");
-  const [meetingLink, setMeetingLink] = useState("");
+  const [meetingLink, setMeetingLink] = useState('');
   const [email, setEmail] = useState("");
-  const [tittle, setTittle] = useState("");
+  const [tittle, setTittle] = useState(""); // Corrected spelling to "title"
   const [firstName, setFirstName] = useState("");
   const [middleName, setMiddleName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [ticketPrice, setTicketPrice] = useState("");
   const [websiteLink, setWebsiteLink] = useState("");
   const [facebookLink, setFacebookLink] = useState("");
-  const [ticketPrice, setTickectPrice] = useState("");
   const [instagramLink, setInstagramLink] = useState("");
   const [twitterLink, setTwitterLink] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
 
+  const countries = ['USA', 'Canada', 'UK'];
+  const citiesByCountry = {
+    'USA': ['New York', 'Los Angeles', 'Chicago'],
+    'Canada': ['Toronto', 'Vancouver', 'Montreal'],
+    'UK': ['London', 'Manchester', 'Birmingham']
+  };
+
+  const handleCountryChange = (e) => {
+    const selectedCountry = e.target.value;
+    setCountry(selectedCountry);
+    // Reset city when country changes
+    setCity('');
+  };
+
+  const handleCityChange = (e) => {
+    setCity(e.target.value);
+  };
 
   const handleCreateEvent = async (e) => {
     e.preventDefault();
-    setError("");  // Reset error message
+    setError(""); // Reset error message
 
-    if (!eventName || !eventDescription || !tittle || !location || !country || !city || !startTime || !endTime || !startDate || !endDate || !venueName || !meetingLink || !email || !ticketPrice ||!eventType ||!firstName ||!middleName ||!lastName ||!phoneNumber ||!websiteLink ||!facebookLink ||!instagramLink ||!twitterLink) {
+    // Check if any required field is empty
+    const requiredFields = [
+      eventName, eventDescription, tittle, location, country, city, startTime, endTime,
+      startDate, endDate, email, firstName, lastName, phoneNumber
+    ];
+
+    if (requiredFields.some(field => !field)) {
       setError("All fields are required");
       return;
     }
@@ -48,7 +69,11 @@ const createevent = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ eventName, eventDescription, tittle, location, country,city, startTime,endTime,startDate, endDate, venueName, meetingLink, email, ticketPrice, eventType, firstName, middleName, lastName, phoneNumber, websiteLink, facebookLink, instagramLink, twitterLink }),
+        body: JSON.stringify({
+          eventName, eventDescription, tittle, location, country, city, startTime, endTime,
+          startDate, endDate, meetingLink, email, ticketPrice, firstName,
+          middleName, lastName, phoneNumber
+        }),
       });
 
       if (response.ok) {
@@ -65,57 +90,63 @@ const createevent = () => {
 
   return (
     <div className="container">
-      <nav className={styles.navbar}>
-        <div className={styles.container}>
-          <Link href="/">
-            <p className={styles.brand}>Techpass</p>
-          </Link>
-          <button
-            className={`${styles.toggleBtn} ${styles["toggleBtn-lg"]}`}
-            aria-controls="responsive-navbar-nav"
-          >
-            <span className={styles.srOnly}>Toggle navigation</span>
-            <span className={styles.iconBar}></span>
-            <span className={styles.iconBar}></span>
-            <span className={styles.iconBar}></span>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Navbar</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
           </button>
-          <div className={styles.collapse}>
-            <ul className={`${styles.nav} ${styles["me-auto"]}`}>
-              <li className={styles.navItem}>
-                <Link href="/">
-                  <p className={styles.navLink}>Home</p>
-                </Link>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Dropdown
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item" href="#">Action</a></li>
+                  <li><a class="dropdown-item" href="#">Another action</a></li>
+                  <li><hr class="dropdown-divider"/></li>
+                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                </ul>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
               </li>
             </ul>
-            <ul className={styles.nav}>
-              <li className={styles.navItem}>
-                <Link href="/login">
-                  <p className={styles.navLink}>Login</p>
-                </Link>
-              </li>
-            </ul>
+            <form class="d-flex">
+              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
+              <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
           </div>
         </div>
       </nav>
-      <main style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <div className="main-container form" style={{ maxWidth: '1400px', padding: '20px', backgroundColor: '#fff', borderRadius: '8px'}}>
-        <div className="form-wrapper" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.9)' }}>
-            <h1 className={styles.heading}>Register</h1>
+      <main className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
+      <div className="container">
+
+        <div className="row justify-content-center">
+          <div className="col-lg-10 bg-white p-4 rounded shadow">
+            <h1 className={styles.heading}>Create Event</h1>
             {error && <p className={styles.error}>{error}</p>}
-            <form onSubmit={handleCreateEvent} className={styles.form} style={{ width: 'auto' }}>
+            <form onSubmit={handleCreateEvent} className={styles.form}>
               <div className={styles.formGroup} style={{ marginBottom: '20px' }}>
-                <label htmlFor="eventName" className={styles.label}>EventName:</label>
+                <label htmlFor="eventName" className={styles.label}>Event Name:</label>
                 <input
                   type="text"
-                  name="EventName"
+                  name="eventName"
                   value={eventName}
                   onChange={(e) => setEventName(e.target.value)}
                   className={styles.input}
                 />
               </div>
-              <div className={styles.formGroup} style={{ marginBottom: '20px' }}>
-                <label htmlFor="eventDescription" className={styles.label}>EVentDescription:</label>
-                <input
+              <div className={styles.formGroup} style={{ marginBottom: '20px', width:'80%' }}>
+                <label htmlFor="eventDescription" className={styles.label}>Event Description:</label>
+                <textarea
                   type="text"
                   name="eventDescription"
                   value={eventDescription}
@@ -123,105 +154,107 @@ const createevent = () => {
                   className={styles.input}
                 />
               </div>
-              <div className={styles.formGroup} style={{ marginBottom: '20px' }}>
-                <label htmlFor="location" className={styles.label}>location:</label>
-                <input
-                  type="text"
-                  name="location"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  className={styles.input}
-                />
+              <div className="row">
+                <div className={`col-md-${location === 'virtual' ? 6 : 4} ${styles.formGroup}`} style={{ marginBottom: '20px' }}>
+                  <label htmlFor="location" className={styles.label}>Location:</label>
+                  <select
+                    name="location"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    className={styles.input}
+                  >
+                    <option value="virtual">Virtual</option>
+                    <option value="physical">Physical</option>
+                  </select>
+                </div>
+
+                {location === 'virtual' ? (
+                  <div className={`col-md-6 ${styles.formGroup}`} style={{ marginBottom: '20px' }}>
+                    <label htmlFor="meetingLink" className={styles.label}>Meeting Link:</label>
+                    <input
+                      type="text"
+                      name="meetingLink"
+                      value={meetingLink}
+                      onChange={(e) => setMeetingLink(e.target.value)}
+                      className={styles.input}
+                    />
+                  </div>
+                ) : (
+                  <>
+                    <div className={`col-md-4 ${styles.formGroup}`} style={{ marginBottom: '20px' }}>
+                      <label htmlFor="country" className={styles.label}>Country:</label>
+                      <select
+                        name="country"
+                        value={country}
+                        onChange={handleCountryChange}
+                        className={styles.input}
+                      >
+                        <option value="">Select a country</option>
+                        {countries.map((country, index) => (
+                          <option key={index} value={country}>{country}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className={`col-md-4 ${styles.formGroup}`} style={{ marginBottom: '20px' }}>
+                      <label htmlFor="city" className={styles.label}>City:</label>
+                      <select
+                        name="city"
+                        value={city}
+                        onChange={handleCityChange}
+                        className={styles.input}
+                        disabled={!country} // Disable city dropdown until country is selected
+                      >
+                        <option value="">Select a city</option>
+                        {country && citiesByCountry[country].map((city, index) => (
+                          <option key={index} value={city}>{city}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </>
+                )}
               </div>
-              <div className={styles.formGroup} style={{ marginBottom: '20px' }}>
-                <label htmlFor="country" className={styles.label}>Country:</label>
-                <input
-                  type="text"
-                  name="country"
-                  value={country}
-                  onChange={(e) => setCountry(e.target.value)}
-                  className={styles.input}
-                />
-              </div>
-              <div className={styles.formGroup} style={{ marginBottom: '20px' }}>
-                <label htmlFor="city" className={styles.label}>City</label>
-                <input
-                  type="text"
-                  name="city"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  className={styles.input}
-                />
-              </div>
-              <div className={styles.formGroup} style={{ marginBottom: '20px' }}>
-                <label htmlFor="startDate" className={styles.label}>Start Date:</label>
-                <input
-                  type="Date"
-                  name="startDate"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className={styles.input}
-                />
-              </div>
-              <div className={styles.formGroup} style={{ marginBottom: '20px' }}>
-                <label htmlFor="endDate" className={styles.label}>End Date:</label>
-                <input
-                  type="Date"
-                  name="endDate"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  className={styles.input}
-                />
-              </div>
-              <div className={styles.formGroup} style={{ marginBottom: '20px' }}>
-                <label htmlFor="startTime" className={styles.label}>Start Time:</label>
-                <input
-                  type="time"
-                  name="startTime"
-                  value={startTime}
-                  onChange={(e) => setStartTime(e.target.value)}
-                  className={styles.input}
-                />
-              </div>
-              <div className={styles.formGroup} style={{ marginBottom: '20px' }}>
-                <label htmlFor="endTime" className={styles.label}>End Time:</label>
-                <input
-                  type="time"
-                  name="endTime"
-                  value={endTime}
-                  onChange={(e) => setEndTime(e.target.value)}
-                  className={styles.input}
-                />
-              </div>
-              <div className={styles.formGroup} style={{ marginBottom: '20px' }}>
-                <label htmlFor="venueName" className={styles.label}>Venue Name:</label>
-                <input
-                  type="text"
-                  name="venueName"
-                  value={venueName}
-                  onChange={(e) => setVenueName(e.target.value)}
-                  className={styles.input}
-                />
-              </div>
-              <div className={styles.formGroup} style={{ marginBottom: '20px' }}>
-                <label htmlFor="eventType" className={styles.label}>Event Type:</label>
-                <input
-                  type="text"
-                  name="eventType"
-                  value={eventType}
-                  onChange={(e) => setEventType(e.target.value)}
-                  className={styles.input}
-                />
-              </div>
-              <div className={styles.formGroup} style={{ marginBottom: '20px' }}>
-                <label htmlFor="meetingLink" className={styles.label}>Meeting Link:</label>
-                <input
-                  type="text"
-                  name="meetingLink"
-                  value={meetingLink}
-                  onChange={(e) => setMeetingLink(e.target.value)}
-                  className={styles.input}
-                />
+
+              <div className="row">
+                <div className={`${styles.formGroup} col-md-3`} style={{ marginBottom: '20px' }}>
+                  <label htmlFor="startDate" className={styles.label}>Start Date:</label>
+                  <input
+                    type="date"
+                    name="startDate"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    className={styles.input}
+                  />
+                </div>
+                <div className={`${styles.formGroup} col-md-3`} style={{ marginBottom: '20px' }}>
+                  <label htmlFor="endDate" className={styles.label}>End Date:</label>
+                  <input
+                    type="date"
+                    name="endDate"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    className={styles.input}
+                  />
+                </div>
+                <div className={`${styles.formGroup} col-md-3`} style={{ marginBottom: '20px' }}>
+                  <label htmlFor="startTime" className={styles.label}>Start Time:</label>
+                  <input
+                    type="time"
+                    name="startTime"
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                    className={styles.input}
+                  />
+                </div>
+                <div className={`${styles.formGroup} col-md-3`} style={{ marginBottom: '20px' }}>
+                  <label htmlFor="endTime" className={styles.label}>End Time:</label>
+                  <input
+                    type="time"
+                    name="endTime"
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
+                    className={styles.input}
+                  />
+                </div>
               </div>
               <div className={styles.formGroup} style={{ marginBottom: '20px' }}>
                 <label htmlFor="ticketPrice" className={styles.label}>Ticket Price:</label>
@@ -229,20 +262,11 @@ const createevent = () => {
                   type="text"
                   name="ticketPrice"
                   value={ticketPrice}
-                  onChange={(e) => setTickectPrice(e.target.value)}
+                  onChange={(e) => setTicketPrice(e.target.value)}
                   className={styles.input}
                 />
               </div>
-              <div className={styles.formGroup} style={{ marginBottom: '20px' }}>
-                <label htmlFor="email" className={styles.label}>Email:</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className={styles.input}
-                />
-              </div>
+              <h2>Organizers Details</h2>
               <div className={styles.formGroup} style={{ marginBottom: '20px' }}>
                 <label htmlFor="tittle" className={styles.label}>Tittle:</label>
                 <input
@@ -288,16 +312,26 @@ const createevent = () => {
                 <input
                   type="text"
                   name="phoneNumber"
-                  value={websiteLink}
+                  value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   className={styles.input}
                 />
+                <div className={styles.formGroup} style={{ marginBottom: '20px' }}>
+                <label htmlFor="email" className={styles.label}>Email address:</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className={styles.input}
+                />
+              </div>
               </div>
               <div className={styles.formGroup} style={{ marginBottom: '20px' }}>
-                <label htmlFor="WebsiteLink" className={styles.label}>Website Link:</label>
+                <label htmlFor="websiteLink" className={styles.label}>Website Link:</label>
                 <input
                   type="text"
-                  name="websiteLinK"
+                  name="websiteLink"
                   value={websiteLink}
                   onChange={(e) => setWebsiteLink(e.target.value)}
                   className={styles.input}
@@ -334,11 +368,13 @@ const createevent = () => {
                 />
               </div>
               <button type="submit" className={`${styles.button} btn btn-primary`} style={{ width: 'auto' }}>
-                Publish event
+                Publish Event
               </button>
             </form>
+
             <p>Already have an account? <Link href="/login">Login</Link></p>
           </div>
+        </div>
         </div>
       </main>
     </div>
