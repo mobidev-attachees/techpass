@@ -4,53 +4,34 @@ import styles from "./page.module.css";
 
 export default function Home() {
   return (
-    <>
-      <nav className={styles.navbar}>
-        <div className={styles.container}>
-          <Link href="/">
-            <p className={styles.brand}>Techpass</p>
-          </Link>
-          <button
-            className={`${styles.toggleBtn} ${styles["toggleBtn-lg"]}`}
-            aria-controls="responsive-navbar-nav"
-          >
-            <span className={styles.srOnly}>Toggle navigation</span>
-            <span className={styles.iconBar}></span>
-            <span className={styles.iconBar}></span>
-            <span className={styles.iconBar}></span>
+    <div className="container">
+      <nav className="navbar navbar-expand-lg navbar-light bg-dark color-white">
+        <div className="container-fluid justify-content-between">
+          <a className="navbar-brand" href="/">TechPass</a>
+          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+            <span className="navbar-toggler-icon"></span>
           </button>
-          <div className={styles.collapse}>
-            <ul className={`${styles.nav} ${styles["me-auto"]}`}>
-              <li className={styles.navItem}>
-                <Link href="/">
-                  <p className={styles.navLink}>Home</p>
-                </Link>
+          <div className="collapse navbar-collapse" id="navbarScroll">
+            <ul className="navbar-nav ms-auto my-2 my-lg-0 navbar-nav-scroll" style={{ "--bs-scroll-height": "100px" }}>
+              <li className="nav-item">
+                <a className="nav-link active" aria-current="page" href="#">Home</a>
               </li>
-              <li className={styles.navItem}>
-                <Link href="/login">
-                  <p className={styles.navLink}>Create Event</p>
-                </Link>
+              <li className="nav-item">
+                <a className="nav-link" href="#">Link</a>
               </li>
-              <li className={styles.navItem}>
-                <Link href="#action">
-                  <p className={styles.navLink}>My events</p>
-                </Link>
-              </li>
-            </ul>
-            <ul className={styles.nav}>
-              {/* <li className={styles.navItem}>
-                <Link href="#deets">
-                  <p className={styles.navLink}>
-                    <img src="175.jpg" alt="profile photo" className={styles.navImage} />
-                  </p>
-                </Link>
-              </li> */}
-              <li className={styles.navItem}>
-                <Link href="/login">
-                  <p className={styles.navLink}>login</p>
-                </Link>
+              <li className="nav-item dropdown">
+                <a className="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <Image src="/docs/4.0/assets/brand/bootstrap-solid.svg" width="30" height="30" alt=""></Image>
+                </a>
+                <ul className="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                  <li><a className="dropdown-item" href="#">Dashboard</a></li>
+                  <li><a className="dropdown-item" href="#">Profile</a></li>
+                  <li></li>
+                  <li><a className="dropdown-item" href="/login">Logout</a></li>
+                </ul>
               </li>
             </ul>
+            
           </div>
         </div>
       </nav>
@@ -206,6 +187,6 @@ export default function Home() {
           </div>
        </div>
       </main>
-    </>
+    </div>
   );
 }
