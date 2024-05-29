@@ -33,7 +33,7 @@ model StoreEvent {
   endTime            String
   meetingLink        String?
   email              String
-  tittle              String   // Changed from "tittle" to "title"
+  tittle             String 
   ticketPrice        String?
   firstName          String
   middleName         String?
