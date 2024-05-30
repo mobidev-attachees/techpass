@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function dashboard() {
   return (
-    <>
+    <div className="container">
       <nav className={styles.navbar}>
         <div className={styles.container}>
           <Link href="/">
@@ -210,6 +210,6 @@ export default function dashboard() {
           </div>
        </div>
       </main>
-    </>
+    </div>
   );
 }

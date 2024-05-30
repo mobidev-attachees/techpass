@@ -25,7 +25,8 @@ export default async function handler(req, res) {
       return res.status(400).json({ message: 'Email already registered' });
     }
 
-   
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create the user
     const newUser = await prisma.user.create({
