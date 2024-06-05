@@ -37,7 +37,8 @@ export default async function handler(req, res) {
       },
     });
 
-    return res.status(201).json({ message: 'Registration successful' });
+    // Return success message
+    return res.status(201).json({ message: 'Registration successful', newUser });
   } catch (error) {
     console.error('Registration error:', error);
     return res.status(500).json({ message: 'An error occurred during registration', error: error.message });

@@ -4,18 +4,20 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
-  const { eventId } = req.query;
-
   if (req.method !== 'GET') {
     res.setHeader('Allow', ['GET']);
     return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 
+  const { eventId } = req.query;
+
+  if (!eventId || isNaN(eventId)) {
+    return res.status(400).json({ message: 'Invalid event ID' });
+  }
+
   try {
     const event = await prisma.storeEvent.findUnique({
-      where: {
-        id: parseInt(eventId),
-      },
+      where: { id: parseInt(eventId, 10) },
     });
 
     if (!event) {

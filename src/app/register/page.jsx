@@ -1,8 +1,9 @@
 // src/app/register/page.jsx
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import Link from 'next/link';
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 import styles from "./page.module.css";
 
 const Register = () => {
@@ -37,7 +38,6 @@ const Register = () => {
       return;
     }
 
-
     if (password !== confirmPassword) {
       setError("Passwords do not match");
       return;
@@ -53,7 +53,14 @@ const Register = () => {
       });
 
       if (response.ok) {
-        router.push("/login");
+        setUsername(""); // Clear form fields
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+        toast.success("Successfully registered", { style: { animation: "fade-in 0.5s" } }); // Show success toast with custom style
+        setTimeout(() => {
+          router.push("/login"); // Redirect to login after 2 seconds
+        }, 2000);
       } else {
         const data = await response.json();
         setError(data.message);
@@ -66,41 +73,9 @@ const Register = () => {
 
   return (
     <div className="container">
-      <nav className={styles.navbar}>
-        <div className={styles.container}>
-          <Link href="/">
-            <p className={styles.brand}>Techpass</p>
-          </Link>
-          <button
-            className={`${styles.toggleBtn} ${styles["toggleBtn-lg"]}`}
-            aria-controls="responsive-navbar-nav"
-          >
-            <span className={styles.srOnly}>Toggle navigation</span>
-            <span className={styles.iconBar}></span>
-            <span className={styles.iconBar}></span>
-            <span className={styles.iconBar}></span>
-          </button>
-          <div className={styles.collapse}>
-            <ul className={`${styles.nav} ${styles["me-auto"]}`}>
-              <li className={styles.navItem}>
-                <Link href="/">
-                  <p className={styles.navLink}>Home</p>
-                </Link>
-              </li>
-            </ul>
-            <ul className={styles.nav}>
-              <li className={styles.navItem}>
-                <Link href="/login">
-                  <p className={styles.navLink}>Login</p>
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
       <main style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
         <div className="main-container form" style={{ maxWidth: '1400px', padding: '20px', backgroundColor: '#fff', borderRadius: '8px'}}>
-        <div className="form-wrapper" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.9)' }}>
+          <div className="form-wrapper" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.9)' }}>
             <h1 className={styles.heading}>Register</h1>
             {error && <p className={styles.error}>{error}</p>}
             <form onSubmit={handleRegister} className={styles.form} style={{ width: 'auto' }}>
@@ -157,3 +132,4 @@ const Register = () => {
 };
 
 export default Register;
+

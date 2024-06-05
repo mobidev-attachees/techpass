@@ -5,7 +5,7 @@ import styles from "./page.module.css";
 export default function Home() {
   return (
     <div className="container">
-      <nav className="navbar navbar-expand-lg navbar-light bg-dark color-white">
+      <nav className="navbar navbar-expand-lg navbar-light bg-white color-white">
         <div className="container-fluid justify-content-between">
           <a className="navbar-brand" href="/">TechPass</a>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">

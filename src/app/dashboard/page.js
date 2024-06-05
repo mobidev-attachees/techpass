@@ -87,9 +87,9 @@ export default function dashboard() {
           </div>
         </div>
         {/* Explore Categories */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '20px', maxWidth: '600px', width: '100%',margin:'20px 30%', marginRight:'20%' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '20px', maxWidth: '600px', width: '100%',margin:'20px 30%', marginRight:'20px' }}>
           <h4>Explore Categories</h4>
-          <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginRight:'auto' }}>
             <select name="categories" style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc', marginRight: '10px', flex: '1' }}>
               <option value="last30days">Last 30 Days</option>
               <option value="last7days">Last 7 Days</option>

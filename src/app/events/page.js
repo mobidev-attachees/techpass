@@ -9,23 +9,33 @@ const Events = () => {
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState("");
   const [error, setError] = useState(null);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
-    const fetchEvents = async () => {
+    const fetchEvents = async (page = 1) => {
       try {
-        const response = await fetch(`/api/events/getEvents?limit=4`);
+        const limit = 6;
+        const response = await fetch(`/api/events/getEvents?limit=${limit}&page=${page}`);
         if (!response.ok) {
           throw new Error("Failed to fetch events");
         }
         const data = await response.json();
-        setEvents(data);
+        if (page === 1) {
+          setEvents(data);
+        } else {
+          setEvents(prevEvents => [...prevEvents, ...data]);
+        }
+        if (data.length < limit) {
+          setHasMore(false);
+        }
       } catch (error) {
         setError(error.message);
       }
     };
 
-    fetchEvents();
-  }, []);
+    fetchEvents(page);
+  }, [page]);
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -46,6 +56,10 @@ const Events = () => {
 
   const handleCountryChange = (e) => {
     setSelectedCountry(e.target.value);
+  };
+
+  const loadMoreEvents = () => {
+    setPage(prevPage => prevPage + 1);
   };
 
   return (
@@ -92,14 +106,15 @@ const Events = () => {
           </div>
         </div>
       </nav>
-      <main className={styles.main}>
+      <main>
+        <h1 className="text-center">Events</h1>
         {/* Search Bar */}
         <div className="container mt-5">
           {/* <!-- Search and City Selection --> */}
           <div className="row justify-content-center mb-4">
             <div className="col-12 col-md-8 d-flex">
-              <input type="text" className="form-control mr-2" placeholder="Search..." />
-              <select className="form-control" onChange={handleCountryChange}>
+              <input type="text" className="form-control mr-2 mb-2" placeholder="Search..." />
+              <select className="form-control mb-2" onChange={handleCountryChange}>
                 <option value="">Select Country</option>
                 {countries.map((country, index) => (
                   <option key={index} value={country}>{country}</option>
@@ -109,23 +124,23 @@ const Events = () => {
           </div>
 
           {/* <!-- Explore Categories --> */}
-          <div className="row justify-content-center">
+          <div className="row">
             <div className="col-12 col-md-8">
               <h4>Explore Categories</h4>
-              <div className="d-flex justify-content-between">
-                <select className="form-control mr-2">
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
+                <select className=" mr-2 mb-2 ml-2">
                   <option value="last30days">Last 30 Days</option>
                   <option value="last7days">Last 7 Days</option>
                   <option value="alltime">All Time</option>
                   <option value="last3days">Last 3 Days</option>
                 </select>
-                <select className="form-control mr-2" onChange={handleCountryChange}>
+                <select className="mr-2 mb-2 ml-2" onChange={handleCountryChange}>
                   <option value="">Select Country</option>
                   {countries.map((country, index) => (
                     <option key={index} value={country}>{country}</option>
                   ))}
                 </select>
-                <select className="form-control">
+                <select className="mb-2 ml-2">
                   <option value="ai">AI</option>
                   <option value="filming">Filming</option>
                   <option value="technology">Technology</option>
@@ -133,8 +148,12 @@ const Events = () => {
                 </select>
               </div>
             </div>
+            <div className="col-md-4 text-right">
+              <Link href="/createevent"><button className="btn btn-success">Create Event</button></Link>
+            </div>
           </div>
         </div>
+
         <div className={styles.grid}>
           {/* Display error message if there's an error */}
           {error && <p className={styles.error}>{error}</p>}
@@ -142,17 +161,10 @@ const Events = () => {
           {!error && events.length === 0 && <p>No events found.</p>}
           {/* Map through each event and display it as a card */}
           {events.map(event => (
-            <div className={styles.card} key={event.id}>
-              {/* Wrap the card in a Link component with the event details page URL */}
-              <Link href={`/events/${event.id}`}>
-                <div>
-                  <Image
-                    src="/223.jpg"
-                    alt="event 1"
-                    width={200}
-                    height={200}
-                    className={styles.cardImage}
-                  />
+            <Link href={`/events/${event.id}`} key={event.id}>
+              <div className={styles.card}>
+                <img src="223.jpg" className={`card-img-top ${styles.cardImage}`} alt="..." />
+                <div className={styles.cardBody}>
                   <div className={styles.cardContent}>
                     <div className={styles.cardColumnSmall}>
                       <p>Date: {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}</p>
@@ -165,10 +177,15 @@ const Events = () => {
                     </div>
                   </div>
                 </div>
-              </Link>
-            </div>
+              </div>
+            </Link>
           ))}
         </div>
+        {hasMore && !error && (
+          <div className="text-center">
+            <button className="btn btn-primary" onClick={loadMoreEvents}>See More</button>
+          </div>
+        )}
       </main>
     </div>
   );
