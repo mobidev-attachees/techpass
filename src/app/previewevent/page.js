@@ -5,7 +5,7 @@ import styles from "./page.module.css";
 
 const previewevent = () => {
   return (
-    <>
+    <div className="container">
       <nav className={styles.navbar}>
         <div className={styles.container}>
           <Link href="/">
@@ -60,78 +60,81 @@ const previewevent = () => {
           </div>
         </div>
       </nav>
-    <div style={{ margin: '0 10px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '20px', backgroundColor: '#f8f9fa' }}>
-      <div style={{ maxWidth: '1200px', width: '90%', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', padding: '20px' }}>
-        
-        
-        {/* Banner Image */}
-        <div className="banner-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }}>
-          <img src="175.jpg" alt="Banner" className="banner-image" height="200px" width="600px" border-radius="10%" />
-        </div>
-
-        {/* Event Details */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-          {/* Column 1 */}
-          <div style={{ flex: 1 }}>
-          <h2>Event Details</h2>
-            <p>Event Date & Time</p>
-            <p>Date: May 20, 2024</p>
-            <p>Time: 7:00 PM</p>
-          </div>
-
-          {/* Column 2 */}
-          <div style={{ flex: 1, textAlign: 'right' }}>
-            <h3></h3>
-            <button type="button" className="btn btn-success" style={{ marginRight: '10px' }}>
-              Share Event <i className="fas fa-share"></i>
-            </button><br></br>
-            <p>Ticket: Ksh. 2200</p>
-          </div>
-        </div>
-        <div style={{ marginBottom: '20px' }}>
-        <h3>Location</h3>
-        <img src="map.jpg" alt="Map" style={{ maxWidth: '50%', height: 'auto', borderRadius: '8px' }} />
-      </div>
-      <h2>Organizers Details</h2>
-      <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center',  maxWidth:'50%'}}>
       
-        {/* Left Column */}
-        <div>
-          <img src="avatar-2.png" alt="Host" style={{ width: '150px', height: '150px', borderRadius: '50%' }} />
-        </div>
-        {/* Right Column (Host Image) */}
-        <div style={{ flex: 1 }}>
-          
-          <div style={{ marginBottom: '10px' }}>
-            <p> Mr.John Doe Smith</p>
-          </div>
-          <div style={{ marginBottom: '10px' }}>
-            <p>Phone: 123-456-7890</p>
-            <p>Website: <a href="#">www.example.com</a></p>
-          </div>
-        </div>        
-        
-      </div>
-      <div style={{ marginBottom: '20px', maxWidth:'50%' }}>
-          <h2>Event Description</h2>
-          <p style={{ textAlign: 'justify' }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed commodo libero vel ex pharetra, eget faucibus ipsum fermentum. Duis venenatis vulputate nunc, sed dapibus tortor feugiat in. Nam volutpat risus eget est lobortis varius. Nullam sagittis massa in nisi efficitur fermentum. Proin eleifend neque a massa consectetur, ac pharetra justo sodales.</p>
+      <div className="row justify-content-center align-items-center vh-100">
+        <div className="col-10">
+          <div className="card">
+            <div className="card-body">
+              {/* Banner Image */}
+              <div className="banner-container text-center mb-4">
+                <img src="175.jpg" alt="Banner" className="banner-image" height="200px" width="600px" style={{ borderRadius: '10px' }} />
+              </div>
 
-          
-        </div>
+              {/* Event Details */}
+              <div className="row mb-4">
+                {/* Column 1 */}
+                <div className="col">
+                  <h2>Event Details</h2>
+                  <p>Event Date & Time</p>
+                  <p>Date: May 20, 2024</p>
+                  <p>Time: 7:00 PM</p>
+                </div>
 
-        <hr></hr>
-        {/* Buttons */}
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <button type="button" className="btn btn-secondary" style={{ marginRight: '10px' }}>
-            <Link href="/createevent">Edit</Link>
-          </button>
-          <button type="button" className="btn btn-success">
-           <Link href="/events">Publish</Link>
-          </button>
+                {/* Column 2 */}
+                <div className="col text-right">
+                  <h3></h3>
+                  <button type="button" className="btn btn-success mr-2">
+                    Share Event <i className="fas fa-share"></i>
+                  </button>
+                  <br />
+                  <p>Ticket: Ksh. 2200</p>
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <h3>Location</h3>
+                <img src="map.jpg" alt="Map" className="img-fluid rounded" style={{ maxWidth: '50%', height: 'auto' }} />
+              </div>
+
+              {/* Organizer Details */}
+              <div className="row mb-8 align-items-center">
+                {/* Left Column */}
+                <div className="col-auto">
+                  <img src="avatar-2.png" alt="Host" className="rounded-circle" style={{ width: '150px', height: '150px' }} />
+                </div>
+                {/* Right Column (Host Image) */}
+                <div className="col">
+                  <div className="mb-4">
+                    <p>Mr.John Doe Smith</p>
+                  </div>
+                  <div className="mb-2">
+                    <p>Phone: 123-456-7890</p>
+                    <p>Website: <a href="#">www.example.com</a></p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mb-4" style={{ maxWidth: '50%' }}>
+                <h2>Event Description</h2>
+                <p className="text-justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed commodo libero vel ex pharetra, eget faucibus ipsum fermentum. Duis venenatis vulputate nunc, sed dapibus tortor feugiat in. Nam volutpat risus eget est lobortis varius. Nullam sagittis massa in nisi efficitur fermentum. Proin eleifend neque a massa consectetur, ac pharetra justo sodales.</p>
+              </div>
+
+              <hr />
+
+              {/* Buttons */}
+              <div className="d-flex justify-content-center">
+                <button type="button" className="btn btn-secondary mr-2">
+                  <Link href="/createevent">Edit</Link>
+                </button>
+                <button type="button" className="btn btn-success">
+                  <Link href="/events">Publish</Link>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    </>
   );
 };
 

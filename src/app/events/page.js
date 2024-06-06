@@ -161,7 +161,7 @@ const Events = () => {
           {!error && events.length === 0 && <p>No events found.</p>}
           {/* Map through each event and display it as a card */}
           {events.map(event => (
-            <Link href={`/events/${event.id}`} key={event.id}>
+            <Link href={`/event/${event.id}`} key={event.id}>
               <div className={styles.card}>
                 <img src="223.jpg" className={`card-img-top ${styles.cardImage}`} alt="..." />
                 <div className={styles.cardBody}>
