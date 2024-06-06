@@ -2,8 +2,65 @@
 import Link from "next/link";
 import styles from "./page.module.css";
 import Image from "next/image";
+import React, { useEffect, useState } from "react";
 
 export default function dashboard() {
+  const [events, setEvents] = useState([]);
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [error, setError] = useState(null);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+
+  useEffect(() => {
+    const fetchEvents = async (page = 1) => {
+      try {
+        const limit = 6;
+        const response = await fetch(`/api/events/getEvents?limit=${limit}&page=${page}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch events");
+        }
+        const data = await response.json();
+        if (page === 1) {
+          setEvents(data);
+        } else {
+          setEvents(prevEvents => [...prevEvents, ...data]);
+        }
+        if (data.length < limit) {
+          setHasMore(false);
+        }
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+
+    fetchEvents(page);
+  }, [page]);
+
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const response = await fetch('/api/getCountries');
+        if (!response.ok) {
+          throw new Error("Failed to fetch countries");
+        }
+        const data = await response.json();
+        setCountries(data);
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+
+    fetchCountries();
+  }, []);
+
+  const handleCountryChange = (e) => {
+    setSelectedCountry(e.target.value);
+  };
+
+  const loadMoreEvents = () => {
+    setPage(prevPage => prevPage + 1);
+  };
   return (
     <div className="container">
       <nav className={styles.navbar}>
@@ -60,7 +117,7 @@ export default function dashboard() {
           </div>
         </div>
       </nav>
-      <main className={styles.main}>
+      <main>
        {/* Search Bar */}
        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '50px', maxWidth: '600px', width: '100%', marginLeft:'30%', marginTop: '30px'}}>
           <input type="text" placeholder="Search..." style={{ flex: '1', padding: '10px', borderRadius: '4px', marginRight: '0px', border: '1px solid #ccc', maxWidth: '70%' }} />
@@ -87,128 +144,71 @@ export default function dashboard() {
           </div>
         </div>
         {/* Explore Categories */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '20px', maxWidth: '600px', width: '100%',margin:'20px 30%', marginRight:'20px' }}>
-          <h4>Explore Categories</h4>
-          <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginRight:'auto' }}>
-            <select name="categories" style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc', marginRight: '10px', flex: '1' }}>
-              <option value="last30days">Last 30 Days</option>
-              <option value="last7days">Last 7 Days</option>
-              <option value="alltime">All Time</option>
-              <option value="last3days">Last 3 Days</option>
-            </select>
-            <select name="exploreCities" style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc', marginRight: '10px', flex: '1' }}>
-              <option value="newyork">New York</option>
-              <option value="losangeles">Los Angeles</option>
-              <option value="chicago">Chicago</option>
-              <option value="houston">Houston</option>
-              <option value="phoenix">Phoenix</option>
-            </select>
-            <select name="topics" style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc', flex: '1' }}>
-              <option value="ai">AI</option>
-              <option value="filming">Filming</option>
-              <option value="technology">Technology</option>
-              <option value="music">Music</option>
-            </select>
+        <h1 className="text-center">Events</h1>
+        {/* Search Bar */}
+        <div className="container mt-5">
+          {/* <!-- Explore Categories --> */}
+          <div className="row">
+            <div className="col-12 col-md-8">
+              <h4>Explore Categories</h4>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
+                <select className=" mr-2 mb-2 ml-2">
+                  <option value="last30days">Last 30 Days</option>
+                  <option value="last7days">Last 7 Days</option>
+                  <option value="alltime">All Time</option>
+                  <option value="last3days">Last 3 Days</option>
+                </select>
+                <select className="mr-2 mb-2 ml-2" onChange={handleCountryChange}>
+                  <option value="">Select Country</option>
+                  {countries.map((country, index) => (
+                    <option key={index} value={country}>{country}</option>
+                  ))}
+                </select>
+                <select className="mb-2 ml-2">
+                  <option value="ai">AI</option>
+                  <option value="filming">Filming</option>
+                  <option value="technology">Technology</option>
+                  <option value="music">Music</option>
+                </select>
+              </div>
+            </div>
+            <div className="col-md-4 text-right">
+              <Link href="/createevent"><button className="btn btn-success">Create Event</button></Link>
+            </div>
           </div>
         </div>
+
         <div className={styles.grid}>
-          <div className={styles.card}>
-            <Link href="/event">
-              <div>
-                <Image
-                  src="/223.jpg"
-                  alt="event 1"
-                  width={200}
-                  height={200}
-                  className={styles.cardImage}
-                />
-                <div className={styles.cardContent}>
-                  <div className={styles.cardColumnSmall}>
-                    <p>Date</p>
-                  </div>
-                  <div className={styles.cardColumnLarge}>
-                    <p>Topic:</p>
-                    <p>Location or venue:</p>
-                    <p>Time:</p>
-                    <p>Ticket:</p>
-                  </div>
-                </div>
-              </div>
-            </Link>
-          </div>
-          <div className={styles.card}>
-            <Link href="/event">
-              <div>
-                <Image
-                  src="/223.jpg"
-                  alt="event 1"
-                  width={200}
-                  height={200}
-                  className={styles.cardImage}
-                />
-                <div className={styles.cardContent}>
-                  <div className={styles.cardColumnSmall}>
-                    <p>Date</p>
-                  </div>
-                  <div className={styles.cardColumnLarge}>
-                    <p>Topic:</p>
-                    <p>Location or venue:</p>
-                    <p>Time:</p>
-                    <p>Ticket:</p>
+          {/* Display error message if there's an error */}
+          {error && <p className={styles.error}>{error}</p>}
+          {/* Display message if no events are found */}
+          {!error && events.length === 0 && <p>No events found.</p>}
+          {/* Map through each event and display it as a card */}
+          {events.map(event => (
+            <Link href={`/event/${event.id}`} key={event.id}>
+              <div className={styles.card}>
+                <img src="223.jpg" className={`card-img-top ${styles.cardImage}`} alt="..." />
+                <div className={styles.cardBody}>
+                  <div className={styles.cardContent}>
+                    <div className={styles.cardColumnSmall}>
+                      <p>Date: {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}</p>
+                    </div>
+                    <div className={styles.cardColumnLarge}>
+                      <h2> {event.eventName}</h2>
+                      <p>Venue: {event.location}</p>
+                      <p>Ticket:{event.ticketPrice} </p>
+                    </div>
                   </div>
                 </div>
               </div>
             </Link>
+          ))}
+        </div>
+        {hasMore && !error && (
+          <div className="d-grid col-6 mx-auto mt-2 mb-4">
+            <button className="btn btn-outline-success btn-lg" onClick={loadMoreEvents} type="button">See More</button>
           </div>
-          <div className={styles.card}>
-            <Link href="/event">
-              <div>
-                <Image
-                  src="/223.jpg"
-                  alt="event 1"
-                  width={200}
-                  height={200}
-                  className={styles.cardImage}
-                />
-                <div className={styles.cardContent}>
-                  <div className={styles.cardColumnSmall}>
-                    <p>Date</p>
-                  </div>
-                  <div className={styles.cardColumnLarge}>
-                    <p>Topic:</p>
-                    <p>Location or venue:</p>
-                    <p>Time:</p>
-                    <p>Ticket:</p>
-                  </div>
-                </div>
-              </div>
-            </Link>
-          </div>
-          <div className={styles.card}>
-            <Link href="/event">
-              <div>
-                <Image
-                  src="/223.jpg"
-                  alt="event 1"
-                  width={200}
-                  height={200}
-                  className={styles.cardImage}
-                />
-                <div className={styles.cardContent}>
-                  <div className={styles.cardColumnSmall}>
-                    <p>Date</p>
-                  </div>
-                  <div className={styles.cardColumnLarge}>
-                    <p>Topic:</p>
-                    <p>Location or venue:</p>
-                    <p>Time:</p>
-                    <p>Ticket:</p>
-                  </div>
-                </div>
-              </div>
-            </Link>
-          </div>
-       </div>
+        )}
       </main>
     </div>
   );

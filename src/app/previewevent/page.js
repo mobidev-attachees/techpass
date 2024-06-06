@@ -75,9 +75,10 @@ const previewevent = () => {
                 {/* Column 1 */}
                 <div className="col">
                   <h2>Event Details</h2>
-                  <p>Event Date & Time</p>
-                  <p>Date: May 20, 2024</p>
-                  <p>Time: 7:00 PM</p>
+                  <p>Start Date: {new Date(event.startDate).toLocaleDateString()}</p>
+                  <p>End Date: {new Date(event.endDate).toLocaleDateString()}</p>
+                  <p>Start Time: {event.startTime}</p>
+                  <p>End Time: {event.endTime}</p>
                 </div>
 
                 {/* Column 2 */}
@@ -87,12 +88,13 @@ const previewevent = () => {
                     Share Event <i className="fas fa-share"></i>
                   </button>
                   <br />
-                  <p>Ticket: Ksh. 2200</p>
+                  <p>Ticket Price: {event.ticketPrice}</p>
                 </div>
               </div>
 
               <div className="mb-4">
                 <h3>Location</h3>
+                <p>Location: {event.location}</p>
                 <img src="map.jpg" alt="Map" className="img-fluid rounded" style={{ maxWidth: '50%', height: 'auto' }} />
               </div>
 
@@ -105,18 +107,18 @@ const previewevent = () => {
                 {/* Right Column (Host Image) */}
                 <div className="col">
                   <div className="mb-4">
-                    <p>Mr.John Doe Smith</p>
+                    <p>{event.tittle} {event.firstName} {event.middleName} {event.lastName}</p>
                   </div>
                   <div className="mb-2">
-                    <p>Phone: 123-456-7890</p>
-                    <p>Website: <a href="#">www.example.com</a></p>
+                    <p>Phone: {event.phoneNumber}</p>
+                    <p>Website: <a href="#">{event.websiteLink}</a></p>
                   </div>
                 </div>
               </div>
 
               <div className="mb-4" style={{ maxWidth: '50%' }}>
                 <h2>Event Description</h2>
-                <p className="text-justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed commodo libero vel ex pharetra, eget faucibus ipsum fermentum. Duis venenatis vulputate nunc, sed dapibus tortor feugiat in. Nam volutpat risus eget est lobortis varius. Nullam sagittis massa in nisi efficitur fermentum. Proin eleifend neque a massa consectetur, ac pharetra justo sodales.</p>
+                <p className="text-justify">{event.eventDescription}</p>
               </div>
 
               <hr />
