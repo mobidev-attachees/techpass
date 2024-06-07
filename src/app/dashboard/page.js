@@ -4,29 +4,30 @@ import styles from "./page.module.css";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
-export default function dashboard() {
+export default function Dashboard() {
   const [events, setEvents] = useState([]);
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState("");
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [totalEvents, setTotalEvents] = useState(0);
+  const initialFetchLimit = 6; // Initial number of events to fetch
 
   useEffect(() => {
-    const fetchEvents = async (page = 1) => {
+    const fetchEvents = async () => {
       try {
-        const limit = 6;
-        const response = await fetch(`/api/events/getEvents?limit=${limit}&page=${page}`);
+        const response = await fetch(`/api/events/getEvents?limit=${initialFetchLimit}&page=${page}`);
         if (!response.ok) {
           throw new Error("Failed to fetch events");
         }
         const data = await response.json();
-        if (page === 1) {
-          setEvents(data);
-        } else {
-          setEvents(prevEvents => [...prevEvents, ...data]);
+        if (!Array.isArray(data.events) || typeof data.totalEvents !== 'number') {
+          throw new Error("Invalid response format");
         }
-        if (data.length < limit) {
+        setEvents(data.events);
+        setTotalEvents(data.totalEvents);
+        if (data.events.length < initialFetchLimit) {
           setHasMore(false);
         }
       } catch (error) {
@@ -34,8 +35,8 @@ export default function dashboard() {
       }
     };
 
-    fetchEvents(page);
-  }, [page]);
+    fetchEvents();
+  }, []);
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -58,62 +59,59 @@ export default function dashboard() {
     setSelectedCountry(e.target.value);
   };
 
-  const loadMoreEvents = () => {
-    setPage(prevPage => prevPage + 1);
+  const loadMoreEvents = async () => {
+    const nextPage = page + 1;
+    try {
+      const response = await fetch(`/api/events/getEvents?limit=${initialFetchLimit}&page=${nextPage}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch more events");
+      }
+      const data = await response.json();
+      if (!Array.isArray(data.events)) {
+        throw new Error("Invalid response format");
+      }
+      setEvents(prevEvents => [...prevEvents, ...data.events]);
+      setPage(nextPage);
+      if (events.length + data.events.length >= totalEvents) {
+        setHasMore(false);
+        
+      }
+    } catch (error) {
+      setError(error.message);
+    }
   };
   return (
     <div className="container">
-      <nav className={styles.navbar}>
-        <div className={styles.container}>
-          <Link href="/">
-            <p className={styles.brand}>Techpass</p>
-          </Link>
-          <button
-            className={`${styles.toggleBtn} ${styles["toggleBtn-lg"]}`}
-            aria-controls="responsive-navbar-nav"
-          >
-            <span className={styles.srOnly}>Toggle navigation</span>
-            <span className={styles.iconBar}></span>
-            <span className={styles.iconBar}></span>
-            <span className={styles.iconBar}></span>
+      <nav className="navbar navbar-expand-lg navbar-light bg-white color-white">
+        <div className="container-fluid justify-content-between">
+          <a className="navbar-brand" href="/">TechPass</a>
+          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+            <span className="navbar-toggler-icon"></span>
           </button>
-          <div className={styles.collapse}>
-            <ul className={`${styles.nav} ${styles["me-auto"]}`}>
-              {/* <li className={styles.navItem}>
-                <Link href="event">
-                  <p className={styles.navLink}>Home</p>
-                </Link>
-              </li> */}
-              <li className={styles.navItem}>
-                <Link href="/createevent">
-                  <p className={styles.navLink}>Create Event</p>
-                </Link>
+          <div className="collapse navbar-collapse" id="navbarScroll">
+            <ul className="navbar-nav ms-auto my-2 my-lg-0 navbar-nav-scroll" style={{ "--bs-scroll-height": "100px" }}>
+              <li className="nav-item">
+                <a className="nav-link active" aria-current="page" href="/">Home</a>
               </li>
-              <li className={styles.navItem}>
-                <Link href="/events">
-                  <p className={styles.navLink}>My events</p>
-
-                </Link>
+              <li className="nav-item">
+                <a className="nav-link" href="/createevent">Create Event</a>
               </li>
-            </ul>
-            <ul className={styles.nav}>
-                <ul className={styles.nav}>
-                  <li className={styles.navItem}>
-                    <Link href="#deets">
-                      <p className={styles.navLink}>
-                        <img src="175.jpg" alt="profile photo" className={styles.navImage} />
-                        
-                      </p>
-                    </Link>
-                  </li>
+              <li className="nav-item">
+                <a className="nav-link link" href="#">All Events</a>
+              </li>
+              <li className="nav-item dropdown">
+                <a className="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <Image src="/avatar-2.png" width="30" height="30" alt="profile image" className='rounded-circle'></Image>
+                </a>
+                <ul className="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                  <li><a className="dropdown-item" href="/dashboard">Dashboard</a></li>
+                  <li><a className="dropdown-item" href="#">Profile</a></li>
+                  <li></li>
+                  <li><a className="dropdown-item" href="/login">Logout</a></li>
                 </ul>
-
-              <li className={styles.navItem}>
-                <Link href="/login">
-                  <p className={styles.navLink}>Logout</p>
-                </Link>
               </li>
             </ul>
+            
           </div>
         </div>
       </nav>
@@ -144,7 +142,7 @@ export default function dashboard() {
           </div>
         </div>
         {/* Explore Categories */}
-        <h1 className="text-center">Events</h1>
+        <h1 className="text-center mt-2">Your Events</h1>
         {/* Search Bar */}
         <div className="container mt-5">
           {/* <!-- Explore Categories --> */}
@@ -179,37 +177,39 @@ export default function dashboard() {
         </div>
 
         <div className={styles.grid}>
-          {/* Display error message if there's an error */}
-          {error && <p className={styles.error}>{error}</p>}
-          {/* Display message if no events are found */}
-          {!error && events.length === 0 && <p>No events found.</p>}
-          {/* Map through each event and display it as a card */}
-          {events.map(event => (
-            <Link href={`/event/${event.id}`} key={event.id}>
-              <div className={styles.card}>
-                <img src="223.jpg" className={`card-img-top ${styles.cardImage}`} alt="..." />
-                <div className={styles.cardBody}>
-                  <div className={styles.cardContent}>
-                    <div className={styles.cardColumnSmall}>
-                      <p>Date: {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}</p>
-                    </div>
-                    <div className={styles.cardColumnLarge}>
-                      <h2> {event.eventName}</h2>
-                      <p>Venue: {event.location}</p>
-                      <p>Ticket:{event.ticketPrice} </p>
-                    </div>
+        {/* Display error message if there's an error */}
+        {error && <p className={styles.error}>{error}</p>}
+        {/* Display message if no events are found */}
+        {!error && events.length === 0 && <p>No events found.</p>}
+        {/* Map through each event and display it as a card */}
+        {events.map(event => (
+          <Link href={`/event/${event.id}`} key={event.id}>
+            <div className={styles.card}>
+              <img src="223.jpg" className={`card-img-top ${styles.cardImage}`} alt="..." />
+              <div className={styles.cardBody}>
+                <div className={styles.cardContent}>
+                  <div className={styles.cardColumnSmall}>
+                    <p>Date: {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}</p>
+                  </div>
+                  <div className={styles.cardColumnLarge}>
+                    <h2>{event.eventName}</h2>
+                    <p>Venue: {event.location}</p>
+                    <p>Ticket: {event.ticketPrice}</p>
                   </div>
                 </div>
               </div>
-            </Link>
-          ))}
+            </div>
+          </Link>
+        ))}
+      </div>
+      {hasMore && !error && (
+        <div className="d-grid col-6 mx-auto mt-2 mb-4">
+          <button className="btn btn-outline-success btn-lg" onClick={loadMoreEvents} type="button">
+            See More
+          </button>
         </div>
-        {hasMore && !error && (
-          <div className="d-grid col-6 mx-auto mt-2 mb-4">
-            <button className="btn btn-outline-success btn-lg" onClick={loadMoreEvents} type="button">See More</button>
-          </div>
-        )}
-      </main>
+      )}
+    </main>
     </div>
   );
 }

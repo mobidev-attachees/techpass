@@ -1,32 +1,33 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
 import styles from "./page.module.css";
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
-const Events = () => {
+export default function EVents() {
   const [events, setEvents] = useState([]);
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState("");
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [totalEvents, setTotalEvents] = useState(0);
+  const initialFetchLimit = 6; // Initial number of events to fetch
 
   useEffect(() => {
-    const fetchEvents = async (page = 1) => {
+    const fetchEvents = async () => {
       try {
-        const limit = 6;
-        const response = await fetch(`/api/events/getEvents?limit=${limit}&page=${page}`);
+        const response = await fetch(`/api/events/getEvents?limit=${initialFetchLimit}&page=${page}`);
         if (!response.ok) {
           throw new Error("Failed to fetch events");
         }
         const data = await response.json();
-        if (page === 1) {
-          setEvents(data);
-        } else {
-          setEvents(prevEvents => [...prevEvents, ...data]);
+        if (!Array.isArray(data.events) || typeof data.totalEvents !== 'number') {
+          throw new Error("Invalid response format");
         }
-        if (data.length < limit) {
+        setEvents(data.events);
+        setTotalEvents(data.totalEvents);
+        if (data.events.length < initialFetchLimit) {
           setHasMore(false);
         }
       } catch (error) {
@@ -34,8 +35,8 @@ const Events = () => {
       }
     };
 
-    fetchEvents(page);
-  }, [page]);
+    fetchEvents();
+  }, []);
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -58,8 +59,26 @@ const Events = () => {
     setSelectedCountry(e.target.value);
   };
 
-  const loadMoreEvents = () => {
-    setPage(prevPage => prevPage + 1);
+  const loadMoreEvents = async () => {
+    const nextPage = page + 1;
+    try {
+      const response = await fetch(`/api/events/getEvents?limit=${initialFetchLimit}&page=${nextPage}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch more events");
+      }
+      const data = await response.json();
+      if (!Array.isArray(data.events)) {
+        throw new Error("Invalid response format");
+      }
+      setEvents(prevEvents => [...prevEvents, ...data.events]);
+      setPage(nextPage);
+      if (events.length + data.events.length >= totalEvents) {
+        setHasMore(false);
+        
+      }
+    } catch (error) {
+      setError(error.message);
+    }
   };
 
   return (
@@ -87,7 +106,7 @@ const Events = () => {
                 </a>
                 <ul className="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
                   <li><a className="dropdown-item" href="/dashboard">Dashboard</a></li>
-                  <li><a className="dropdown-item" href="#">Profile</a></li>
+                  <li><a className="dropdown-item" href="/profile">Profile</a></li>
                   <li></li>
                   <li><a className="dropdown-item" href="/login">Logout</a></li>
                 </ul>
@@ -145,32 +164,37 @@ const Events = () => {
           </div>
         </div>
 
-        <div className={styles.grid}>
-          {/* Display error message if there's an error */}
-          {error && <p className={styles.error}>{error}</p>}
-          {/* Display message if no events are found */}
-          {!error && events.length === 0 && <p>No events found.</p>}
-          {/* Map through each event and display it as a card */}
-          {events.map(event => (
-            <Link href={`/event/${event.id}`} key={event.id}>
-              <div className={styles.card}>
-                <img src="223.jpg" className={`card-img-top ${styles.cardImage}`} alt="..." />
-                <div className={styles.cardBody}>
-                  <div className={styles.cardContent}>
-                    <div className={styles.cardColumnSmall}>
-                      <p>Date: {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}</p>
-                    </div>
-                    <div className={styles.cardColumnLarge}>
-                      <p>Topic: {event.eventName}</p>
-                      <p>Location or venue: {event.location}</p>
-                      <p>Time:</p>
-                      <p>Ticket: {event.ticketPrice} </p>
+        <div className="row bg-color-aqua">
+          <h2>Available events</h2>
+        
+          <div className={styles.grid}>
+          
+              {/* Display error message if there's an error */}
+              {error && <p className={styles.error}>{error}</p>}
+              {/* Display message if no events are found */}
+              {!error && events.length === 0 && <p>No events found.</p>}
+              {/* Map through each event and display it as a card */}
+              {events.map(event => (
+                <Link href={`/event/${event.id}`} key={event.id}>
+                  <div className={styles.card}>
+                    <img src="223.jpg" className={`card-img-top ${styles.cardImage}`} alt="..." />
+                    <div className={styles.cardBody}>
+                      <div className={styles.cardContent}>
+                        <div className={styles.cardColumnSmall}>
+                          <p>Date: {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}</p>
+                        </div>
+                        <div className={styles.cardColumnLarge}>
+                          <h2>{event.eventName}</h2>
+                          <p>Venue: {event.location}</p>
+                          <p>Ticket: {event.ticketPrice}</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </Link>
-          ))}
+                </Link>
+              ))}
+          </div>
+
         </div>
         {hasMore && !error && (
           <div className="d-grid col-6 mx-auto">
@@ -182,4 +206,3 @@ const Events = () => {
   );
 };
 
-export default Events;

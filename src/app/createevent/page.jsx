@@ -2,9 +2,10 @@
 "use client";
 import React, { useState } from "react";
 import Link from 'next/link';
-import { useRouter } from "next/navigation"; // Fix import statement
+import { useRouter } from "next/navigation"; // Correct import statement
 import styles from "./page.module.css";
 import PhoneInput from 'react-phone-number-input/input';
+import Image from "next/image";
 
 const createevent = () => {
   const [eventName, setEventName] = useState("");
@@ -18,18 +19,19 @@ const createevent = () => {
   const [endTime, setEndTime] = useState("");
   const [meetingLink, setMeetingLink] = useState("");
   const [email, setEmail] = useState("");
-  const [tittle, setTittle] = useState(""); 
+  const [tittle, setTittle] = useState('Mr.'); 
   const [firstName, setFirstName] = useState("");
   const [middleName, setMiddleName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [ticketPrice, setTicketPrice] = useState("");
+  const [ticketPrice, setTicketPrice] = useState('Free');
   const [websiteLink, setWebsiteLink] = useState("");
   const [facebookLink, setFacebookLink] = useState("");
   const [instagramLink, setInstagramLink] = useState("");
   const [twitterLink, setTwitterLink] = useState("");
   const [step, setStep] = useState(1);
   const [error, setError] = useState("");
+  const [isFree, setIsFree] = useState(true);
   const router = useRouter();
 
   const countries = ['USA', 'Canada', 'UK'];
@@ -54,13 +56,21 @@ const createevent = () => {
     setStep(2);
   };
   const handleBack = () => {
-    setStep(2)(false);
+    setStep(1); // Set step back to 1 to go to the previous step
+  };
+  
+
+  const handleSwitchChange = () => {
+    setIsFree(!isFree);
+    // Reset ticket price when switching to free
+    if (!isFree) {
+      setTicketPrice('');
+    }
   };
 
   const handleCreateEvent = async (e) => {
     e.preventDefault();
     setError(""); // Reset error message
-
 
     if (!eventName || !eventDescription || !email || !firstName || !lastName || !phoneNumber || !startDate || !endDate || !startTime || !endTime) {
       return res.status(400).json({ message: 'All required fields must be filled' });
@@ -89,54 +99,56 @@ const createevent = () => {
       console.error("Event creation error:", error);
       setError("An error occurred during event creation");
     }
-  
-    
   };
 
   return (
     <div className="container">
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="/">Techpass</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+      <nav className="navbar navbar-expand-lg navbar-light bg-white color-white">
+        <div className="container-fluid justify-content-between">
+          <a className="navbar-brand" href="/">TechPass</a>
+          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+            <span className="navbar-toggler-icon"></span>
           </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="/">Home</a>
+          <div className="collapse navbar-collapse" id="navbarScroll">
+            <ul className="navbar-nav ms-auto my-2 my-lg-0 navbar-nav-scroll" style={{ "--bs-scroll-height": "100px" }}>
+              <li className="nav-item">
+                <a className="nav-link active" aria-current="page" href="/">Home</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
+              <li className="nav-item">
+                <a className="nav-link" href="/createevent">Create Event</a>
               </li>
-            </ul>
-            <ul class="navbar-nav">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="vercel.svg" alt="" width="30" height="24"></img>
+              <li className="nav-item">
+                <a className="nav-link link" href="#">All Events</a>
+              </li>
+              <li className="nav-item dropdown">
+                <a className="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <Image src="/avatar-2.png" width="30" height="30" alt="profile image" className='rounded-circle'></Image>
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item" href="/events">Admin Dashboard</a></li>
-                  <li><a class="dropdown-item" href="#">My Account</a></li>
-                  <li><hr class="dropdown-divider"/></li>
-                  <li><a class="dropdown-item" href="/login">Logout</a></li>
+                <ul className="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                  <li><a className="dropdown-item" href="/dashboard">Dashboard</a></li>
+                  <li><a className="dropdown-item" href="#">Profile</a></li>
+                  <li></li>
+                  <li><a className="dropdown-item" href="/login">Logout</a></li>
                 </ul>
               </li>
             </ul>
+            
           </div>
         </div>
       </nav>
+      <h2 className="text-center mt-3">Create Event</h2>
       <main className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
-      <div className="container">
+      
+      <div className="container mt-3">
 
         <div className="row justify-content-center">
-          <div className="col-lg-10 bg-white p-4 rounded shadow">
-            <h2 className={styles.heading}>Create Event</h2>
+          <div className="col-lg-10 bg-white p-4 rounded shadow-lg">
+            
             {error && <p className={styles.error}>{error}</p>}
             <form onSubmit={handleCreateEvent} className={styles.form}>
               <fieldset style={{ display: step === 1 ? 'block' : 'none' }}>
                 
-                <h4>Event Details</h4>
+                <h4 className="">Event Details</h4>
                   <div className={styles.formGroup} style={{ marginBottom: '20px', width:'50%' }}>
                     <label htmlFor="eventName" className={styles.label}>Event Name:</label>
                     <input
@@ -159,7 +171,7 @@ const createevent = () => {
                       cols="50"
                     />
                   </div>
-                  <div className="row">
+                  <div className="row rounded  shadow-sm mb-5">
                     <div className={`col-md-${location === 'virtual' ? 6 : 4} ${styles.formGroup}`} style={{ marginBottom: '20px' }}>
                       <label htmlFor="location" className={styles.label}>Location:</label>
                       <select
@@ -219,7 +231,7 @@ const createevent = () => {
                     )}
                   </div>
 
-                  <div className="row">
+                  <div className="row rounded shadow-sm">
                     <div className={`${styles.formGroup} col-md-3`} style={{ marginBottom: '20px' }}>
                       <label htmlFor="startDate" className={styles.label}>Start Date:</label>
                       <input
@@ -261,26 +273,50 @@ const createevent = () => {
                       />
                     </div>
                   </div>
-                  <hr></hr>
-                  <h6>Event Charges</h6><br></br>
-                  <div className={styles.formGroup} style={{ marginBottom: '20px', width: '100px' }}>
-                    <label htmlFor="ticketPrice" className={styles.label}>Ticket Price:</label>
-                    <input
-                      type="text"
-                      name="ticketPrice"
-                      value={ticketPrice}
-                      onChange={(e) => setTicketPrice(e.target.value)}
-                      className={styles.input}
-                    />
+                  
+                  
+                  <div className="row mb-5 mt-5 rounded  shadow-sm">
+                  <h6>Event Charges</h6>
+                  <p>Click to switch to paid ticket price</p>
+                    <div className="col-md-6">
+                      <div className="form-check form-switch form-check-success">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id="flexSwitchCheckSuccess"
+                          checked={isFree}
+                          onChange={handleSwitchChange}
+                        />
+                        <label className="form-check-label" htmlFor="flexSwitchCheckSuccess">
+                          {isFree ? 'Free Ticket' : 'Paid Ticket'}
+                        </label>
+                      </div>
+                    </div>
+                    {!isFree && (
+                      <div className={`${styles.formGroup} col-md-3`} style={{ marginBottom: '20px' }}>
+                        <label htmlFor="ticketPrice" className={`${styles.label}`}>Ticket Price:</label>
+                        <input
+                          type="text"
+                          name="ticketPrice"
+                          value={ticketPrice}
+                          onChange={(e) => setTicketPrice(e.target.value)}
+                          className={`${styles.input}`}
+                        />
+                      </div>
+                    )}
                   </div>
-                  <button onClick={handleNext} className={`${styles.button} btn btn-primary`} style={{ width: 'auto' }}>
+
+
+                  <button onClick={handleNext} className={`${styles.button} btn btn-success`} style={{ width: 'auto' }}>
                     Next
                   </button>
                 </fieldset>
                 {/* Start part Two of the form */}
                 <fieldset style={{ display: step === 2 ? 'block' : 'none' }}>
-              <h2>Organizers Details</h2>
-              <div className="row">
+              <h3 className="">Organizers Details</h3>
+              
+              <div className="row rounded shadow-sm">
+                <h6>Personal Information</h6>
                 <div className={`${styles.formGroup} col-md-3`} style={{ marginBottom: '20px' }}>
                   <label htmlFor="tittle" className={styles.label}>Tittle:</label>
                   <select
@@ -331,41 +367,43 @@ const createevent = () => {
                 </div>
               </div>
 
-              <div className="row">
-              <div className={`${styles.formGroup} col-md-4`} style={{ marginBottom: '20px' }}>
-                  <label htmlFor="phoneNumber" className={styles.label}>Phone Number:</label>
-                  <PhoneInput
-                    name="phoneNumber"
-                    value={phoneNumber}
-                    onChange={setPhoneNumber}
-                    className={`${styles.input} form-control`}
-                    placeholder="Enter phone number"
-                  />
-                </div>
+              <div className="row mt-5 rounded shadow-sm">
+              <h6 className="text-decoration-underline"> Contact info</h6>
                 <div className={`${styles.formGroup} col-md-4`} style={{ marginBottom: '20px' }}>
-                  <label htmlFor="email" className={styles.label}>Email address:</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className={`${styles.input} form-control`}
-                  />
-                </div>
+                    <label htmlFor="phoneNumber" className={styles.label}>Phone Number:</label>
+                    <PhoneInput
+                      name="phoneNumber"
+                      value={phoneNumber}
+                      onChange={setPhoneNumber}
+                      className={`${styles.input} form-control`}
+                      placeholder="Enter phone number"
+                    />
+                  </div>
+                  <div className={`${styles.formGroup} col-md-4`} style={{ marginBottom: '20px' }}>
+                    <label htmlFor="email" className={styles.label}>Email address:</label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className={`${styles.input} form-control`}
+                    />
+                  </div>
 
-                <div className={`${styles.formGroup} col-md-4`} style={{ marginBottom: '20px' }}>
-                  <label htmlFor="websiteLink" className={styles.label}>Website Link:</label>
-                  <input
-                    type="url"
-                    name="websiteLink"
-                    value={websiteLink}
-                    onChange={(e) => setWebsiteLink(e.target.value)}
-                    className={`${styles.input} form-control`}
-                  />
-                </div>
+                  <div className={`${styles.formGroup} col-md-4`} style={{ marginBottom: '20px' }}>
+                    <label htmlFor="websiteLink" className={styles.label}>Website Link:</label>
+                    <input
+                      type="url"
+                      name="websiteLink"
+                      value={websiteLink}
+                      onChange={(e) => setWebsiteLink(e.target.value)}
+                      className={`${styles.input} form-control`}
+                    />
+                  </div>
               </div>
-              <h4>Social media</h4>
-              <div className="row">
+              
+              <div className="row mt-5 shadow-sm rounded">
+                <h6>Social media</h6>
                 <div className={`${styles.formGroup} col-md-4`} style={{ marginBottom: '20px' }}>
                   <label htmlFor="facebookLink" className={styles.label}>Facebook Link:</label>
                   <input
