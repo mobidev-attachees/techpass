@@ -108,12 +108,12 @@ export default function Login() {
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              <button type="submit" className={`${styles.button} btn btn-primary`} style={{ width: 'auto' }}>
+              <button type="submit" className={`${styles.button} btn btn-outline-success`} style={{ width: 'auto' }}>
                 Login
               </button>
               {error && <p className={styles.error}>{error}</p>}
             </form>
-            <p> Do not have an account? <Link href="/register">Sign up</Link></p>
+            <p> Do not have an account? <a href="/register" className="text-success fs-5">Sign up</a></p>
           </div>
         </div>
       </main>

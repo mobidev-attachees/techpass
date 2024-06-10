@@ -25,20 +25,8 @@
   border: 1px solid #ccc;
   border-radius: 5px;
 }
-
-.form button {
-  width: 100%;
-  padding: 10px;
-  margin-top: 20px;
-  background-color: #007bff;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.form button:hover {
-  background-color: #c50505;
+.error{
+  color: red;
 }
 
 @media (max-width: 768px) {
@@ -126,4 +114,9 @@
   max-height: 50px; /* Ensure the image doesn't exceed the height of its container */
   margin-right: 0.5rem; /* Example margin between image and text */
   border-radius: 100%;
+}
+.form .a{
+  text-transform:capitalize;
+  font-size: large;
+  color: green;
 }

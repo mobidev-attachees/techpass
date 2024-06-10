@@ -57,7 +57,7 @@ const Register = () => {
         setEmail("");
         setPassword("");
         setConfirmPassword("");
-        toast.success("Successfully registered", { style: { animation: "fade-in 0.5s" } }); // Show success toast with custom style
+        toast.success("Successfully registered", { style: { animation: "fade-in 0.5s",backgroundColor:'green', color:'white', alignContent:'right'} }); // Show success toast with custom style
         setTimeout(() => {
           router.push("/login"); // Redirect to login after 2 seconds
         }, 2000);
@@ -73,9 +73,8 @@ const Register = () => {
 
   return (
     <div className="container">
-      <main style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
         <div className="main-container form" style={{ maxWidth: '1400px', padding: '20px', backgroundColor: '#fff', borderRadius: '8px'}}>
-          <div className="form-wrapper" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.9)' }}>
+          <div className="form-wrapper" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.9)', cursor:'pointer', marginTop:'20px'}}>
             <h1 className={styles.heading}>Register</h1>
             {error && <p className={styles.error}>{error}</p>}
             <form onSubmit={handleRegister} className={styles.form} style={{ width: 'auto' }}>
@@ -119,14 +118,13 @@ const Register = () => {
                   className={styles.input}
                 />
               </div>
-              <button type="submit" className={`${styles.button} btn btn-primary`} style={{ width: 'auto' }}>
+              <button type="submit" className={`${styles.button} btn-rounded-pill btn btn-outline-success`} style={{ width: 'auto' }}>
                 Register
               </button>
             </form>
-            <p>Already have an account? <Link href="/login">Login</Link></p>
+            <p>Already have an account? <a href="/login" className=" text-success fs-5" >Login</a></p>
           </div>
         </div>
-      </main>
     </div>
   );
 };

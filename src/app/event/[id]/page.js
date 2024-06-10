@@ -122,7 +122,7 @@ export default async function EventPage({ params }) {
                     </div>
                     <div className="mb-2 d-flex justify-content-evenly">
                       <button type="button" className="btn btn-outline-info px-5 radius-30 mr-2">Contact</button>
-                      <button type="button" data-mdb-button-init="" data-mdb-ripple-init="" class="btn btn-outline-success btn-rounded btn-outline-success ripple-surface-dark" data-mdb-ripple-color="dark" data-mdb-button-initialized="true" aria-pressed="false">+
+                      <button type="button" data-mdb-button-init="" data-mdb-ripple-init="" class="btn btn-outline-success btn-rounded  ripple-surface-dark" data-mdb-ripple-color="dark" data-mdb-button-initialized="true" aria-pressed="false">+
                       Follow</button>
                     </div>
                   </div>
@@ -135,9 +135,9 @@ export default async function EventPage({ params }) {
                 </div>
 
                 {/* Buttons */}
-                <div className="d-grid gap-2 d-md-flex justify-content-md-end mb-8">
+                <div className="d-grid gap-2 d-md-flex justify-content-md-end mb-4">
                   <button type="button" class="btn btn-secondary px-5 radius-30">
-                    <Link href="/createevent">Edit</Link>
+                  <a href={`/editEvent/${id}`}>Edit Event</a>
                   </button>
                   <button type="button" class="btn btn-success px-5 radius-30">
                     <Link href="/events">Publish</Link>

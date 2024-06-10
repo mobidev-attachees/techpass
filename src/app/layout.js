@@ -5,6 +5,9 @@ import Head from 'next/head';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./globals.css";
 import { Toaster } from 'react-hot-toast';
+// import 'mdb-react-ui-kit/dist/css/mdb.min.css';
+
+
 
 const inter = Inter({ subsets: ["latin"] });
 

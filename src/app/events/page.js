@@ -4,7 +4,7 @@ import styles from "./page.module.css";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
-export default function EVents() {
+export default function Events() {
   const [events, setEvents] = useState([]);
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState("");
@@ -164,7 +164,7 @@ export default function EVents() {
           </div>
         </div>
 
-        <div className="row bg-color-aqua">
+        <div className="row mt-6 rounded">
           <h2>Available events</h2>
         
           <div className={styles.grid}>
@@ -197,7 +197,7 @@ export default function EVents() {
 
         </div>
         {hasMore && !error && (
-          <div className="d-grid col-6 mx-auto">
+          <div className="d-grid col-6 mx-auto mb-4 mt-6">
             <button className="btn btn-outline-success btn-lg" onClick={loadMoreEvents} type="button">See More</button>
           </div>
         )}
