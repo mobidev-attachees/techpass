@@ -127,20 +127,34 @@ export default function Dashboard() {
             <option value="phoenix">Phoenix</option>
           </select>
         </div>
-        <div className={styles.imageContainer}>
-          <Image
-            className={styles.banner}
-            src="/220.jpg"
-            alt="banner image"
-            width={200}
-            height={200}
-            layout="responsive"
-          />
-          <div className={styles.textOverlay}>
-            <h2 style={{ margin: 0, fontSize: '2em', color:'white' }}>TechPass</h2>
-            <p style={{ margin: 0, fontSize: '1em', color:'white' }}>The best platform for online meetings</p>
-          </div>
+        <div className=" p-1 py-5 mb-0 d-flex justify-content-start align-items-end" style={{ backgroundImage: "url('/220.jpg')", backgroundPosition: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: 'auto', minHeight: '300px' }}>
+        <div className="p-1 mb-0 mt-1 lc-block col-md-3  shadow-lg" style={{ backdropFilter: 'blur(6px) saturate(102%)', WebkitBackdropFilter: 'blur(6px) saturate(102%)', backgroundColor: 'rgba(255, 255, 255, 0.45)', borderRadius: '12px', border: '1px solid rgba(209, 213, 219, 0.3)' }}>
+            <div className="lc-block">
+                <div>
+                    <h2 className="text-justify">
+                      Techpass
+                    </h2>
+                </div>
+            </div>
+            <div className="lc-block mx-auto">
+                <div>
+                    <p className="lead">
+                        Organize your events in one place
+                    </p>
+                </div>
+            </div>
+            {/* <div className="lc-block p-2">
+                <button className="btn btn-success" data-mdb-animation-init=" "  data-mdb-animation-start="onHover" data-mdb-animation="zoom-in" data-mdb-animation-reset="true" data-mdb-animation-initialized="true" style={{animationDuration: '500ms'}}>
+                    <a href="/register">
+                    Get Started
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right-short" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8"></path>
+                    </svg>
+                    </a>
+                </button>
+            </div> */}
         </div>
+       </div>
         {/* Explore Categories */}
         <h1 className="text-center mt-2">Your Events</h1>
         {/* Search Bar */}
@@ -184,7 +198,7 @@ export default function Dashboard() {
         {/* Map through each event and display it as a card */}
         {events.map(event => (
           <Link href={`/event/${event.id}`} key={event.id}>
-            <div className={styles.card}>
+            <div className={`mb-4 ${ styles.card}`}>
               <img src="223.jpg" className={`card-img-top ${styles.cardImage}`} alt="..." />
               <div className={styles.cardBody}>
                 <div className={styles.cardContent}>

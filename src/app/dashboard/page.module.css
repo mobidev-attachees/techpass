@@ -149,22 +149,6 @@
 
 }
 
-.card {
-  border-radius: var(--border-radius);
-  background:white;
-  transition: background 200ms, border 200ms;
-  background: #fff;
-  border-radius: 8px;
-  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 1); */
-  text-align: center;
-  transition: box-shadow 0.3s ease-in-out;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-width: 400px; /* Increased max-width to make the card larger */
-
-}
-
 .cardImageWrapper {
   position: relative;
   width: 100%;
