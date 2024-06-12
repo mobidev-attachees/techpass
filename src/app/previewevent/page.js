@@ -23,7 +23,7 @@ const previewevent = () => {
           <div className={styles.collapse}>
             <ul className={`${styles.nav} ${styles["me-auto"]}`}>
               <li className={styles.navItem}>
-                <Link href="event">
+                <Link href="/events">
                   <p className={styles.navLink}>Home</p>
                 </Link>
               </li>
@@ -75,10 +75,10 @@ const previewevent = () => {
                 {/* Column 1 */}
                 <div className="col">
                   <h2>Event Details</h2>
-                  <p>Start Date: {new Date(event.startDate).toLocaleDateString()}</p>
-                  <p>End Date: {new Date(event.endDate).toLocaleDateString()}</p>
-                  <p>Start Time: {event.startTime}</p>
-                  <p>End Time: {event.endTime}</p>
+                  <p>Start Date: </p>
+                  <p>End Date: </p>
+                  <p>Start Time: </p>
+                  <p>End Time:</p>
                 </div>
 
                 {/* Column 2 */}
@@ -88,13 +88,13 @@ const previewevent = () => {
                     Share Event <i className="fas fa-share"></i>
                   </button>
                   <br />
-                  <p>Ticket Price: {event.ticketPrice}</p>
+                  <p>Ticket Price: </p>
                 </div>
               </div>
 
               <div className="mb-4">
                 <h3>Location</h3>
-                <p>Location: {event.location}</p>
+                <p>Location:</p>
                 <img src="map.jpg" alt="Map" className="img-fluid rounded" style={{ maxWidth: '50%', height: 'auto' }} />
               </div>
 
@@ -107,18 +107,18 @@ const previewevent = () => {
                 {/* Right Column (Host Image) */}
                 <div className="col">
                   <div className="mb-4">
-                    <p>{event.tittle} {event.firstName} {event.middleName} {event.lastName}</p>
+                    <p></p>
                   </div>
                   <div className="mb-2">
-                    <p>Phone: {event.phoneNumber}</p>
-                    <p>Website: <a href="#">{event.websiteLink}</a></p>
+                    <p>Phone: </p>
+                    <p>Website: <a href="#"></a></p>
                   </div>
                 </div>
               </div>
 
               <div className="mb-4" style={{ maxWidth: '50%' }}>
                 <h2>Event Description</h2>
-                <p className="text-justify">{event.eventDescription}</p>
+                <p className="text-justify"></p>
               </div>
 
               <hr />
