@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation'; // Correct import for useRouter and useParams
 import Image from 'next/image';
 import styles from "./page.module.css";
+import PhoneInput from 'react-phone-number-input/input';
+import toast from 'react-hot-toast';
 
 export default function EditEventPage() {
   const router = useRouter();
@@ -18,8 +20,12 @@ export default function EditEventPage() {
     endDate: '',
     startTime: '',
     endTime: '',
-    ticketPrice: '',
-    location: '',
+    isFree: true, // Default to free ticket
+    ticketPrice: 'free', // Default ticket price
+    location: 'physical',
+    meetingLink: '',
+    country: '',
+    city: '',
     eventDescription: '',
     email: '',
     tittle: '',
@@ -42,12 +48,16 @@ export default function EditEventPage() {
             setEvent(data);
             setFormData({
               eventName: data.eventName,
-              startDate: new Date(data.startDate).toISOString().split('T')[0], // format date for input
-              endDate: new Date(data.endDate).toISOString().split('T')[0], // format date for input
+              startDate: new Date(data.startDate).toISOString().split('T')[0],
+              endDate: new Date(data.endDate).toISOString().split('T')[0],
               startTime: data.startTime,
               endTime: data.endTime,
-              ticketPrice: data.ticketPrice || '',
-              location: data.location,
+              isFree: data.isFree,
+              ticketPrice: data.ticketPrice,
+              location: data.location || 'physical',
+              meetingLink: data.meetingLink || '',
+              country: data.country || '',
+              city: data.city || '',
               eventDescription: data.eventDescription,
               email: data.email,
               tittle: data.tittle,
@@ -78,6 +88,16 @@ export default function EditEventPage() {
     }));
   };
 
+  const [showPartTwo, setShowPartTwo] = useState(false);
+  
+
+  const handleSwitchChange = () => {
+    setFormData((prevState) => ({
+      ...prevState,
+      isFree: !prevState.isFree,
+    }));
+  };
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -90,6 +110,15 @@ export default function EditEventPage() {
       });
   
       if (response.ok) {
+        toast.success("Event updated successfully", { 
+          duration: 4000, 
+          position: 'top-right',
+          style: {
+            background: '#4caf50',
+            color: '#ffffff',
+            zIndex: 99999
+          },
+        });
         router.push(`/event/${id}`);
       } else {
         const errorData = await response.json();
@@ -109,9 +138,8 @@ export default function EditEventPage() {
   if (!event) {
     return <p>Event not found</p>;
   }
-
   return (
-    <div className='container'>
+    <div className="container">
     <nav className="navbar navbar-expand-lg navbar-light bg-white color-white">
         <div className="container-fluid justify-content-between">
           <a className="navbar-brand" href="/">TechPass</a>
@@ -146,178 +174,294 @@ export default function EditEventPage() {
         </div>
       </nav>
       <h1>Edit Event</h1>
-      <main className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
-      <div className="row justify-content-center">
+      <div className="row justify-content-center p-4">
       <div className="col-lg-10 bg-white p-4 rounded shadow-lg">
         <form onSubmit={handleFormSubmit} className='row mt-4'>
-          <div className={styles.formGroup} style={{ marginBottom: '20px', width:'50%' }}>
-            <label htmlFor="eventName" className={styles.label}>Event Name:</label>
-            <input
-              type="text"
-              name="eventName"
-              value={formData.eventName}
-              onChange={handleInputChange}
-              className={styles.input}
-            />
-          </div>
-          <div>
-            <label>Event Description:</label>
-            <textarea
-              name="eventDescription"
-              value={formData.eventDescription}
-              onChange={handleInputChange}
-            ></textarea>
-          </div>
-          <div>
-            <label>Start Date:</label>
-            <input
-              type="date"
-              name="startDate"
-              value={formData.startDate}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <label>End Date:</label>
-            <input
-              type="date"
-              name="endDate"
-              value={formData.endDate}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <label>Start Time:</label>
-            <input
-              type="time"
-              name="startTime"
-              value={formData.startTime}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <label>End Time:</label>
-            <input
-              type="time"
-              name="endTime"
-              value={formData.endTime}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <label>Ticket Price:</label>
-            <input
-              type="text"
-              name="ticketPrice"
-              value={formData.ticketPrice}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <label>Location:</label>
-            <input
-              type="text"
-              name="location"
-              value={formData.location}
-              onChange={handleInputChange}
-            />
-          </div>
-          
-          <div>
-            <label>Email:</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <label>Title:</label>
-            <input
-              type="text"
-              name="tittle"
-              value={formData.tittle}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <label>First Name:</label>
-            <input
-              type="text"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <label>Middle Name:</label>
-            <input
-              type="text"
-              name="middleName"
-              value={formData.middleName}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <label>Last Name:</label>
-            <input
-              type="text"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <label>Phone Number:</label>
-            <input
-              type="tel"
-              name="phoneNumber"
-              value={formData.phoneNumber}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <label>Website Link:</label>
-            <input
-              type="url"
-              name="websiteLink"
-              value={formData.websiteLink}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <label>Facebook Link:</label>
-            <input
-              type="url"
-              name="facebookLink"
-              value={formData.facebookLink}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <label>Instagram Link:</label>
-            <input
-              type="url"
-              name="instagramLink"
-              value={formData.instagramLink}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <label>Twitter Link:</label>
-            <input
-              type="url"
-              name="twitterLink"
-              value={formData.twitterLink}
-              onChange={handleInputChange}
-            />
-          </div>
-          <button type="submit">Save</button>
+          {/* Part One */}
+          {!showPartTwo && (
+            <>
+              <div className={styles.formGroup} style={{ marginBottom: '20px', width:'50%' }}>
+                <label htmlFor="eventName" className={styles.label}>Event Name:</label>
+                <input
+                  type="text"
+                  name="eventName"
+                  value={formData.eventName}
+                  onChange={handleInputChange}
+                  className={styles.input}
+                />
+              </div>
+              <div className={styles.formGroup} style={{ marginBottom: '20px', width:'80%' }}>
+                <label htmlFor="eventDescription" className={styles.label}>Event Description:</label>
+                <textarea
+                  type="text"
+                  name="eventDescription"
+                  value={formData.eventDescription}
+                  onChange={handleInputChange}
+                  className={styles.input}
+                  rows="4" 
+                  cols="50"
+                />
+              </div>
+              <div className="row rounded shadow-sm mb-5">
+                <div className={`col-md-6 ${styles.formGroup}`} style={{ marginBottom: '20px' }}>
+                  <label htmlFor="location" className={styles.label}>Location:</label>
+                  <select
+                    name="location"
+                    value={formData.location}
+                    onChange={handleInputChange}
+                    className={styles.input}
+                  >
+                    <option value="physical">Physical</option>
+                    <option value="virtual">Virtual</option>
+                  </select>
+                </div>
+                <div className={`col-md-6 ${styles.formGroup}`} style={{ marginBottom: '20px' }}>
+                  {formData.location === 'virtual' && (
+                    <div className="row">
+                      <div className="col-md-12">
+                        <label htmlFor="meetingLink" className={styles.label}>Meeting Link:</label>
+                        <input
+                          type="text"
+                          name="meetingLink"
+                          value={formData.meetingLink}
+                          onChange={handleInputChange}
+                          className={styles.input}
+                        />
+                      </div>
+                    </div>
+                  )}
+                  {formData.location === 'physical' && (
+                    <div className="row">
+                      <div className="col-md-6">
+                        <label htmlFor="country" className={styles.label}>Country:</label>
+                        <input
+                          type="text"
+                          name="country"
+                          value={formData.country}
+                          onChange={handleInputChange}
+                          className={styles.input}
+                        />
+                      </div>
+                      <div className="col-md-6">
+                        <label htmlFor="city" className={styles.label}>City:</label>
+                        <input
+                          type="text"
+                          name="city"
+                          value={formData.city}
+                          onChange={handleInputChange}
+                          className={styles.input}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="row rounded shadow-sm">
+                <div className={`${styles.formGroup} col-md-3`} style={{ marginBottom: '20px' }}>
+                  <label htmlFor="startDate" className={styles.label}>Start Date:</label>
+                  <input
+                    type="date"
+                    name="startDate"
+                    value={formData.startDate}
+                    onChange={handleInputChange}
+                    className={styles.input}
+                  />
+                </div>
+                <div className={`${styles.formGroup} col-md-3`} style={{ marginBottom: '20px' }}>
+                  <label htmlFor="endDate" className={styles.label}>End Date:</label>
+                  <input
+                    type="date"
+                    name="endDate"
+                    value={formData.endDate}
+                    onChange={handleInputChange}
+                    className={styles.input}
+                  />
+                </div>
+                <div className={`${styles.formGroup} col-md-3`} style={{ marginBottom: '20px' }}>
+                  <label htmlFor="startTime" className={styles.label}>Start Time:</label>
+                  <input
+                    type="time"
+                    name="startTime"
+                    value={formData.startTime}
+                    onChange={handleInputChange}
+                    className={styles.input}
+                  />
+                </div>
+                <div className={`${styles.formGroup} col-md-3`} style={{ marginBottom: '20px' }}>
+                  <label htmlFor="endTime" className={styles.label}>End Time:</label>
+                  <input
+                    type="time"
+                    name="endTime"
+                    value={formData.endTime}
+                    onChange={handleInputChange}
+                    className={styles.input}
+                  />
+                </div>
+              </div>
+              <div className="row mb-5 mt-5 rounded shadow-sm">
+                <h6>Event Charges</h6>
+                <p>Click to switch to paid ticket price</p>
+                <div className="col-md-6">
+                  <div className="form-check form-switch form-check-success">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="flexSwitchCheckSuccess"
+                      checked={formData.isFree}
+                      onChange={handleSwitchChange}
+                    />
+                    <label className="form-check-label" htmlFor="flexSwitchCheckSuccess">
+                      {formData.isFree ? 'Free Ticket' : 'Paid Ticket'}
+                    </label>
+                  </div>
+                </div>
+                {!formData.isFree && (
+                  <div className="col-md-3" style={{ marginBottom: '20px' }}>
+                    <label htmlFor="ticketPrice">Ticket Price:</label>
+                    <input
+                      type="text"
+                      name="ticketPrice"
+                      value={formData.ticketPrice}
+                      onChange={handleInputChange}
+                      className="form-control"
+                    />
+                  </div>
+                )}
+              </div>
+              <div className='d-grid p-2 justify-content-md-end'>
+                <button type="button" className='btn btn-outline-success btn-rounded' onClick={() => setShowPartTwo(true)}>Next</button>
+              </div>
+            </>
+          )}
+
+          {/* Part Two */}
+          {showPartTwo && (
+            <>
+              <div className="row rounded shadow-sm">
+                <h6>Personal Information</h6>
+                <div className={`${styles.formGroup} col-md-3`} style={{ marginBottom: '20px' }}>
+                  <label htmlFor="tittle" className={styles.label}>Tittle:</label>
+                  <select
+                    name="tittle"
+                    value={formData.tittle}
+                    onChange={handleInputChange}
+                    className={`${styles.select} form-control`}
+                  >
+                    <option value="Mr.">Mr.</option>
+                    <option value="Mrs.">Mrs.</option>
+                    <option value="Miss">Miss</option>
+                    <option value="Ms.">Ms.</option>
+                    <option value="Dr.">Dr.</option>
+                  </select>
+                </div>
+
+                <div className={`${styles.formGroup} col-md-3`} style={{ marginBottom: '20px' }}>
+                  <label htmlFor="firstName" className={styles.label}>First Name:</label>
+                  <input
+                    type="text"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
+                    className={`${styles.input} form-control`}
+                  />
+                </div>
+
+                <div className={`${styles.formGroup} col-md-3`} style={{ marginBottom: '20px' }}>
+                  <label htmlFor="middleName" className={styles.label}>Middle Name:</label>
+                  <input
+                    type="text"
+                    name="middleName"
+                    value={formData.middleName}
+                    onChange={handleInputChange}
+                    className={`${styles.input} form-control`}
+                  />
+                </div>
+
+                <div className={`${styles.formGroup} col-md-3`} style={{ marginBottom: '20px' }}>
+                  <label htmlFor="lastName" className={styles.label}>Last Name:</label>
+                  <input
+                    type="text"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
+                    className={`${styles.input} form-control`}
+                  />
+                </div>
+              </div>
+              <div className="row mt-5 rounded shadow-sm">
+                <h6 className="text-decoration-underline">Contact info</h6>
+                <div className={`${styles.formGroup} col-md-4`} style={{ marginBottom: '20px' }}>
+                  <label htmlFor="phoneNumber" className={styles.label}>Phone Number:</label>
+                  <input
+                    name="phoneNumber"
+                    value={formData.phoneNumber}
+                    onChange={handleInputChange}
+                    className={`${styles.input} form-control`}
+                    placeholder="Enter phone number"
+                  />
+                </div>
+                <div className={`${styles.formGroup} col-md-4`} style={{ marginBottom: '20px' }}>
+                  <label htmlFor="email" className={styles.label}>Email address:</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className={`${styles.input} form-control`}
+                  />
+                </div>
+                <div className={`${styles.formGroup} col-md-4`} style={{ marginBottom: '20px' }}>
+                  <label htmlFor="websiteLink" className={styles.label}>Website Link:</label>
+                  <input
+                    type="url"
+                    name="websiteLink"
+                    value={formData.websiteLink}
+                    onChange={handleInputChange}
+                    className={`${styles.input} form-control`}
+                  />
+                </div>
+              </div>
+              <div className="row mt-5 shadow-sm rounded">
+                <h6>Social media</h6>
+                <div className={`${styles.formGroup} col-md-4`} style={{ marginBottom: '20px' }}>
+                  <label htmlFor="facebookLink" className={styles.label}>Facebook Link:</label>
+                  <input
+                    type="url"
+                    name="facebookLink"
+                    value={formData.facebookLink}
+                    onChange={handleInputChange}
+                    className={`${styles.input} form-control`}
+                  />
+                </div>
+                <div className={`${styles.formGroup} col-md-4`} style={{ marginBottom: '20px' }}>
+                  <label htmlFor="instagramLink" className={styles.label}>Instagram Link:</label>
+                  <input
+                    type="url"
+                    name="instagramLink"
+                    value={formData.instagramLink}
+                    onChange={handleInputChange}
+                    className={`${styles.input} form-control`}
+                  />
+                </div>
+                <div className={`${styles.formGroup} col-md-4`} style={{ marginBottom: '20px' }}>
+                  <label htmlFor="twitterLink" className={styles.label}>Twitter Link:</label>
+                  <input
+                    type="url"
+                    name="twitterLink"
+                    value={formData.twitterLink}
+                    onChange={handleInputChange}
+                    className={`${styles.input} form-control`}
+                  />
+                </div>
+              </div>
+              <div className='d-grid p-2'>
+                <button type="submit" className='btn btn-outline-success btn-lg'>Save</button>
+              </div>
+            </>
+          )}
         </form>
-        </div>
-        </div>
-      </main>
+      </div>
+    </div>
     </div>
   );
   

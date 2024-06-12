@@ -16,7 +16,6 @@
   max-width: 100%;
   width: 100%;
   padding: 20px;
-  margin: 10px 10px 10px;
 }
 
 
@@ -113,7 +112,6 @@
   .grid {
     grid-template-columns: 1fr;
     margin-bottom: 120px;
-    max-width: 320px;
     text-align: center;
   }
 
@@ -227,4 +225,24 @@
   max-height: 50px; /* Ensure the image doesn't exceed the height of its container */
   margin-right: 0.5rem; /* Example margin between image and text */
   border-radius: 100%;
+}
+
+.input:focus {
+  border: 2px solid #007bff; /* Change border color on focus */
+  box-shadow: 0 0 5px #007bff; /* Add blue glow effect */
+  outline: none; /* Remove default focus outline */
+}
+.input {
+  width: 100%;
+  max-width: auto;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  height: auto; /* Ensures input fields expand vertically */
+}
+
+.formGroup {
+  margin-bottom: 20px;
 }

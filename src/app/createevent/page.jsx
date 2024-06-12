@@ -7,7 +7,7 @@ import styles from "./page.module.css";
 import PhoneInput from 'react-phone-number-input/input';
 import Image from "next/image";
 
-const createevent = () => {
+const Createevent = () => {
   const [eventName, setEventName] = useState("");
   const [eventDescription, setEventDescription] = useState("");
   const [location, setLocation] = useState('physical');
@@ -455,4 +455,4 @@ const createevent = () => {
   );
 };
 
-export default createevent;
+export default Createevent;

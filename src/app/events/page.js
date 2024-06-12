@@ -116,15 +116,14 @@ export default function Events() {
           </div>
         </div>
       </nav>
-      <main>
         <h1 className="text-center">Events</h1>
         {/* Search Bar */}
         <div className="container mt-5">
           {/* <!-- Search and City Selection --> */}
           <div className="row justify-content-center mb-4">
-            <div className="col-12 col-md-8 d-flex">
-              <input type="text" className="form-control mr-2 mb-2" placeholder="Search..." />
-              <select className="form-control mb-2" onChange={handleCountryChange}>
+            <div className="col-12 col-md-8 d-flex flex-row ">
+              <input type="text" className={`form-control`} style={{ marginBottom: '20px', maxWidth:'200px' }} placeholder="Search..." />
+              <select className={`form-control`} style={{ marginBottom: '20px', maxWidth:'200px' }} onChange={handleCountryChange}>
                 <option value="">Select Country</option>
                 {countries.map((country, index) => (
                   <option key={index} value={country}>{country}</option>
@@ -135,22 +134,16 @@ export default function Events() {
 
           {/* <!-- Explore Categories --> */}
           <div className="row">
-            <div className="col-12 col-md-8">
+            <div className="col-md-8 col-ml mb-4">
               <h4>Explore Categories</h4>
-              <div className="d-flex justify-content-between">
-                <select className=" mr-2 mb-2 ml-2">
+              <div className="d-flex justify-content-start mt-5">
+                <select className={`form-control`} style={{ marginBottom: '20px', maxWidth:'200px' }}>
                   <option value="last30days">Last 30 Days</option>
                   <option value="last7days">Last 7 Days</option>
                   <option value="alltime">All Time</option>
                   <option value="last3days">Last 3 Days</option>
                 </select>
-                <select className="mr-2 mb-2 ml-2" onChange={handleCountryChange}>
-                  <option value="">Select Country</option>
-                  {countries.map((country, index) => (
-                    <option key={index} value={country}>{country}</option>
-                  ))}
-                </select>
-                <select className="mb-2 ml-2">
+                <select className={`form-control`} style={{ marginBottom: '20px', maxWidth:'200px' }}>
                   <option value="ai">AI</option>
                   <option value="filming">Filming</option>
                   <option value="technology">Technology</option>
@@ -164,7 +157,7 @@ export default function Events() {
           </div>
         </div>
 
-        <div className="row mt-6 rounded">
+        <div className="row mt-6 rounded bg-white">
           <h2>Available events</h2>
         
           <div className={styles.grid}>
@@ -201,7 +194,7 @@ export default function Events() {
             <button className="btn btn-outline-success btn-lg" onClick={loadMoreEvents} type="button">See More</button>
           </div>
         )}
-      </main>
+      
     </div>
   );
 };
