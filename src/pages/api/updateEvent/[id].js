@@ -24,7 +24,7 @@ export default async function handler(req, res) {
     endTime,
     meetingLink,
     email,
-    tittle, // Ensure correct spelling
+    tittle,
     firstName,
     middleName,
     lastName,
@@ -35,7 +35,6 @@ export default async function handler(req, res) {
     instagramLink,
     twitterLink
   } = req.body;
-
 
   try {
     const updatedEvent = await prisma.storeEvent.update({
@@ -57,7 +56,7 @@ export default async function handler(req, res) {
         middleName,
         lastName,
         phoneNumber,
-        ticketPrice,
+        ticketPrice: ticketPrice === 'free' ? 'free' : ticketPrice, // Update ticketPrice appropriately
         websiteLink,
         facebookLink,
         instagramLink,
@@ -71,3 +70,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ message: 'Internal Server Error' });
   }
 }
+

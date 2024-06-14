@@ -52,8 +52,8 @@ export default function EditEventPage() {
               endDate: new Date(data.endDate).toISOString().split('T')[0],
               startTime: data.startTime,
               endTime: data.endTime,
-              isFree: data.isFree,
-              ticketPrice: data.ticketPrice,
+              isFree: data.ticketPrice === 'free',
+              ticketPrice: data.ticketPrice || 'free', // Set ticket price or 'free' for free events
               location: data.location || 'physical',
               meetingLink: data.meetingLink || '',
               country: data.country || '',
@@ -89,29 +89,34 @@ export default function EditEventPage() {
   };
 
   const [showPartTwo, setShowPartTwo] = useState(false);
-  
 
   const handleSwitchChange = () => {
     setFormData((prevState) => ({
       ...prevState,
       isFree: !prevState.isFree,
+      ticketPrice: prevState.isFree ? '' : 'free', // Toggle between '' and 'free'
     }));
   };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    const updatedData = {
+      ...formData,
+      ticketPrice: formData.isFree ? 'free' : formData.ticketPrice,
+    };
+
     try {
       const response = await fetch(`/api/updateEvent/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(updatedData),
       });
-  
+
       if (response.ok) {
-        toast.success("Event updated successfully", { 
-          duration: 4000, 
+        toast.success("Event updated successfully", {
+          duration: 4000,
           position: 'top-right',
           style: {
             background: '#4caf50',
@@ -135,9 +140,6 @@ export default function EditEventPage() {
     return <p>Loading...</p>;
   }
 
-  if (!event) {
-    return <p>Event not found</p>;
-  }
   return (
     <div className="container">
     <nav className="navbar navbar-expand-lg navbar-light bg-white color-white">
@@ -298,36 +300,36 @@ export default function EditEventPage() {
                   />
                 </div>
               </div>
-              <div className="row mb-5 mt-5 rounded shadow-sm">
-                <h6>Event Charges</h6>
-                <p>Click to switch to paid ticket price</p>
-                <div className="col-md-6">
-                  <div className="form-check form-switch form-check-success">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="flexSwitchCheckSuccess"
-                      checked={formData.isFree}
-                      onChange={handleSwitchChange}
-                    />
-                    <label className="form-check-label" htmlFor="flexSwitchCheckSuccess">
-                      {formData.isFree ? 'Free Ticket' : 'Paid Ticket'}
-                    </label>
+              <div className="col mb-5 mt-5 rounded shadow-sm">
+                  <h6>Event Charges</h6>
+                  <p>Click to switch to paid ticket price</p>
+                  <div className="col-md-6">
+                    <div className="form-check form-switch form-check-success">
+                      <input
+                        className="form-check-input form-check-success"
+                        type="checkbox"
+                        id="flexSwitchCheckSuccess"
+                        checked={formData.isFree}
+                        onChange={handleSwitchChange}
+                      />
+                      <label className="form-check-label" htmlFor="flexSwitchCheckSuccess">
+                        {formData.isFree ? 'Free Ticket' : 'Paid Ticket'}
+                      </label>
+                    </div>
                   </div>
+                  {!formData.isFree && (
+                    <div className="col-md-3 mt-3" style={{ marginBottom: '20px' }}>
+                      <label htmlFor="ticketPrice">Ticket Price:</label>
+                      <input
+                        type="text"
+                        name="ticketPrice"
+                        value={formData.ticketPrice}
+                        onChange={handleInputChange}
+                        className="form-control"
+                      />
+                    </div>
+                  )}
                 </div>
-                {!formData.isFree && (
-                  <div className="col-md-3" style={{ marginBottom: '20px' }}>
-                    <label htmlFor="ticketPrice">Ticket Price:</label>
-                    <input
-                      type="text"
-                      name="ticketPrice"
-                      value={formData.ticketPrice}
-                      onChange={handleInputChange}
-                      className="form-control"
-                    />
-                  </div>
-                )}
-              </div>
               <div className='d-grid p-2 justify-content-md-end'>
                 <button type="button" className='btn btn-outline-success btn-rounded' onClick={() => setShowPartTwo(true)}>Next</button>
               </div>
