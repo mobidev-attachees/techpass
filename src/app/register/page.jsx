@@ -75,7 +75,7 @@ const Register = () => {
     <div className="container">
         <div className="main-container form" style={{ maxWidth: '1400px', padding: '20px', backgroundColor: '#fff', borderRadius: '8px'}}>
           <div className="form-wrapper" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.9)', cursor:'pointer', marginTop:'20px'}}>
-            <h1 className={styles.heading}>Register</h1>
+            <h5 className="">Register</h5>
             {error && <p className={styles.error}>{error}</p>}
             <form onSubmit={handleRegister} className={styles.form} style={{ width: 'auto' }}>
               <div className={styles.formGroup} style={{ marginBottom: '20px' }}>
