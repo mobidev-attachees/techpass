@@ -63,12 +63,26 @@ const previewevent = () => {
       
       <div className="row justify-content-center align-items-center vh-100">
         <div className="col-10">
-          <div className="card">
+          <div className="container mt-3">
             <div className="card-body">
               {/* Banner Image */}
-              <div className="banner-container text-center mb-4">
-                <img src="175.jpg" alt="Banner" className="banner-image" style={{ borderRadius: '10px' }} />
+              <div className="banner-container text-center mb-4" style={{ maxWidth: '100%', maxHeight: '30%' }}>
+                <img 
+                  src="175.jpg" 
+                  alt="Banner" 
+                  className="banner-image" 
+                  style={{ 
+                    borderRadius: '10px', 
+                    maxWidth: '100%', // Set this to your desired maximum width
+                    width: '100%',   // Ensures the image is responsive
+                    height: '300px', 
+                    display: 'block', 
+                    margin: '0 auto' 
+                  }} 
+                />
               </div>
+
+
 
               {/* Event Details */}
               <div className="row mb-4">
