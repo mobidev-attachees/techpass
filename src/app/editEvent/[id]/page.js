@@ -157,7 +157,7 @@ export default function EditEventPage() {
                 <a className="nav-link" href="/createevent">Create Event</a>
               </li>
               <li className="nav-item">
-                <a className="nav-link link" href="#">All Events</a>
+                <a className="nav-link link" href="/events">All Events</a>
               </li>
               <li className="nav-item dropdown">
                 <a className="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -165,7 +165,7 @@ export default function EditEventPage() {
                 </a>
                 <ul className="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
                   <li><a className="dropdown-item" href="/dashboard">Dashboard</a></li>
-                  <li><a className="dropdown-item" href="#">Profile</a></li>
+                  <li><a className="dropdown-item" href="/profile">Profile</a></li>
                   <li></li>
                   <li><a className="dropdown-item" href="/login">Logout</a></li>
                 </ul>
@@ -175,7 +175,7 @@ export default function EditEventPage() {
           </div>
         </div>
       </nav>
-      <h1>Edit Event</h1>
+      <h3 className="text-center mt-3">Edit Event</h3>
       <div className="row justify-content-center p-4">
       <div className="col-lg-10 bg-white p-4 rounded shadow-lg">
         <form onSubmit={handleFormSubmit} className='row mt-4'>

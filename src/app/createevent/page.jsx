@@ -136,7 +136,7 @@ const Createevent = () => {
           </div>
         </div>
       </nav>
-      <h2 className="text-center mt-3">Create Event</h2>
+      <h3 className="text-center mt-3">Create Event</h3>
       <main className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
       
       <div className="container mt-3">
@@ -368,7 +368,7 @@ const Createevent = () => {
               </div>
 
               <div className="row mt-5 rounded shadow-sm">
-              <h6 className="text-decoration-underline"> Contact info</h6>
+              <h6 className=""> Contact info</h6>
                 <div className={`${styles.formGroup} col-md-4`} style={{ marginBottom: '20px' }}>
                     <label htmlFor="phoneNumber" className={styles.label}>Phone Number:</label>
                     <PhoneInput
@@ -438,7 +438,7 @@ const Createevent = () => {
                 </div>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
+              <div style={{ display: 'flex', flexWrap:'wrap', justifyContent: 'space-between', marginTop: '20px' }}>
                 <button type="button" onClick={handleBack} className="btn btn-secondary">Back</button>
                 <button type="submit" className="btn btn-secondary">
                   <Link href="/previewevent">Preview</Link>

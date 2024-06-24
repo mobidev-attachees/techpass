@@ -67,7 +67,7 @@ const previewevent = () => {
             <div className="card-body">
               {/* Banner Image */}
               <div className="banner-container text-center mb-4">
-                <img src="175.jpg" alt="Banner" className="banner-image" height="200px" width="600px" style={{ borderRadius: '10px' }} />
+                <img src="175.jpg" alt="Banner" className="banner-image" style={{ borderRadius: '10px' }} />
               </div>
 
               {/* Event Details */}
