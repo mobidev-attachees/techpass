@@ -109,7 +109,7 @@ const previewevent = () => {
               <div className="mb-4">
                 <h3>Location</h3>
                 <p>Location:</p>
-                <img src="map.jpg" alt="Map" className="img-fluid rounded" style={{ maxWidth: '50%', height: 'auto' }} />
+                <img src="/map.jpg" alt="Map" className="img-fluid rounded" style={{ maxWidth: '50%', height: 'auto' }} />
               </div>
 
               {/* Organizer Details */}
@@ -138,7 +138,7 @@ const previewevent = () => {
               <hr />
 
               {/* Buttons */}
-              <div className="d-flex justify-content-center">
+              <div className="d-flex justify-content-around mb-3 flex-wrap">
                 <button type="button" className="btn btn-secondary mr-2">
                   <Link href="/createevent">Edit</Link>
                 </button>
