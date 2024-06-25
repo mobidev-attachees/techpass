@@ -107,8 +107,8 @@ export default function Home() {
               <li className="nav-item">
                 <a className="nav-link active" aria-current="page" href="/">Home</a>
               </li>
-              <li className="nav-item">
-              <button type="button" data-mdb-button-init="" data-mdb-ripple-init="" class="btn btn-outline-secondary btn-rounded  ripple-surface-dark  m-0 border-0 btn-sm" data-mdb-ripple-color="dark" data-mdb-button-initialized="true" aria-pressed="false">
+              <li className="nav-item text-capitalize">
+              <button type="button" data-mdb-button-init="" data-mdb-ripple-init="" class="btn btn-outline-success btn-rounded  ripple-surface-dark  m-0 border-0 btn-sm" data-mdb-ripple-color="white" data-mdb-button-initialized="true" aria-pressed="false">
               <a className="nav-link link" href="/login">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
                 <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
@@ -117,10 +117,10 @@ export default function Home() {
                 </a></button>
               
               </li>
-              <li className="nav-item">
-              <button type="button" data-mdb-button-init="" data-mdb-ripple-init="" class="btn btn-outline-secondary btn-rounded  ripple-surface-dark  m-0 border-0 btn-sm" data-mdb-ripple-color="dark" data-mdb-button-initialized="true" aria-pressed="false"><a className="nav-link" href="/register"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-plus" viewBox="0 0 16 16">
+              <li className="nav-item text-capitalize">
+              <button type="button" data-mdb-button-init="" data-mdb-ripple-init="" class="btn btn-outline-success btn-rounded  ripple-surface-dark  m-0 border-0 btn-sm" data-mdb-ripple-color="dark" data-mdb-button-initialized="true" aria-pressed="false"><a className="nav-link" href="/register"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-plus" viewBox="0 0 16 16">
                 <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
-                <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5"/></svg> Sing up</a></button>
+                <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5"/></svg> Sign up</a></button>
               </li>
             </ul>
             
