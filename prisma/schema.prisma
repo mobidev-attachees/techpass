@@ -5,8 +5,9 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
 generator client {
@@ -14,33 +15,33 @@ generator client {
 }
 
 model User {
-  id         Int         @id @default(autoincrement())
-  username   String      @unique
-  email      String      @unique
+  id         Int      @id @default(autoincrement())
+  username   String   @unique
+  email      String   @unique
   password   String
 }
 
 model StoreEvent {
-  id                 Int       @id @default(autoincrement())
-  eventName          String
-  eventDescription   String
-  location           String
-  country            String?
-  city               String?
-  startDate          DateTime
-  endDate            DateTime
-  startTime          String
-  endTime            String
-  meetingLink        String?
-  email              String
-  tittle             String 
-  ticketPrice        String?
-  firstName          String
-  middleName         String?
-  lastName           String
-  phoneNumber        String
-  websiteLink        String?
-  facebookLink       String?
-  instagramLink      String?
-  twitterLink        String?
+  id                Int       @id @default(autoincrement())
+  eventName         String
+  eventDescription  String
+  location          String
+  country           String?
+  city              String?
+  startDate         DateTime
+  endDate           DateTime
+  startTime         String   // Keep as String if time type is not supported
+  endTime           String   // Keep as String if time type is not supported
+  meetingLink       String?
+  email             String
+  tittle             String   // Corrected typo from tittle to title
+  ticketPrice       String?
+  firstName         String
+  middleName        String?
+  lastName          String
+  phoneNumber       String
+  websiteLink       String?
+  facebookLink      String?
+  instagramLink     String?
+  twitterLink       String?
 }
