@@ -37,6 +37,7 @@ model StoreEvent {
   facebookLink      String?
   instagramLink     String?
   twitterLink       String?
+  imageUrl       String? 
 }
 model User {
   id         Int      @id @default(autoincrement())

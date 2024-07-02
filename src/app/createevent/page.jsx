@@ -19,7 +19,7 @@ const Createevent = () => {
   const [endTime, setEndTime] = useState("");
   const [meetingLink, setMeetingLink] = useState("");
   const [email, setEmail] = useState("");
-  const [tittle, setTittle] = useState('Mr.'); 
+  const [title, setTitle] = useState('Mr.'); 
   const [firstName, setFirstName] = useState("");
   const [middleName, setMiddleName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -32,6 +32,7 @@ const Createevent = () => {
   const [step, setStep] = useState(1);
   const [error, setError] = useState("");
   const [isFree, setIsFree] = useState(true);
+  const [image, setImage] = useState(null); // New state for the image file
   const router = useRouter();
 
   const countries = ['USA', 'Canada', 'UK'];
@@ -51,14 +52,15 @@ const Createevent = () => {
   const handleCityChange = (e) => {
     setCity(e.target.value);
   };
+
   const handleNext = (e) => {
     e.preventDefault();
     setStep(2);
   };
+
   const handleBack = () => {
     setStep(1); // Set step back to 1 to go to the previous step
   };
-  
 
   const handleSwitchChange = () => {
     setIsFree(!isFree);
@@ -68,25 +70,49 @@ const Createevent = () => {
     }
   };
 
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+
   const handleCreateEvent = async (e) => {
     e.preventDefault();
     setError(""); // Reset error message
 
     if (!eventName || !eventDescription || !email || !firstName || !lastName || !phoneNumber || !startDate || !endDate || !startTime || !endTime) {
-      return res.status(400).json({ message: 'All required fields must be filled' });
+      setError('All required fields must be filled');
+      return;
     }
 
     try {
+      const formData = new FormData();
+      formData.append("eventName", eventName);
+      formData.append("eventDescription", eventDescription);
+      formData.append("title", title);
+      formData.append("location", location);
+      formData.append("country", country);
+      formData.append("city", city);
+      formData.append("startTime", startTime);
+      formData.append("endTime", endTime);
+      formData.append("startDate", startDate);
+      formData.append("endDate", endDate);
+      formData.append("meetingLink", meetingLink);
+      formData.append("email", email);
+      formData.append("ticketPrice", ticketPrice);
+      formData.append("firstName", firstName);
+      formData.append("middleName", middleName);
+      formData.append("lastName", lastName);
+      formData.append("phoneNumber", phoneNumber);
+      formData.append("instagramLink", instagramLink);
+      formData.append("twitterLink", twitterLink);
+      formData.append("websiteLink", websiteLink);
+      formData.append("facebookLink", facebookLink);
+      if (image) {
+        formData.append("image", image);
+      }
+
       const response = await fetch("/api/createEvent", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          eventName, eventDescription, tittle, location, country, city, startTime, endTime,
-          startDate, endDate, meetingLink, email, ticketPrice, firstName,
-          middleName, lastName, phoneNumber,instagramLink, twitterLink, websiteLink, facebookLink
-        }),
+        body: formData,
       });
 
       if (response.ok) {
@@ -170,6 +196,10 @@ const Createevent = () => {
                       rows="4" 
                       cols="50"
                     />
+                  </div>
+                  <div>
+                    <label htmlFor="image">Event Image</label>
+                    <input type="file" id="image" name="image" accept="image/*" onChange={handleImageChange} />
                   </div>
                   <div className="row rounded  shadow-sm mb-5">
                     <div className={`col-md-${location === 'virtual' ? 6 : 4} ${styles.formGroup}`} style={{ marginBottom: '20px' }}>
@@ -320,9 +350,9 @@ const Createevent = () => {
                 <div className={`${styles.formGroup} col-md-3`} style={{ marginBottom: '20px' }}>
                   <label htmlFor="tittle" className={styles.label}>Tittle:</label>
                   <select
-                    name="tittle"
-                    value={tittle}
-                    onChange={(e) => setTittle(e.target.value)}
+                    name="title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
                     className={`${styles.select} form-control`}
                   >
                     <option value="Mr.">Mr.</option>
