@@ -2,7 +2,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from 'next/link';
-import { useRouter } from "next/navigation"; // Correct import statement
+import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
 import PhoneInput from 'react-phone-number-input/input';
 import Image from "next/image";
@@ -19,7 +19,7 @@ const Createevent = () => {
   const [endTime, setEndTime] = useState("");
   const [meetingLink, setMeetingLink] = useState("");
   const [email, setEmail] = useState("");
-  const [title, setTitle] = useState('Mr.'); 
+  const [tittle, setTittle] = useState('Mr.');
   const [firstName, setFirstName] = useState("");
   const [middleName, setMiddleName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -32,7 +32,7 @@ const Createevent = () => {
   const [step, setStep] = useState(1);
   const [error, setError] = useState("");
   const [isFree, setIsFree] = useState(true);
-  const [image, setImage] = useState(null); // New state for the image file
+  const [image, setImage] = useState(null);
   const router = useRouter();
 
   const countries = ['USA', 'Canada', 'UK'];
@@ -45,7 +45,6 @@ const Createevent = () => {
   const handleCountryChange = (e) => {
     const selectedCountry = e.target.value;
     setCountry(selectedCountry);
-    // Reset city when country changes
     setCity('');
   };
 
@@ -59,12 +58,11 @@ const Createevent = () => {
   };
 
   const handleBack = () => {
-    setStep(1); // Set step back to 1 to go to the previous step
+    setStep(1);
   };
 
   const handleSwitchChange = () => {
     setIsFree(!isFree);
-    // Reset ticket price when switching to free
     if (!isFree) {
       setTicketPrice('');
     }
@@ -76,7 +74,7 @@ const Createevent = () => {
 
   const handleCreateEvent = async (e) => {
     e.preventDefault();
-    setError(""); // Reset error message
+    setError("");
 
     if (!eventName || !eventDescription || !email || !firstName || !lastName || !phoneNumber || !startDate || !endDate || !startTime || !endTime) {
       setError('All required fields must be filled');
@@ -84,17 +82,20 @@ const Createevent = () => {
     }
 
     try {
+      const formattedStartDate = new Date(startDate).toISOString();  // Ensure startDate is in ISO-8601 format
+      const formattedEndDate = new Date(endDate).toISOString();   
+
       const formData = new FormData();
       formData.append("eventName", eventName);
       formData.append("eventDescription", eventDescription);
-      formData.append("title", title);
+      formData.append("tittle", tittle);
       formData.append("location", location);
       formData.append("country", country);
       formData.append("city", city);
+      formData.append("startDate", formattedStartDate);  // Use formatted ISO-8601 date
+      formData.append("endDate", formattedEndDate);      // Use formatted ISO-8601 date
       formData.append("startTime", startTime);
       formData.append("endTime", endTime);
-      formData.append("startDate", startDate);
-      formData.append("endDate", endDate);
       formData.append("meetingLink", meetingLink);
       formData.append("email", email);
       formData.append("ticketPrice", ticketPrice);
@@ -262,26 +263,27 @@ const Createevent = () => {
                   </div>
 
                   <div className="row rounded shadow-sm">
-                    <div className={`${styles.formGroup} col-md-3`} style={{ marginBottom: '20px' }}>
-                      <label htmlFor="startDate" className={styles.label}>Start Date:</label>
-                      <input
-                        type="date"
-                        name="startDate"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        className={styles.input}
-                      />
-                    </div>
-                    <div className={`${styles.formGroup} col-md-3`} style={{ marginBottom: '20px' }}>
-                      <label htmlFor="endDate" className={styles.label}>End Date:</label>
-                      <input
-                        type="date"
-                        name="endDate"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        className={styles.input}
-                      />
-                    </div>
+                      <div className={`${styles.formGroup} col-md-3`} style={{ marginBottom: '20px' }}>
+                        <label htmlFor="startDate" className={styles.label}>Start Date:</label>
+                        <input
+                          type="date"
+                          name="startDate"
+                          value={startDate}
+                          onChange={(e) => setStartDate(e.target.value)}
+                          className={styles.input}
+                        />
+                      </div>
+                      <div className={`${styles.formGroup} col-md-3`} style={{ marginBottom: '20px' }}>
+                        <label htmlFor="endDate" className={styles.label}>End Date:</label>
+                        <input
+                          type="date"
+                          name="endDate"
+                          value={endDate}
+                          onChange={(e) => setEndDate(e.target.value)}
+                          className={styles.input}
+                        />
+                      </div>
+
                     <div className={`${styles.formGroup} col-md-3`} style={{ marginBottom: '20px' }}>
                       <label htmlFor="startTime" className={styles.label}>Start Time:</label>
                       <input
@@ -351,8 +353,8 @@ const Createevent = () => {
                   <label htmlFor="tittle" className={styles.label}>Tittle:</label>
                   <select
                     name="title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
+                    value={tittle}
+                    onChange={(e) => setTittle(e.target.value)}
                     className={`${styles.select} form-control`}
                   >
                     <option value="Mr.">Mr.</option>

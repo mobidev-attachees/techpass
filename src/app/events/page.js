@@ -189,7 +189,7 @@ export default function Events() {
             {events.map(event => (
               <Link href={`/event/${event.id}`} key={event.id}>
                 <div className={styles.card}>
-                  <img src="/223.jpg" className={`card-img-top rounded ${styles.cardImage}`} alt="..." />
+                <img src={event.imageUrl || '/default-image.jpg'} className={`card-img-top rounded ${styles.cardImage}`} alt="Event Image" />
                   <div className={styles.cardBody}>
                     <div className={styles.cardContent}>
                       <div className={styles.cardColumnSmall}>

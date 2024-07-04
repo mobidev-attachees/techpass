@@ -3,6 +3,7 @@ import path from "path";
 import fs from "fs/promises";
 import { PrismaClient } from "@prisma/client";
 
+
 const prisma = new PrismaClient();
 
 export const config = {
@@ -24,9 +25,12 @@ const handler = async (req, res) => {
     const form = formidable({
       uploadDir,
       keepExtensions: true,
-      maxFileSize: 5 * 1024 * 1024, // 5 MB
+      maxFileSize: 1000 * 1024 * 1024, // 1 GB
       filename: (name, ext, part, form) => {
-        return `${Date.now()}-${part.originalFilename}`;
+        const timestamp = Date.now();
+        const originalFilename = part.originalFilename;
+        const sanitizedFilename = originalFilename.replace(/\s+/g, '-'); // Replace spaces with dashes
+        return `${timestamp}-${sanitizedFilename}`;
       },
     });
 
@@ -39,7 +43,7 @@ const handler = async (req, res) => {
       const {
         eventName,
         eventDescription,
-        title,
+        tittle,
         location,
         country,
         city,
@@ -59,22 +63,27 @@ const handler = async (req, res) => {
         websiteLink,
         facebookLink,
       } = fields;
-
-      const imageUrl = files.image ? `/uploads/${files.image.newFilename}` : null;
+     // Validate and parse dates
+     const parseDate = (dateString) => {
+      const date = new Date(dateString);
+      return isNaN(date.getTime()) ? null : date.toISOString();
+    };
+      const imageUrl = files.image ? `/uploads/${files.image.name}` : null; // Use `files.image.name` for the URL
+      
 
       try {
-        const event = await prisma.event.create({
+        const event = await prisma.storeEvent.create({
           data: {
             eventName: eventName?.[0] || null,
             eventDescription: eventDescription?.[0] || null,
-            title: title?.[0] || null,
+            tittle: tittle?.[0] || null,
             location: location?.[0] || null,
             country: country?.[0] || null,
             city: city?.[0] || null,
-            startTime: startTime?.[0] || null,
-            endTime: endTime?.[0] || null,
-            startDate: startDate?.[0] || null,
-            endDate: endDate?.[0] || null,
+            startTime: startTime?.[0],
+            endTime: endTime?.[0],
+            startDate: parseDate(startDate?.[0]),
+            endDate: parseDate(endDate?.[0]),
             meetingLink: meetingLink?.[0] || null,
             email: email?.[0] || null,
             ticketPrice: ticketPrice?.[0] || null,
@@ -89,6 +98,7 @@ const handler = async (req, res) => {
             imageUrl,
           },
         });
+
         return res.status(201).json(event);
       } catch (error) {
         console.error("Database error:", error);
