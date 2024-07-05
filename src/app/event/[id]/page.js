@@ -97,7 +97,17 @@ export default async function EventPage({ params }) {
       <div className="container">
             <div className="row justify-content-center align-items-center vh-100 ">
               <div className="col-lg-10 mb-3 mt-4 shadow-lg p-3">                    
-                    <div className=" p-1 py-5 mb-0 d-flex justify-content-start align-items-end rounded" style={{ backgroundImage: "url('/175.jpg')", backgroundPosition: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: 'auto', minHeight: '300px' }}>
+              <div 
+                className="p-1 py-5 mb-0 d-flex justify-content-start align-items-end rounded" 
+                style={{ 
+                  backgroundImage: `url('${event.imageUrl ? event.imageUrl : '/uploads/default-image.jpg'}')`, 
+                  backgroundPosition: 'center', 
+                  backgroundSize: 'cover', 
+                  backgroundRepeat: 'no-repeat', 
+                  height: 'auto', 
+                  minHeight: '300px' 
+                }}
+              >
                 </div>
                 <h3 className="text-capitalize">{event.eventName}</h3>
                 <div className="row mb-4 mt-4 rounded">
@@ -153,10 +163,17 @@ export default async function EventPage({ params }) {
                     </div>
                     <div className="mb-2 d-flex justify-content-around">
                       <a href={`tel:${event.phoneNumber}`} className="btn btn-outline-info px-5 radius-30 mr-2">Contact</a>
-                      <button type="button" data-mdb-button-init="" data-mdb-ripple-init="" className="btn btn-outline-success btn-rounded ripple-surface-dark" data-mdb-ripple-color="dark" data-mdb-button-initialized="true" aria-pressed="false">+
-                        Follow
-                      </button>
+                      <a 
+                        href={event.twitterLink} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="btn btn-outline-success btn-rounded ripple-surface-dark"
+                        data-mdb-ripple-color="dark"
+                      >
+                        + Follow
+                      </a>
                     </div>
+
 
                   </div>
                 </div>

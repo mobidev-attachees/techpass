@@ -3,7 +3,6 @@ import path from "path";
 import fs from "fs/promises";
 import { PrismaClient } from "@prisma/client";
 
-
 const prisma = new PrismaClient();
 
 export const config = {
@@ -63,13 +62,13 @@ const handler = async (req, res) => {
         websiteLink,
         facebookLink,
       } = fields;
-     // Validate and parse dates
-     const parseDate = (dateString) => {
-      const date = new Date(dateString);
-      return isNaN(date.getTime()) ? null : date.toISOString();
-    };
-      const imageUrl = files.image ? `/uploads/${files.image.name}` : null; // Use `files.image.name` for the URL
-      
+
+      const parseDate = (dateString) => {
+        const date = new Date(dateString);
+        return isNaN(date.getTime()) ? null : date.toISOString();
+      };
+
+      const imageUrl = files.image ? `/uploads/${path.basename(files.image[0].filepath)}` : null;
 
       try {
         const event = await prisma.storeEvent.create({

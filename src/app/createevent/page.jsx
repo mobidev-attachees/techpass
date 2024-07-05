@@ -7,7 +7,7 @@ import styles from "./page.module.css";
 import PhoneInput from 'react-phone-number-input/input';
 import Image from "next/image";
 
-const Createevent = () => {
+const createevent = () => {
   const [eventName, setEventName] = useState("");
   const [eventDescription, setEventDescription] = useState("");
   const [location, setLocation] = useState('physical');
@@ -68,8 +68,18 @@ const Createevent = () => {
     }
   };
 
-  const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setSelectedImage(imageUrl);
+      setImage(file);
+    } else {
+      setSelectedImage(null);
+      setImage(null);
+    }
   };
 
   const handleCreateEvent = async (e) => {
@@ -127,7 +137,6 @@ const Createevent = () => {
       setError("An error occurred during event creation");
     }
   };
-
   return (
     <div className="container">
       <nav className="navbar navbar-expand-lg navbar-light bg-white color-white">
@@ -198,9 +207,28 @@ const Createevent = () => {
                       cols="50"
                     />
                   </div>
-                  <div>
-                    <label htmlFor="image">Event Image</label>
-                    <input type="file" id="image" name="image" accept="image/*" onChange={handleImageChange} />
+                  <div className="row mt-3 mb-3 shadow-sm rounded">
+                  <div className="form-group col-md-6">
+                      <label htmlFor="image" className="form-label">Event Image</label>
+                      <input 
+                        className="form-control" 
+                        name="image" 
+                        type="file" 
+                        id="image" 
+                        accept="image/*"
+                        onChange={handleImageChange} 
+                      />
+                    </div>
+
+                    <div className="col-md-6">
+                      <img 
+                        id="showImage" 
+                        src={selectedImage || '/uploads/default-image.jpg'}
+                        alt="Event"
+                        className="p-1 rounded-circle bg-primary"
+                        width="80"
+                      />
+                    </div>
                   </div>
                   <div className="row rounded  shadow-sm mb-5">
                     <div className={`col-md-${location === 'virtual' ? 6 : 4} ${styles.formGroup}`} style={{ marginBottom: '20px' }}>
@@ -487,4 +515,4 @@ const Createevent = () => {
   );
 };
 
-export default Createevent;
+export default createevent;
