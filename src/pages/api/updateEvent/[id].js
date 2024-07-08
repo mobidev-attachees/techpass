@@ -41,6 +41,15 @@ const handler = async (req, res) => {
 
       const eventId = req.query.id;
 
+      // Fetch existing event data
+      const existingEvent = await prisma.storeEvent.findUnique({
+        where: { id: parseInt(eventId) },
+      });
+
+      if (!existingEvent) {
+        return res.status(404).json({ message: 'Event not found' });
+      }
+
       const {
         eventName,
         eventDescription,
@@ -70,7 +79,18 @@ const handler = async (req, res) => {
         return isNaN(date.getTime()) ? null : date.toISOString();
       };
 
-      const imageUrl = files.image ? `/uploads/${path.basename(files.image[0].filepath)}` : null;
+      const newImageUrl = files.image ? `/uploads/${path.basename(files.image[0].filepath)}` : null;
+
+      // Delete the old image if a new image is uploaded
+      if (newImageUrl && existingEvent.imageUrl) {
+        const oldImagePath = path.join(process.cwd(), 'public', existingEvent.imageUrl);
+        try {
+          await fs.unlink(oldImagePath);
+          console.log(`Deleted old image: ${oldImagePath}`);
+        } catch (error) {
+          console.error(`Error deleting old image: ${oldImagePath}`, error);
+        }
+      }
 
       try {
         const updatedEvent = await prisma.storeEvent.update({
@@ -97,7 +117,7 @@ const handler = async (req, res) => {
             twitterLink: twitterLink?.[0] || null,
             websiteLink: websiteLink?.[0] || null,
             facebookLink: facebookLink?.[0] || null,
-            imageUrl: imageUrl || undefined,
+            imageUrl: newImageUrl || existingEvent.imageUrl,
           },
         });
 
