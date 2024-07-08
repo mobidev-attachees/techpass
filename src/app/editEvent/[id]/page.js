@@ -39,6 +39,9 @@ export default function EditEventPage() {
     twitterLink: '',
   });
 
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+
   useEffect(() => {
     if (id) {
       fetch(`/api/events/${id}`)
@@ -70,6 +73,7 @@ export default function EditEventPage() {
               instagramLink: data.instagramLink || '',
               twitterLink: data.twitterLink || '',
             });
+            setSelectedImage(data.imageUrl || null); // Set the current image URL if available
           }
           setLoading(false);
         })
@@ -80,6 +84,8 @@ export default function EditEventPage() {
     }
   }, [id]);
 
+  const [showPartTwo, setShowPartTwo] = useState(false);
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -88,7 +94,17 @@ export default function EditEventPage() {
     }));
   };
 
-  const [showPartTwo, setShowPartTwo] = useState(false);
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setSelectedImage(imageUrl);
+      setImageFile(file);
+    } else {
+      setSelectedImage(null);
+      setImageFile(null);
+    }
+  };
 
   const handleSwitchChange = () => {
     setFormData((prevState) => ({
@@ -100,18 +116,24 @@ export default function EditEventPage() {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+
     const updatedData = {
       ...formData,
       ticketPrice: formData.isFree ? 'free' : formData.ticketPrice,
     };
 
     try {
+      const formDataToSend = new FormData();
+      for (const key in updatedData) {
+        formDataToSend.append(key, updatedData[key]);
+      }
+      if (imageFile) {
+        formDataToSend.append('image', imageFile);
+      }
+
       const response = await fetch(`/api/updateEvent/${id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedData),
+        body: formDataToSend,
       });
 
       if (response.ok) {
@@ -126,9 +148,16 @@ export default function EditEventPage() {
         });
         router.push(`/event/${id}`);
       } else {
-        const errorData = await response.json();
-        console.error('Failed to update event:', errorData.error);
-        alert(`Error: ${errorData.error}`);
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const errorData = await response.json();
+          console.error('Failed to update event:', errorData.error);
+          alert(`Error: ${errorData.error}`);
+        } else {
+          const errorText = await response.text();
+          console.error('Failed to update event:', errorText);
+          alert(`Error: ${errorText}`);
+        }
       }
     } catch (error) {
       console.error('Error updating event:', error);
@@ -139,6 +168,8 @@ export default function EditEventPage() {
   if (loading) {
     return <p>Loading...</p>;
   }
+
+  
 
   return (
     <div className="container">
@@ -204,6 +235,28 @@ export default function EditEventPage() {
                   cols="50"
                 />
               </div>
+              <div className="form-group">
+                  <label htmlFor="image">Event Image</label>
+                  <input
+                    type="file"
+                    id="image"
+                    name="image"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="form-control"
+                  />
+                </div>
+                <div className="form-group">
+                  {selectedImage && (
+                    <Image
+                      src={selectedImage}
+                      alt="Event Image"
+                      width={100}
+                      height={100}
+                      className="img-thumbnail"
+                    />
+                  )}
+                </div>
               <div className="row rounded shadow-sm mb-5">
                 <div className={`col-md-6 ${styles.formGroup}`} style={{ marginBottom: '20px' }}>
                   <label htmlFor="location" className={styles.label}>Location:</label>
