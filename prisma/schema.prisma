@@ -5,8 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 datasource db {
-  provider = "mysql"
-  url = env("MYSQL_URL") // main connection string
+  provider = "postgres"
+  url = env("postgres_URL") // main connection string
   directUrl = env("MYSQL_URL_NON_POOLING") // uses a direct connection
 }
 
