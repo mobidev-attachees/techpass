@@ -208,8 +208,8 @@ const createevent = () => {
                     />
                   </div>
                   <div className="row mt-3 mb-3 shadow-sm rounded">
-                  <div className="form-group col-md-6">
-                      <label htmlFor="image" className="form-label">Event Image</label>
+                    <div className="form-group col-md-6 mb-3">
+                      <label htmlFor="image" className="form-label">Upload banner Image</label>
                       <input 
                         className="form-control" 
                         name="image" 
@@ -220,13 +220,13 @@ const createevent = () => {
                       />
                     </div>
 
-                    <div className="col-md-6">
+                    <div className="col-md-6 mb-3">
                       <img 
                         id="showImage" 
                         src={selectedImage || '/uploads/default-image.jpg'}
                         alt="Event"
-                        className="p-1 rounded-circle bg-primary"
-                        width="80"
+                        className="p-1 rounded-circle bg-success"
+                        width="100"
                       />
                     </div>
                   </div>

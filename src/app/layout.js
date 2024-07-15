@@ -5,7 +5,10 @@ import Head from 'next/head';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./globals.css";
 import { Toaster } from 'react-hot-toast';
+import { ClerkProvider } from '@clerk/nextjs'; 
 // import 'mdb-react-ui-kit/dist/css/mdb.min.css';
+
+
 
 
 
@@ -30,8 +33,12 @@ export default function RootLayout({ children }) {
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
       </Head>
       <body className={inter.className}>
-        <Toaster />
-        {children}
+        <ClerkProvider
+          frontendApi={process.env.NEXT_PUBLIC_CLERK_FRONTEND_API}
+        >
+          <Toaster />
+          {children}
+        </ClerkProvider>
       </body>
     </html>
   );

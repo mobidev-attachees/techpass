@@ -73,7 +73,13 @@ const Register = () => {
 
   return (
     <div className="container">
-        <div className="main-container form" style={{ maxWidth: '1400px', padding: '20px', backgroundColor: '#fff', borderRadius: '8px'}}>
+        <div className="main-container form" style={{ maxWidth: '1400px', padding: '20px', backgroundColor: '#fff', borderRadius: '8px', backgroundImage: `url('/login.jpg')`, // Replace with your image path
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh'}}>
           <div className="form-wrapper" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.9)', cursor:'pointer', marginTop:'20px'}}>
             <h5 className="">Register</h5>
             {error && <p className={styles.error}>{error}</p>}

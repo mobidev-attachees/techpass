@@ -1,37 +1,43 @@
 // src/app/event/[id]/page.js
+"use client";
 import { PrismaClient } from '@prisma/client';
-import React from "react";
+import React from 'react';
 import Link from 'next/link';
-import styles from "./page.module.css";
+import styles from './page.module.css';
 import Image from 'next/image';
 
 const prisma = new PrismaClient();
 
 async function getEvent(id) {
   if (!id) {
-    console.error("ID is missing or invalid");
+    console.error('ID is missing or invalid');
     return null;
   }
-  
+
   const eventId = parseInt(id, 10);
-  
+
   if (isNaN(eventId)) {
-    console.error("Invalid ID format");
+    console.error('Invalid ID format');
     return null;
   }
 
   const event = await prisma.storeEvent.findUnique({
     where: { id: eventId },
   });
-  
+
   return event;
 }
 
 function getDayWithSuffix(date) {
   const day = date.getDate();
-  const suffix = (day % 10 === 1 && day !== 11) ? 'st' :
-                 (day % 10 === 2 && day !== 12) ? 'nd' :
-                 (day % 10 === 3 && day !== 13) ? 'rd' : 'th';
+  const suffix =
+    day % 10 === 1 && day !== 11
+      ? 'st'
+      : day % 10 === 2 && day !== 12
+      ? 'nd'
+      : day % 10 === 3 && day !== 13
+      ? 'rd'
+      : 'th';
   return `${day}${suffix}`;
 }
 
@@ -40,18 +46,28 @@ function formatDateWithDay(dateString) {
   const dayWithSuffix = getDayWithSuffix(date);
   const month = date.toLocaleString('default', { month: 'long' });
   const year = date.getFullYear();
-  
+
   return `${date.toLocaleDateString('en-US', { weekday: 'long' })}, ${dayWithSuffix} ${month} ${year}`;
 }
-
 
 export default async function EventPage({ params }) {
   const { id } = params;
   const event = await getEvent(id);
 
   if (!event) {
-    return <p>Event does not exists!!</p>;
+    return <p>Event does not exist!!</p>;
   }
+
+   // Function to handle copying event URL to clipboard
+   const handleShareClick = () => {
+    const eventUrl = window.location.href; // Get the current page URL
+    navigator.clipboard.writeText(eventUrl).then(() => {
+      alert('Event URL copied to clipboard!');
+    }).catch(err => {
+      console.error('Failed to copy URL: ', err);
+    });
+
+  };
 
   return (
     <div className="container mt-20px">
@@ -105,7 +121,8 @@ export default async function EventPage({ params }) {
                   backgroundSize: 'cover', 
                   backgroundRepeat: 'no-repeat', 
                   height: 'auto', 
-                  minHeight: '300px' 
+                  minHeight: '300px',
+                  
                 }}
               >
                 </div>
@@ -127,19 +144,19 @@ export default async function EventPage({ params }) {
                   </div>
 
                   <div className="col-md-6 text-right mt-3 mb-3">
-                    <button type="button" className="btn btn-success mb-3 ">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-share-fill" viewBox="0 0 16 16">
+                    <button type="button" className="btn btn-success mb-3" onClick={handleShareClick}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-share-fill" viewBox="0 0 16 16">
                         <path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5"/>
                       </svg> Share Event
                     </button>
                     <br />
                     <h6 className='mb-3'>Ticket information</h6>
                     <p>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-cash-stack" viewBox="0 0 16 16">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-cash-stack" viewBox="0 0 16 16">
                         <path d="M1 3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1zm7 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/>
                         <path d="M0 5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V7a2 2 0 0 1-2-2z"/>
                       </svg> {event.ticketPrice}
-                      </p>
+                    </p>
                   </div>
                 </div>
 

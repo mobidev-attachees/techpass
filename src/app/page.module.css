@@ -177,13 +177,13 @@
 
 }
 
-.cardImageWrapper {
+.cardImage {
   position: relative;
   width: 100%;
   overflow: hidden; /* Hide any overflow beyond the container */
 }
 
-.card img {
+.cardImage{
   width: 100%; /* Ensure the image fills the container */
   height: 70%; /* Ensure the image fills the container */
   object-fit: cover; /* Maintain aspect ratio and cover entire container */

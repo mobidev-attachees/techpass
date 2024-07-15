@@ -235,8 +235,9 @@ export default function EditEventPage() {
                   cols="50"
                 />
               </div>
-              <div className="form-group">
-                  <label htmlFor="image">Event Image</label>
+              <div className=" row mt-3 mb-3 shadow-sm rounded">
+                  <div className="form-group col-md-6 mb-3">
+                  <label htmlFor="image">Edit event banner</label>
                   <input
                     type="file"
                     id="image"
@@ -246,17 +247,20 @@ export default function EditEventPage() {
                     className="form-control"
                   />
                 </div>
-                <div className="form-group">
+                <div className="form-group col-md-6 mb-3">
                   {selectedImage && (
                     <Image
-                      src={selectedImage}
+                      src={selectedImage || '/uploads/default-image.jpg'}
                       alt="Event Image"
                       width={100}
                       height={100}
-                      className="img-thumbnail"
+                      className=" rounded-circle p-1 bg-success"
                     />
                   )}
                 </div>
+              </div>
+              
+              
               <div className="row rounded shadow-sm mb-5">
                 <div className={`col-md-6 ${styles.formGroup}`} style={{ marginBottom: '20px' }}>
                   <label htmlFor="location" className={styles.label}>Location:</label>
