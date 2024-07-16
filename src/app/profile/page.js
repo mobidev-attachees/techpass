@@ -1,3 +1,4 @@
+// pages/profile.js
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
@@ -61,19 +62,20 @@ export default function Profile() {
       <h1>Profile</h1>
       <p><strong>Username:</strong> {user.username}</p>
       <p><strong>Email:</strong> {user.email}</p>
-      {/* Display sessions or other user data if needed */}
-      <div className="sessions">
-        <h2>Sessions</h2>
-        {user.sessions.length > 0 ? (
-          <ul>
-            {user.sessions.map(session => (
-              <li key={session.id}>{session.sessionName}</li>
-            ))}
-          </ul>
-        ) : (
-          <p>No sessions available</p>
-        )}
-      </div>
+      <p><strong>First Name:</strong> {user.firstName}</p>
+      <p><strong>Last Name:</strong> {user.lastName}</p>
+      <p><strong>Address:</strong> {user.address || "Not provided"}</p>
+      <p><strong>Profile Image:</strong> {user.profileImage ? <img src={user.profileImage} alt="Profile" style={{ maxWidth: '100px', maxHeight: '100px' }} /> : "Not provided"}</p>
+      <p><strong>Date of Birth:</strong> {user.dob ? new Date(user.dob).toLocaleDateString() : "Not provided"}</p>
+      <p><strong>Country:</strong> {user.country || "Not provided"}</p>
+      <p><strong>Phone Number:</strong> {user.phoneNumber || "Not provided"}</p>
+      <p><strong>GitHub:</strong> {user.github || "Not provided"}</p>
+      <p><strong>Twitter:</strong> {user.twitter || "Not provided"}</p>
+      <p><strong>Website:</strong> {user.website || "Not provided"}</p>
+      <p><strong>Instagram:</strong> {user.instagram || "Not provided"}</p>
+      <p><strong>Facebook:</strong> {user.facebook || "Not provided"}</p>
+      {/* Add other profile details as needed */}
+      
       <button onClick={handleLogout} className="btn btn-outline-danger" style={{ marginTop: '20px' }}>
         Logout
       </button>
