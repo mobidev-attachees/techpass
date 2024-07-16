@@ -10,19 +10,19 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-  
+
     // Check for empty email or password fields
     if (!email || !password) {
       setError("Please fill in all fields.");
       return;
     }
-  
+
     // Check password length
     if (password.length < 6) {
       setError("Password must be at least 6 characters long.");
       return;
     }
-  
+
     try {
       const response = await fetch("/api/login", {
         method: "POST",
@@ -31,8 +31,13 @@ export default function Login() {
         },
         body: JSON.stringify({ email, password }),
       });
-  
+
       if (response.ok) {
+        const data = await response.json();
+        // Store the JWT token and session ID in local storage
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("sessionId", data.sessionId);
+        
         // Redirect to the dashboard page
         window.location.href = "/dashboard";
       } else {
