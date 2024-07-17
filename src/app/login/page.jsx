@@ -1,12 +1,29 @@
 // app/login/page.js
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { toast, Toaster } from 'react-hot-toast';
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const msg = searchParams.get('message');
+    if (msg) {
+      toast.error(msg, { 
+        style: { 
+          animation: "fade-in 0.5s", 
+          backgroundColor: 'red', 
+          color: 'white', 
+          textAlign: 'center'
+        } 
+      });
+    }
+  }, [searchParams]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -43,15 +60,32 @@ export default function Login() {
       } else {
         const data = await response.json();
         setError(data.message);
+        toast.error(data.message, {
+          style: {
+            animation: "fade-in 3s", 
+            backgroundColor: 'red', 
+            color: 'white', 
+            textAlign: 'center'
+          }
+        });
       }
     } catch (error) {
       console.error("Login error:", error);
       setError("An error occurred during login");
+      toast.error("An error occurred during login", {
+        style: {
+          animation: "fade-in 3s", 
+          backgroundColor: 'red', 
+          color: 'white', 
+          textAlign: 'center'
+        }
+      });
     }
   };
 
   return (
     <div className="container">
+      <Toaster /> {/* Add Toaster component here */}
       <main style={{ 
         backgroundImage: `url('/login.jpg')`, // Replace with your image path
         backgroundSize: 'cover',
