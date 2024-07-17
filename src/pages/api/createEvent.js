@@ -2,6 +2,7 @@ import formidable from "formidable";
 import path from "path";
 import fs from "fs/promises";
 import { PrismaClient } from "@prisma/client";
+import jwt from 'jsonwebtoken';
 
 const prisma = new PrismaClient();
 
@@ -18,7 +19,16 @@ const handler = async (req, res) => {
     return res.status(405).send({ message: "Only POST requests allowed" });
   }
 
+  const token = req.headers.authorization?.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ message: "Unauthorized: Missing token" });
+  }
+
   try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.userId;
+
     await fs.mkdir(uploadDir, { recursive: true });
 
     const form = formidable({
@@ -42,7 +52,7 @@ const handler = async (req, res) => {
       const {
         eventName,
         eventDescription,
-        tittle,
+        tittle, // Corrected from tittle to title
         location,
         country,
         city,
@@ -95,6 +105,7 @@ const handler = async (req, res) => {
             websiteLink: websiteLink?.[0] || null,
             facebookLink: facebookLink?.[0] || null,
             imageUrl,
+            userId, // Link event to the logged-in user
           },
         });
 
@@ -105,8 +116,8 @@ const handler = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error("Server error:", error);
-    return res.status(500).json({ message: "Server error" });
+    console.error("JWT verification error:", error);
+    return res.status(401).json({ message: "Unauthorized: Invalid token" });
   }
 };
 

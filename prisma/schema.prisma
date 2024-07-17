@@ -26,7 +26,7 @@ model StoreEvent {
   endTime           String   // Keep as String if time type is not supported
   meetingLink       String?
   email             String
-  tittle             String   // Corrected typo from tittle to title
+  tittle             String  // Corrected typo from tittle to title
   ticketPrice       String?
   firstName         String
   middleName        String?
@@ -37,10 +37,12 @@ model StoreEvent {
   instagramLink     String?
   twitterLink       String?
   imageUrl          String? 
+  userId            Int
+  user              User      @relation(fields: [userId], references: [id]) // Add this line to establish the relation
 }
 
 model User {
-   id             Int       @id @default(autoincrement())
+  id             Int       @id @default(autoincrement())
   username       String    @unique
   email          String    @unique
   password       String
@@ -57,10 +59,12 @@ model User {
   website        String?
   instagram      String?
   facebook       String?
-  linkedlin       String?
+  linkedlin      String?
   bio            String? 
   sessions       Session[] // Define the many-to-many relation without references
+  events         StoreEvent[] // Add this line to establish the relation
 }
+
 model Session {
   id                Int       @id @default(autoincrement())
   sessionName       String

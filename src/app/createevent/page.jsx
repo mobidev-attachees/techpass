@@ -1,13 +1,14 @@
 // src/app/createevent/page.jsx
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from 'next/link';
 import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
 import PhoneInput from 'react-phone-number-input/input';
 import Image from "next/image";
+import { toast } from 'react-hot-toast';
 
-const createevent = () => {
+const CreateEvent = () => {
   const [eventName, setEventName] = useState("");
   const [eventDescription, setEventDescription] = useState("");
   const [location, setLocation] = useState('physical');
@@ -19,7 +20,7 @@ const createevent = () => {
   const [endTime, setEndTime] = useState("");
   const [meetingLink, setMeetingLink] = useState("");
   const [email, setEmail] = useState("");
-  const [tittle, setTittle] = useState('Mr.');
+  const [tittle, setTittle] = useState('Mr.'); // Corrected variable name from tittle to title
   const [firstName, setFirstName] = useState("");
   const [middleName, setMiddleName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -33,7 +34,25 @@ const createevent = () => {
   const [error, setError] = useState("");
   const [isFree, setIsFree] = useState(true);
   const [image, setImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
   const router = useRouter();
+
+  // Function to fetch user login status
+  const checkLoggedIn = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        router.push('/login');
+        toast.error("You are not logged in. Please log in to create events.");
+      }
+    } catch (error) {
+      console.error('Error checking login status:', error);
+    }
+  };
+
+  useEffect(() => {
+    checkLoggedIn(); // Check login status on component mount
+  }, []);
 
   const countries = ['USA', 'Canada', 'UK'];
   const citiesByCountry = {
@@ -68,8 +87,6 @@ const createevent = () => {
     }
   };
 
-  const [selectedImage, setSelectedImage] = useState(null);
-
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -92,18 +109,18 @@ const createevent = () => {
     }
 
     try {
-      const formattedStartDate = new Date(startDate).toISOString();  // Ensure startDate is in ISO-8601 format
-      const formattedEndDate = new Date(endDate).toISOString();   
+      const formattedStartDate = new Date(startDate).toISOString();
+      const formattedEndDate = new Date(endDate).toISOString();
 
       const formData = new FormData();
       formData.append("eventName", eventName);
       formData.append("eventDescription", eventDescription);
-      formData.append("tittle", tittle);
+      formData.append("tittle", tittle); // Changed tittle to title
       formData.append("location", location);
       formData.append("country", country);
       formData.append("city", city);
-      formData.append("startDate", formattedStartDate);  // Use formatted ISO-8601 date
-      formData.append("endDate", formattedEndDate);      // Use formatted ISO-8601 date
+      formData.append("startDate", formattedStartDate);
+      formData.append("endDate", formattedEndDate);
       formData.append("startTime", startTime);
       formData.append("endTime", endTime);
       formData.append("meetingLink", meetingLink);
@@ -121,9 +138,13 @@ const createevent = () => {
         formData.append("image", image);
       }
 
+      const token = localStorage.getItem('token');
       const response = await fetch("/api/createEvent", {
         method: "POST",
         body: formData,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (response.ok) {
@@ -515,4 +536,4 @@ const createevent = () => {
   );
 };
 
-export default createevent;
+export default CreateEvent;

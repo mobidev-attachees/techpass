@@ -23,6 +23,7 @@ CREATE TABLE `StoreEvent` (
     `instagramLink` VARCHAR(191) NULL,
     `twitterLink` VARCHAR(191) NULL,
     `imageUrl` VARCHAR(191) NULL,
+    `userId` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -74,6 +75,9 @@ CREATE TABLE `_SessionToUser` (
     UNIQUE INDEX `_SessionToUser_AB_unique`(`A`, `B`),
     INDEX `_SessionToUser_B_index`(`B`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `StoreEvent` ADD CONSTRAINT `StoreEvent_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `_SessionToUser` ADD CONSTRAINT `_SessionToUser_A_fkey` FOREIGN KEY (`A`) REFERENCES `Session`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
