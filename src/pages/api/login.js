@@ -35,7 +35,7 @@ export default async function handler(req, res) {
         sessionName: `Session for ${user.username}`, // Example session name
         sessionDescription: `Session created at ${new Date().toISOString()}`,
         startTime: new Date().toISOString(), // Adjust as needed
-        endTime: new Date(Date.now() + 60 * 60 * 1000).toISOString(), // 1 hour from now
+        endTime: new Date(Date.now() + 7 * 60 * 60 * 10000).toISOString(), // 1 hour from now
         speaker: user.username, // Example speaker name
         users: {
           connect: {

@@ -2,8 +2,7 @@
 "use client";
 import { PrismaClient } from '@prisma/client';
 import React from 'react';
-import Link from 'next/link';
-import styles from './page.module.css';
+
 import Image from 'next/image';
 
 const prisma = new PrismaClient();
@@ -53,7 +52,10 @@ function formatDateWithDay(dateString) {
 export default async function EventPage({ params }) {
   const { id } = params;
   const event = await getEvent(id);
-
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    router.push('/login');
+  };
   if (!event) {
     return <p>Event does not exist!!</p>;
   }
@@ -94,14 +96,16 @@ export default async function EventPage({ params }) {
                 <a className="nav-link link text-success" href="/events">All Events</a>
               </li>
               <li className="nav-item dropdown">
-                <a className="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <img src="/avatar-2.png" width="30" height="30" alt="profile image" className='rounded-circle'/>
+                <a className="nav-link dropdown-toggle" href="" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <Image src="/avatar-2.png" width="30" height="30" alt="profile image" className='rounded-circle'></Image>
                 </a>
                 <ul className="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
                   <li><a className="dropdown-item" href="/dashboard">Dashboard</a></li>
                   <li><a className="dropdown-item" href="/profile">Profile</a></li>
                   <li></li>
-                  <li><a className="dropdown-item" href="/login">Logout</a></li>
+                  <li className="dropdown-item" onClick={handleLogout}>
+                    Logout
+                  </li>
                 </ul>
               </li>
             </ul>

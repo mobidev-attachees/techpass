@@ -2,6 +2,7 @@ import formidable from 'formidable';
 import path from 'path';
 import fs from 'fs/promises';
 import { PrismaClient } from '@prisma/client';
+import jwt from 'jsonwebtoken';
 
 const prisma = new PrismaClient();
 
@@ -18,7 +19,16 @@ const handler = async (req, res) => {
     return res.status(405).send({ message: 'Only PUT requests allowed' });
   }
 
+  const token = req.headers.authorization?.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+
   try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.userId;
+
     await fs.mkdir(uploadDir, { recursive: true });
 
     const form = formidable({
@@ -48,6 +58,11 @@ const handler = async (req, res) => {
 
       if (!existingEvent) {
         return res.status(404).json({ message: 'Event not found' });
+      }
+
+      // Check if the user is authorized to update the event
+      if (existingEvent.userId !== userId) { // Assuming storeEvent has a userId field
+        return res.status(403).json({ message: 'Forbidden' });
       }
 
       const {
@@ -96,27 +111,27 @@ const handler = async (req, res) => {
         const updatedEvent = await prisma.storeEvent.update({
           where: { id: parseInt(eventId) },
           data: {
-            eventName: eventName?.[0] || null,
-            eventDescription: eventDescription?.[0] || null,
-            tittle: tittle?.[0] || null,
-            location: location?.[0] || null,
-            country: country?.[0] || null,
-            city: city?.[0] || null,
-            startTime: startTime?.[0],
-            endTime: endTime?.[0],
-            startDate: parseDate(startDate?.[0]),
-            endDate: parseDate(endDate?.[0]),
-            meetingLink: meetingLink?.[0] || null,
-            email: email?.[0] || null,
-            ticketPrice: ticketPrice?.[0] || null,
-            firstName: firstName?.[0] || null,
-            middleName: middleName?.[0] || null,
-            lastName: lastName?.[0] || null,
-            phoneNumber: phoneNumber?.[0] || null,
-            instagramLink: instagramLink?.[0] || null,
-            twitterLink: twitterLink?.[0] || null,
-            websiteLink: websiteLink?.[0] || null,
-            facebookLink: facebookLink?.[0] || null,
+            eventName: eventName?.[0] || undefined,
+            eventDescription: eventDescription?.[0] || undefined,
+            tittle: tittle?.[0] || undefined,
+            location: location?.[0] || undefined,
+            country: country?.[0] || undefined,
+            city: city?.[0] || undefined,
+            startTime: startTime?.[0] || undefined,
+            endTime: endTime?.[0] || undefined,
+            startDate: parseDate(startDate?.[0]) || undefined,
+            endDate: parseDate(endDate?.[0]) || undefined,
+            meetingLink: meetingLink?.[0] || undefined,
+            email: email?.[0] || undefined,
+            ticketPrice: ticketPrice?.[0] || undefined,
+            firstName: firstName?.[0] || undefined,
+            middleName: middleName?.[0] || undefined,
+            lastName: lastName?.[0] || undefined,
+            phoneNumber: phoneNumber?.[0] || undefined,
+            instagramLink: instagramLink?.[0] || undefined,
+            twitterLink: twitterLink?.[0] || undefined,
+            websiteLink: websiteLink?.[0] || undefined,
+            facebookLink: facebookLink?.[0] || undefined,
             imageUrl: newImageUrl || existingEvent.imageUrl,
           },
         });

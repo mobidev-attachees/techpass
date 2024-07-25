@@ -134,9 +134,8 @@
 
 .card {
   border-radius: var(--border-radius);
-  background:white;
   transition: background 200ms, border 200ms;
-  background: #fff;
+  
   border-radius: 8px;
   /* box-shadow: 0 4px 8px rgba(0, 0, 0, 1); */
   text-align: center;

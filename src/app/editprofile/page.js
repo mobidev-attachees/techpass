@@ -1,231 +1,298 @@
-// src/app/editprofile/page.js
 "use client";
+
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import toast from 'react-hot-toast';
 
-const EditProfile = () => {
+export default function EditProfilePage() {
   const router = useRouter();
-  const [user, setUser] = useState(null);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [formData, setFormData] = useState({
+    username: '',
+    address: '',
+    profileImage: '',
+    dob: '',
+    country: '',
+    phoneNumber: '',
+    github: '',
+    twitter: '',
+    website: '',
+    instagram: '',
+    facebook: '',
+    linkedin: '',
+    bio: ''
+  });
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+
+  const defaultImageUrl = '/default-profile-image.png'; // Replace with your default image path
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          router.push('/login');
-          return;
-        }
-
-        const response = await fetch('/api/profile', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data);
-        } else {
-          const errorData = await response.json();
-          setError(errorData.message);
-          if (response.status === 401) {
-            router.push('/login');
-          }
-        }
-      } catch (error) {
-        console.error('Profile fetch error:', error);
-        setError('An error occurred while fetching profile');
-      }
-    };
-
     fetchProfile();
-  }, [router]);
+  }, []);
 
-  // Initialize state variables with user data or empty strings
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [address, setAddress] = useState('');
-  const [profileImage, setProfileImage] = useState('');
-  const [dob, setDob] = useState('');
-  const [country, setCountry] = useState('');
-  const [city, setCity] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [github, setGithub] = useState('');
-  const [twitter, setTwitter] = useState('');
-  const [website, setWebsite] = useState('');
-  const [instagram, setInstagram] = useState('');
-  const [facebook, setFacebook] = useState('');
-  const [linkedlin, setLinkedlin] = useState('');
-  const [bio, setBio] = useState('');
-
-  // Set state variables once user data is fetched
-  useEffect(() => {
-    if (user) {
-      setUsername(user.username || '');
-      setEmail(user.email || '');
-      setFirstName(user.firstName || '');
-      setLastName(user.lastName || '');
-      setAddress(user.address || '');
-      setProfileImage(user.profileImage || '');
-      setDob(user.dob ? new Date(user.dob).toISOString().split('T')[0] : '');
-      setCountry(user.country || '');
-      setCity(user.city || '');
-      setPhoneNumber(user.phoneNumber || '');
-      setGithub(user.github || '');
-      setTwitter(user.twitter || '');
-      setWebsite(user.website || '');
-      setInstagram(user.instagram || '');
-      setFacebook(user.facebook || '');
-      setLinkedlin(user.linkedlin || '');
-      setBio(user.bio || '');
-    }
-  }, [user]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setSuccess('');
-
+  const fetchProfile = async () => {
     try {
       const token = localStorage.getItem('token');
-      if (!token) {
-        router.push('/login');
-        return;
-      }
-
-      const response = await fetch('/api/editProfile', {
-        method: 'PUT',
+      const response = await fetch('/api/profile', {
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          username,
-          email,
-          firstName,
-          lastName,
-          address,
-          profileImage,
-          dob,
-          country,
-          city,
-          phoneNumber,
-          github,
-          twitter,
-          website,
-          instagram,
-          facebook,
-          linkedlin,
-          bio
-        })
+        }
       });
-
       if (response.ok) {
         const data = await response.json();
-        setUser(data);
-        setSuccess('Profile updated successfully!');
-        router.push('/profile');
+        setFormData({
+          username: data.username,
+          address: data.address,
+          profileImage: data.profileImage || '',
+          dob: data.dob,
+          country: data.country,
+          phoneNumber: data.phoneNumber,
+          github: data.github,
+          twitter: data.twitter,
+          website: data.website,
+          instagram: data.instagram,
+          facebook: data.facebook,
+          linkedin: data.linkedin,
+          bio: data.bio
+        });
+        setSelectedImage(data.profileImage || defaultImageUrl);
       } else {
-        const errorData = await response.json();
-        setError(errorData.message);
+        console.error('Failed to fetch profile data:', response.statusText);
+        toast.error("Failed to fetch profile data");
       }
     } catch (error) {
-      console.error('Edit profile error:', error);
-      setError('An error occurred while updating profile');
+      console.error('Error fetching profile:', error);
+      toast.error("Error fetching profile data");
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (error) {
-    return <div className="error">{error}</div>;
-  }
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
 
-  if (!user) {
-    return <div>Loading...</div>;
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setSelectedImage(imageUrl);
+      setImageFile(file);
+    } else {
+      setSelectedImage(defaultImageUrl);
+      setImageFile(null);
+    }
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+
+    const updatedData = {
+      ...formData,
+    };
+
+    try {
+      const formDataToSend = new FormData();
+      for (const key in updatedData) {
+        formDataToSend.append(key, updatedData[key]);
+      }
+      if (imageFile) {
+        formDataToSend.append('profileImage', imageFile);
+      }
+
+      const token = localStorage.getItem('token');
+      const response = await fetch('/api/editProfile', {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        body: formDataToSend,
+      });
+
+      if (response.ok) {
+        toast.success("Profile updated successfully", {
+          duration: 4000,
+          position: 'top-right',
+          style: {
+            background: '#4caf50',
+            color: '#ffffff',
+            zIndex: 99999,
+          },
+        });
+        router.replace('/profile');
+      } else if (response.status === 401) {
+        toast.error("You are not logged in or unauthorized access", {
+          duration: 4000,
+          position: 'top-right',
+          style: {
+            background: '#ff0000',
+            color: '#ffffff',
+            zIndex: 99999,
+          },
+        });
+        router.replace('/login');
+      } else {
+        const errorText = await response.text();
+        console.error('Failed to update profile:', errorText);
+        toast.error(`Error: ${errorText}`);
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      toast.error(`Error: ${error.message}`);
+    }
+  };
+
+  if (loading) {
+    return <p>Loading...</p>;
   }
 
   return (
-    <div className="edit-profile-container">
+    <div>
       <h1>Edit Profile</h1>
-      {success && <div className="success">{success}</div>}
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Username</label>
-          <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+      <form onSubmit={handleFormSubmit}>
+        <div>
+          <label htmlFor="profileImage">Profile Image</label>
+          <input
+            type="file"
+            id="profileImage"
+            onChange={handleImageChange}
+          />
+          <div>
+            <Image 
+              src={selectedImage || defaultImageUrl} 
+              alt="Profile Preview" 
+              width={100} 
+              height={100} 
+            />
+          </div>
         </div>
-        <div className="form-group">
-          <label>Email</label>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <div>
+          <label htmlFor="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            value={formData.username}
+            onChange={handleInputChange}
+          />
         </div>
-        <div className="form-group">
-          <label>First Name</label>
-          <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+        <div>
+          <label htmlFor="address">Address</label>
+          <input
+            type="text"
+            id="address"
+            name="address"
+            value={formData.address}
+            onChange={handleInputChange}
+          />
         </div>
-        <div className="form-group">
-          <label>Last Name</label>
-          <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+        <div>
+          <label htmlFor="dob">Date of Birth</label>
+          <input
+            type="date"
+            id="dob"
+            name="dob"
+            value={formData.dob}
+            onChange={handleInputChange}
+          />
         </div>
-        <div className="form-group">
-          <label>Address</label>
-          <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} />
+        <div>
+          <label htmlFor="country">Country</label>
+          <input
+            type="text"
+            id="country"
+            name="country"
+            value={formData.country}
+            onChange={handleInputChange}
+          />
         </div>
-        <div className="form-group">
-          <label>Profile Image</label>
-          <input type="text" value={profileImage} onChange={(e) => setProfileImage(e.target.value)} />
+        <div>
+          <label htmlFor="phoneNumber">Phone Number</label>
+          <input
+            type="text"
+            id="phoneNumber"
+            name="phoneNumber"
+            value={formData.phoneNumber}
+            onChange={handleInputChange}
+          />
         </div>
-        <div className="form-group">
-          <label>Date of Birth</label>
-          <input type="date" value={dob} onChange={(e) => setDob(e.target.value)} />
+        <div>
+          <label htmlFor="github">GitHub</label>
+          <input
+            type="text"
+            id="github"
+            name="github"
+            value={formData.github}
+            onChange={handleInputChange}
+          />
         </div>
-        <div className="form-group">
-          <label>Country</label>
-          <input type="text" value={country} onChange={(e) => setCountry(e.target.value)} />
+        <div>
+          <label htmlFor="twitter">Twitter</label>
+          <input
+            type="text"
+            id="twitter"
+            name="twitter"
+            value={formData.twitter}
+            onChange={handleInputChange}
+          />
         </div>
-        <div className="form-group">
-          <label>City</label>
-          <input type="text" value={city} onChange={(e) => setCity(e.target.value)} />
+        <div>
+          <label htmlFor="website">Website</label>
+          <input
+            type="text"
+            id="website"
+            name="website"
+            value={formData.website}
+            onChange={handleInputChange}
+          />
         </div>
-        <div className="form-group">
-          <label>Phone Number</label>
-          <input type="text" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+        <div>
+          <label htmlFor="instagram">Instagram</label>
+          <input
+            type="text"
+            id="instagram"
+            name="instagram"
+            value={formData.instagram}
+            onChange={handleInputChange}
+          />
         </div>
-        <div className="form-group">
-          <label>GitHub</label>
-          <input type="text" value={github} onChange={(e) => setGithub(e.target.value)} />
+        <div>
+          <label htmlFor="facebook">Facebook</label>
+          <input
+            type="text"
+            id="facebook"
+            name="facebook"
+            value={formData.facebook}
+            onChange={handleInputChange}
+          />
         </div>
-        <div className="form-group">
-          <label>Twitter</label>
-          <input type="text" value={twitter} onChange={(e) => setTwitter(e.target.value)} />
+        <div>
+          <label htmlFor="linkedin">LinkedIn</label>
+          <input
+            type="text"
+            id="linkedin"
+            name="linkedin"
+            value={formData.linkedin}
+            onChange={handleInputChange}
+          />
         </div>
-        <div className="form-group">
-          <label>Website</label>
-          <input type="text" value={website} onChange={(e) => setWebsite(e.target.value)} />
+        <div>
+          <label htmlFor="bio">Bio</label>
+          <textarea
+            id="bio"
+            name="bio"
+            value={formData.bio}
+            onChange={handleInputChange}
+          ></textarea>
         </div>
-        <div className="form-group">
-          <label>Instagram</label>
-          <input type="text" value={instagram} onChange={(e) => setInstagram(e.target.value)} />
-        </div>
-        <div className="form-group">
-          <label>Facebook</label>
-          <input type="text" value={facebook} onChange={(e) => setFacebook(e.target.value)} />
-        </div>
-        <div className="form-group">
-          <label>LinkedIn</label>
-          <input type="text" value={linkedlin} onChange={(e) => setLinkedlin(e.target.value)} />
-        </div>
-        <div className="form-group">
-          <label>Bio</label>
-          <textarea value={bio} onChange={(e) => setBio(e.target.value)} />
-        </div>
-        <button type="submit">Save Changes</button>
+        <button type="submit">Update Profile</button>
       </form>
     </div>
   );
-};
-
-export default EditProfile;
+}

@@ -6,7 +6,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import styles from './BannerCarousel.module.css'; // Your CSS module
 
 const images = [
-  '/220.jpg',
+  '/favicon.jpeg',
   '/226.jpg',
   '/223.jpg',
 ];

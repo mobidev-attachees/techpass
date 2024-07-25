@@ -4,6 +4,8 @@ import styles from "./page.module.css";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import BannerCarousel from '../components/BannerCarousel';
+import { toast } from 'react-hot-toast';
+import { useRouter } from "next/navigation";
 
 export default function Events() {
   const [events, setEvents] = useState([]);
@@ -14,44 +16,74 @@ export default function Events() {
   const [hasMore, setHasMore] = useState(true);
   const [totalEvents, setTotalEvents] = useState(0);
   const initialFetchLimit = 6; // Initial number of events to fetch
+  const router = useRouter();
+
+  // Function to fetch user login status
+  const checkLoggedIn = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        router.push('/login');
+        toast.error("You are not logged in. Please log in to view events.");
+      }
+    } catch (error) {
+      console.error('Error checking login status:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await fetch(`/api/events/getEvents?limit=${initialFetchLimit}&page=${page}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch events");
-        }
-        const data = await response.json();
-        if (!Array.isArray(data.events) || typeof data.totalEvents !== 'number') {
-          throw new Error("Invalid response format");
-        }
-        setEvents(data.events);
-        setTotalEvents(data.totalEvents);
-        if (data.events.length < initialFetchLimit) {
-          setHasMore(false);
-        }
-      } catch (error) {
-        setError(error.message);
+    checkLoggedIn(); // Check login status on component mount
+  }, []);
+
+  const fetchEvents = async (pageToFetch) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`/api/events/getEvents?limit=${initialFetchLimit}&page=${pageToFetch}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch events");
+      }
+      const data = await response.json();
+      if (!Array.isArray(data.events) || typeof data.totalEvents !== 'number') {
+        throw new Error("Invalid response format");
+      }
+      return data;
+    } catch (error) {
+      setError(error.message);
+      return { events: [], totalEvents: 0 };
+    }
+  };
+
+  useEffect(() => {
+    const loadInitialEvents = async () => {
+      const data = await fetchEvents(page);
+      setEvents(data.events);
+      setTotalEvents(data.totalEvents);
+      if (data.events.length < initialFetchLimit) {
+        setHasMore(false);
       }
     };
 
-    fetchEvents();
-  }, []);
+    loadInitialEvents();
+  }, [page]);
+
   function convertTime(time) {
     // Convert time from 24-hour format to AM/PM format
     var hours = parseInt(time.substring(0, 2));
     var minutes = time.substring(3);
     var period = (hours >= 12) ? "PM" : "AM";
-    
+
     if (hours > 12) {
-        hours -= 12;
+      hours -= 12;
     } else if (hours === 0) {
-        hours = 12;
+      hours = 12;
     }
-    
+
     return hours + ':' + minutes + ' ' + period;
-}
+  }
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -70,18 +102,26 @@ export default function Events() {
     fetchCountries();
   }, []);
 
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    router.push('/login');
+  };
+
   const handleCountryChange = (e) => {
     setSelectedCountry(e.target.value);
+  };
+  const backgroundImageStyle = {
+    backgroundImage: "url('/bg.svg')",
+    height: "100vh",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
   };
 
   const loadMoreEvents = async () => {
     const nextPage = page + 1;
     try {
-      const response = await fetch(`/api/events/getEvents?limit=${initialFetchLimit}&page=${nextPage}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch more events");
-      }
-      const data = await response.json();
+      const data = await fetchEvents(nextPage);
       if (!Array.isArray(data.events)) {
         throw new Error("Invalid response format");
       }
@@ -89,7 +129,6 @@ export default function Events() {
       setPage(nextPage);
       if (events.length + data.events.length >= totalEvents) {
         setHasMore(false);
-        
       }
     } catch (error) {
       setError(error.message);
@@ -100,7 +139,8 @@ export default function Events() {
     <div className="container">
       <nav className="navbar navbar-expand-lg navbar-light bg-white color-white">
         <div className="container-fluid justify-content-between">
-          <a className="navbar-brand" href="/">TechPass</a>
+          <a className="navbar-brand" href="/">
+          <Image src="/favicon.jpeg" width="30" height="30" alt="profile image" className='rounded-circle'></Image>TechPass</a>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
           </button>
@@ -110,20 +150,22 @@ export default function Events() {
                 <a className="nav-link active" aria-current="page" href="/">Home</a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="/createevent">Create Event</a>
+                <a className="nav-link text-success" href="/createevent">Create Event</a>
               </li>
               <li className="nav-item">
-                <a className="nav-link link" href="#">All Events</a>
+                <a className="nav-link link text-success" href="/events">All Events</a>
               </li>
               <li className="nav-item dropdown">
-                <a className="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <a className="nav-link dropdown-toggle" href="" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <Image src="/avatar-2.png" width="30" height="30" alt="profile image" className='rounded-circle'></Image>
                 </a>
                 <ul className="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
                   <li><a className="dropdown-item" href="/dashboard">Dashboard</a></li>
                   <li><a className="dropdown-item" href="/profile">Profile</a></li>
                   <li></li>
-                  <li><a className="dropdown-item" href="/login">Logout</a></li>
+                  <li className="dropdown-item" onClick={handleLogout}>
+                    Logout
+                  </li>
                 </ul>
               </li>
             </ul>
@@ -135,8 +177,8 @@ export default function Events() {
         {/* Search Bar */}
         <div className="container mt-5">
           {/* <!-- Search and City Selection --> */}
-          <div className="row justify-content-center mb-4">
-            <div className="col-12 col-md-8 d-flex flex-row ">
+          <div className="row justify-content-between mb-4">
+            <div className="col-12 col-md-8 d-flex flex-row">
               <input type="text" className={`form-control`} style={{ marginBottom: '20px', maxWidth:'200px' }} placeholder="Search..." />
               <select className={`form-control`} style={{ marginBottom: '20px', maxWidth:'200px' }} onChange={handleCountryChange}>
                 <option value="">Select Country</option>
@@ -151,7 +193,7 @@ export default function Events() {
           <div className="row">
             <div className="col-md-8 col-ml mb-4">
               <h6>Explore Categories</h6>
-              <div className="d-flex justify-content-start mt-5">
+              <div className="d-flex mt-5">
                 <select className={`form-control`} style={{ marginBottom: '20px', maxWidth:'200px' }}>
                   <option value="last30days">Last 30 Days</option>
                   <option value="last7days">Last 7 Days</option>
@@ -172,9 +214,9 @@ export default function Events() {
           </div>
         </div>
         {/* Banner Carousel */}
-        <div className="rounded">
+        {/* <div className="rounded">
             <BannerCarousel />
-          </div>
+          </div> */}
         <div className="row mt-6 rounded bg-white">
           
 

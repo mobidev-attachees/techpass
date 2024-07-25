@@ -4,6 +4,8 @@ import styles from "./page.module.css";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import BannerCarousel from '../components/BannerCarousel';
+import { toast } from 'react-hot-toast';
+import { useRouter } from "next/navigation";
 
 export default function Events() {
   const [events, setEvents] = useState([]);
@@ -14,44 +16,74 @@ export default function Events() {
   const [hasMore, setHasMore] = useState(true);
   const [totalEvents, setTotalEvents] = useState(0);
   const initialFetchLimit = 6; // Initial number of events to fetch
+  const router = useRouter();
+
+  // Function to fetch user login status
+  const checkLoggedIn = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        router.push('/login');
+        toast.error("You are not logged in. Please log in to view events.");
+      }
+    } catch (error) {
+      console.error('Error checking login status:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await fetch(`/api/events/getEvents?limit=${initialFetchLimit}&page=${page}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch events");
-        }
-        const data = await response.json();
-        if (!Array.isArray(data.events) || typeof data.totalEvents !== 'number') {
-          throw new Error("Invalid response format");
-        }
-        setEvents(data.events);
-        setTotalEvents(data.totalEvents);
-        if (data.events.length < initialFetchLimit) {
-          setHasMore(false);
-        }
-      } catch (error) {
-        setError(error.message);
+    checkLoggedIn(); // Check login status on component mount
+  }, []);
+
+  const fetchEvents = async (pageToFetch) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`/api/events/getAllEvents?limit=${initialFetchLimit}&page=${pageToFetch}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch events");
+      }
+      const data = await response.json();
+      if (!Array.isArray(data.events) || typeof data.totalEvents !== 'number') {
+        throw new Error("Invalid response format");
+      }
+      return data;
+    } catch (error) {
+      setError(error.message);
+      return { events: [], totalEvents: 0 };
+    }
+  };
+
+  useEffect(() => {
+    const loadInitialEvents = async () => {
+      const data = await fetchEvents(page);
+      setEvents(data.events);
+      setTotalEvents(data.totalEvents);
+      if (data.events.length < initialFetchLimit) {
+        setHasMore(false);
       }
     };
 
-    fetchEvents();
-  }, []);
+    loadInitialEvents();
+  }, [page]);
+
   function convertTime(time) {
     // Convert time from 24-hour format to AM/PM format
     var hours = parseInt(time.substring(0, 2));
     var minutes = time.substring(3);
     var period = (hours >= 12) ? "PM" : "AM";
-    
+
     if (hours > 12) {
-        hours -= 12;
+      hours -= 12;
     } else if (hours === 0) {
-        hours = 12;
+      hours = 12;
     }
-    
+
     return hours + ':' + minutes + ' ' + period;
-}
+  }
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -77,11 +109,7 @@ export default function Events() {
   const loadMoreEvents = async () => {
     const nextPage = page + 1;
     try {
-      const response = await fetch(`/api/events/getEvents?limit=${initialFetchLimit}&page=${nextPage}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch more events");
-      }
-      const data = await response.json();
+      const data = await fetchEvents(nextPage);
       if (!Array.isArray(data.events)) {
         throw new Error("Invalid response format");
       }
@@ -89,7 +117,6 @@ export default function Events() {
       setPage(nextPage);
       if (events.length + data.events.length >= totalEvents) {
         setHasMore(false);
-        
       }
     } catch (error) {
       setError(error.message);
