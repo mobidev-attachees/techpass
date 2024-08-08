@@ -41,19 +41,19 @@ export default function EditProfilePage() {
       if (response.ok) {
         const data = await response.json();
         setFormData({
-          username: data.username,
-          address: data.address,
+          username: data.username || '',
+          address: data.address || '',
           profileImage: data.profileImage || '',
-          dob: data.dob,
-          country: data.country,
-          phoneNumber: data.phoneNumber,
-          github: data.github,
-          twitter: data.twitter,
-          website: data.website,
-          instagram: data.instagram,
-          facebook: data.facebook,
-          linkedin: data.linkedin,
-          bio: data.bio
+          dob: data.dob ? new Date(data.dob).toISOString().split('T')[0] : '',
+          country: data.country || '',
+          phoneNumber: data.phoneNumber || '',
+          github: data.github || '',
+          twitter: data.twitter || '',
+          website: data.website || '',
+          instagram: data.instagram || '',
+          facebook: data.facebook || '',
+          linkedin: data.linkedin || '',
+          bio: data.bio || ''
         });
         setSelectedImage(data.profileImage || '/default-profile-image.png'); // Default image
       } else {
@@ -93,12 +93,15 @@ export default function EditProfilePage() {
 
     const updatedData = {
       ...formData,
+      dob: formData.dob ? new Date(formData.dob) : null
     };
 
     try {
       const formDataToSend = new FormData();
       for (const key in updatedData) {
-        formDataToSend.append(key, updatedData[key]);
+        if (updatedData[key] !== undefined && updatedData[key] !== null) {
+          formDataToSend.append(key, updatedData[key]);
+        }
       }
       if (imageFile) {
         formDataToSend.append('profileImage', imageFile);

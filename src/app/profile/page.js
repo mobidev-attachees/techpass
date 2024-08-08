@@ -1,7 +1,7 @@
-// src/app/profile.js
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import toast, { Toaster } from 'react-hot-toast';
@@ -170,8 +170,6 @@ export default function Profile() {
   if (!user) {
     return <div>Loading...</div>;
   }
-
-
   return (
     <div className="d-flex">
       {/* Sidebar for large screens */}
@@ -183,7 +181,9 @@ export default function Profile() {
         <hr />
         <div className="dropdown">
           <a href="#" className="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="https://github.com/mdo.png" alt="" width="32" height="32" className="rounded-circle me-2" />
+         
+            <img src={user.profileImage || '/uploads/profiles/default-image.jpg'} alt="userimg" width="32" height="32" className="rounded-circle me-2" />
+          
             <strong>{user.username}</strong>
           </a>
           <ul className="dropdown-menu dropdown-menu text-small shadow" aria-labelledby="dropdownUser1">
@@ -240,7 +240,7 @@ export default function Profile() {
           </div>
           <div className="dropdown">
             <a href="#" className="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-              <img src="https://github.com/mdo.png" alt="" width="32" height="32" className="rounded-circle me-2" />
+              <img src={user.profileImage || '/uploads/profiles/default-image.jpg'} alt="" width="32" height="32" className="rounded-circle me-2" />
               <strong>{user.username}</strong>
             </a>
             <ul className="dropdown-menu dropdown-menu text-small shadow" aria-labelledby="dropdownUser1">
@@ -284,13 +284,9 @@ export default function Profile() {
         <div className="pt-3">
         <Toaster />
           <h2 className="text-primary">Profile</h2>
-          <div className="">
-            <div className="">
-              
-              <section className="vh-100" style={{ backgroundColor: '#f4f5f7' }}>
-                <div className="container py-5 h-100">
+                <div className="container  h-100">
                   <div className="row d-flex justify-content-start align-items-center h-100">
-                    <div className="col col-lg-8 mb-4 mb-lg-0">
+                    <div className="col col-lg-8 mb-lg-0">
                       <div className="card mb-3" style={{ borderRadius: '.5rem' }}>
                         <div className="row g-0">
                           <div
@@ -300,8 +296,10 @@ export default function Profile() {
                           <div className="media-img media--img media-img-md rounded-full mt-5">
                               <img
                                 className="rounded-full rounded-circle"
-                                src="/avatar-2.png"
+                                src={user.profileImage || '/uploads/profiles/default-image.jpg'}
                                 alt="Student thumbnail image"
+                                width={100}
+                                height={100}
                               />
                             </div>
                             <h5>{user.username} {user.lastName}</h5>
@@ -351,10 +349,9 @@ export default function Profile() {
                     </div>
                   </div>
                 </div>
-              </section>
-              <div className="card">
-                <div className="card-body">
-                <h4 className="text-center text-success">Your Events</h4>
+                <div className="container py-5 h-100 rounded shadow-sm card">
+              
+                <h6 className="text-primary">Events</h6>
                   <div className="table-responsive">
                     <div id="example_wrapper" className="dataTables_wrapper dt-bootstrap5">
                       <div className="row">
@@ -393,36 +390,36 @@ export default function Profile() {
                               </tr>
                             </thead>
                             <tbody>
-  {events.map((event, index) => (
-    <tr key={event.id} role="row" className={index % 2 === 0 ? 'even' : 'odd'}>
-      <td className="sorting_1">{event.eventName}</td>
-      <td>{formatDate(event.startDate)}</td>
-      <td>{formatDate(event.endDate)}</td>
-      <td>{event.ticketPrice}</td>
-      <td className="d-flex justify-content-evenly">
-        <button
-          type="button"
-          className="btn btn-danger px-2"
-          onClick={() => handleDelete(event.id)}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3" viewBox="0 0 16 16">
-            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
-          </svg>
-        </button>
-        <button
-          type="button"
-          className="btn btn-success px-2"
-          onClick={() => handleEdit(event.id)}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-square" viewBox="0 0 16 16">
-            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-            <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
-          </svg>
-        </button>
-      </td>
-    </tr>
-  ))}
-</tbody>
+                              {events.map((event, index) => (
+                                <tr key={event.id} role="row" className={index % 2 === 0 ? 'even' : 'odd'}>
+                                  <td className="sorting_1">{event.eventName}</td>
+                                  <td>{formatDate(event.startDate)}</td>
+                                  <td>{formatDate(event.endDate)}</td>
+                                  <td>{event.ticketPrice}</td>
+                                  <td className="d-flex justify-content-evenly">
+                                    <button
+                                      type="button"
+                                      className="btn btn-danger px-2"
+                                      onClick={() => handleDelete(event.id)}
+                                    >
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3" viewBox="0 0 16 16">
+                                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                                      </svg>
+                                    </button>
+                                    <button
+                                      type="button"
+                                      className="btn btn-success px-2"
+                                      onClick={() => handleEdit(event.id)}
+                                    >
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-square" viewBox="0 0 16 16">
+                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                        <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                      </svg>
+                                    </button>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
 
                           </table>
                         </div>
@@ -448,11 +445,8 @@ export default function Profile() {
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+                  </div>
+            </div>   
       </main>
     </div>
   );

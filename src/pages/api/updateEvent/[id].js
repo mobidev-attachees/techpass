@@ -61,7 +61,7 @@ const handler = async (req, res) => {
       }
 
       // Check if the user is authorized to update the event
-      if (existingEvent.userId !== userId) { // Assuming storeEvent has a userId field
+      if (existingEvent.userId !== userId) {
         return res.status(403).json({ message: 'Forbidden' });
       }
 
@@ -94,7 +94,7 @@ const handler = async (req, res) => {
         return isNaN(date.getTime()) ? null : date.toISOString();
       };
 
-      const newImageUrl = files.image ? `/uploads/${path.basename(files.image[0].filepath)}` : null;
+      const newImageUrl = files.image ? `/uploads/${path.basename(files.image[0].path)}` : null;
 
       // Delete the old image if a new image is uploaded
       if (newImageUrl && existingEvent.imageUrl) {
@@ -111,27 +111,27 @@ const handler = async (req, res) => {
         const updatedEvent = await prisma.storeEvent.update({
           where: { id: parseInt(eventId) },
           data: {
-            eventName: eventName?.[0] || undefined,
-            eventDescription: eventDescription?.[0] || undefined,
-            tittle: tittle?.[0] || undefined,
-            location: location?.[0] || undefined,
-            country: country?.[0] || undefined,
-            city: city?.[0] || undefined,
-            startTime: startTime?.[0] || undefined,
-            endTime: endTime?.[0] || undefined,
-            startDate: parseDate(startDate?.[0]) || undefined,
-            endDate: parseDate(endDate?.[0]) || undefined,
-            meetingLink: meetingLink?.[0] || undefined,
-            email: email?.[0] || undefined,
-            ticketPrice: ticketPrice?.[0] || undefined,
-            firstName: firstName?.[0] || undefined,
-            middleName: middleName?.[0] || undefined,
-            lastName: lastName?.[0] || undefined,
-            phoneNumber: phoneNumber?.[0] || undefined,
-            instagramLink: instagramLink?.[0] || undefined,
-            twitterLink: twitterLink?.[0] || undefined,
-            websiteLink: websiteLink?.[0] || undefined,
-            facebookLink: facebookLink?.[0] || undefined,
+            eventName: eventName || undefined,
+            eventDescription: eventDescription || undefined,
+            tittle: tittle || undefined,
+            location: location || undefined,
+            country: country || undefined,
+            city: city || undefined,
+            startTime: startTime || undefined,
+            endTime: endTime || undefined,
+            startDate: parseDate(startDate) || undefined,
+            endDate: parseDate(endDate) || undefined,
+            meetingLink: meetingLink || undefined,
+            email: email || undefined,
+            ticketPrice: ticketPrice || undefined,
+            firstName: firstName || undefined,
+            middleName: middleName || undefined,
+            lastName: lastName || undefined,
+            phoneNumber: phoneNumber || undefined,
+            instagramLink: instagramLink || undefined,
+            twitterLink: twitterLink || undefined,
+            websiteLink: websiteLink || undefined,
+            facebookLink: facebookLink || undefined,
             imageUrl: newImageUrl || existingEvent.imageUrl,
           },
         });

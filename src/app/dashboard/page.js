@@ -6,6 +6,8 @@ import React, { useEffect, useState } from "react";
 import BannerCarousel from '../components/BannerCarousel';
 import { toast } from 'react-hot-toast';
 import { useRouter } from "next/navigation";
+import Navbar from '../components/Navbar';
+
 
 export default function Events() {
   const [events, setEvents] = useState([]);
@@ -137,42 +139,9 @@ export default function Events() {
 
   return (
     <div className="container">
-      <nav className="navbar navbar-expand-lg navbar-light bg-white color-white">
-        <div className="container-fluid justify-content-between">
-          <a className="navbar-brand" href="/">
-          <Image src="/favicon.jpeg" width="30" height="30" alt="profile image" className='rounded-circle'></Image>TechPass</a>
-          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarScroll">
-            <ul className="navbar-nav ms-auto my-2 my-lg-0 navbar-nav-scroll" style={{ "--bs-scroll-height": "100px" }}>
-              <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="/">Home</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link text-success" href="/createevent">Create Event</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link link text-success" href="/events">All Events</a>
-              </li>
-              <li className="nav-item dropdown">
-                <a className="nav-link dropdown-toggle" href="" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <Image src="/avatar-2.png" width="30" height="30" alt="profile image" className='rounded-circle'></Image>
-                </a>
-                <ul className="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-                  <li><a className="dropdown-item" href="/dashboard">Dashboard</a></li>
-                  <li><a className="dropdown-item" href="/profile">Profile</a></li>
-                  <li></li>
-                  <li className="dropdown-item" onClick={handleLogout}>
-                    Logout
-                  </li>
-                </ul>
-              </li>
-            </ul>
-            
-          </div>
-        </div>
-      </nav>
+      <div>
+        <Navbar />
+      </div>
         <h4 className="text-center mt-3">Events</h4>
         {/* Search Bar */}
         <div className="container mt-5">

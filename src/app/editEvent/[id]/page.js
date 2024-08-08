@@ -1,96 +1,94 @@
-"use client";
+// src/app/editEvent/[id]/page.js
+"use client"; // Ensure this is declared at the top
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import toast from 'react-hot-toast';
+import { useRouter, useParams } from 'next/navigation'; // Correct import for useRouter and useParams
 import Image from 'next/image';
 import styles from "./page.module.css";
+import PhoneInput from 'react-phone-number-input/input';
+import toast from 'react-hot-toast';
+import BannerCarousel from '../../components/BannerCarousel';
+import Navbar from '../../components/Navbar';
 
-export default function EditProfile() {
+
+export default function EditEventPage() {
   const router = useRouter();
-  
-  const [user, setUser] = useState(null);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [profileImage, setProfileImage] = useState(null);
-  const [imageFile, setImageFile] = useState(null);
+  const params = useParams();
+  const { id } = params;
 
+  const [loading, setLoading] = useState(true);
+  const [event, setEvent] = useState(null);
   const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    firstName: '',
-    lastName: '',
-    address: '',
-    dob: '',
+    eventName: '',
+    startDate: '',
+    endDate: '',
+    startTime: '',
+    endTime: '',
+    isFree: true, // Default to free ticket
+    ticketPrice: 'free', // Default ticket price
+    location: 'physical',
+    meetingLink: '',
     country: '',
     city: '',
+    eventDescription: '',
+    email: '',
+    tittle: '',
+    firstName: '',
+    middleName: '',
+    lastName: '',
     phoneNumber: '',
-    github: '',
-    twitter: '',
-    website: '',
-    instagram: '',
-    facebook: '',
-    linkedlin: '',
-    bio: ''
+    websiteLink: '',
+    facebookLink: '',
+    instagramLink: '',
+    twitterLink: '',
   });
 
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          router.push('/login');
-          return;
-        }
-
-        const response = await fetch('/api/profile', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+    if (id) {
+      fetch(`/api/events/${id}`)
+        .then((response) => response.json())
+        .then((data) => {
+          if (data) {
+            setEvent(data);
+            setFormData({
+              eventName: data.eventName,
+              startDate: new Date(data.startDate).toISOString().split('T')[0],
+              endDate: new Date(data.endDate).toISOString().split('T')[0],
+              startTime: data.startTime,
+              endTime: data.endTime,
+              isFree: data.ticketPrice === 'free',
+              ticketPrice: data.ticketPrice || 'free', // Set ticket price or 'free' for free events
+              location: data.location || 'physical',
+              meetingLink: data.meetingLink || '',
+              country: data.country || '',
+              city: data.city || '',
+              eventDescription: data.eventDescription,
+              email: data.email,
+              tittle: data.tittle,
+              firstName: data.firstName,
+              middleName: data.middleName || '',
+              lastName: data.lastName,
+              phoneNumber: data.phoneNumber,
+              websiteLink: data.websiteLink || '',
+              facebookLink: data.facebookLink || '',
+              instagramLink: data.instagramLink || '',
+              twitterLink: data.twitterLink || '',
+            });
+            setSelectedImage(data.imageUrl || null); // Set the current image URL if available
           }
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error('Error fetching event:', error);
+          setLoading(false);
         });
+    }
+  }, [id]);
 
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data);
-          setFormData({
-            username: data.username || '',
-            email: data.email || '',
-            firstName: data.firstName || '',
-            lastName: data.lastName || '',
-            address: data.address || '',
-            dob: data.dob ? new Date(data.dob).toISOString().split('T')[0] : '',
-            country: data.country || '',
-            city: data.city || '',
-            phoneNumber: data.phoneNumber || '',
-            github: data.github || '',
-            twitter: data.twitter || '',
-            website: data.website || '',
-            instagram: data.instagram || '',
-            facebook: data.facebook || '',
-            linkedlin: data.linkedlin || '',
-            bio: data.bio || ''
-          });
-          setProfileImage(data.profileImage || null);
-        } else {
-          const errorData = await response.json();
-          setError(errorData.message);
-          if (response.status === 401) {
-            router.push('/login');
-          }
-        }
-      } catch (error) {
-        console.error('Profile fetch error:', error);
-        setError('An error occurred while fetching profile');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProfile();
-  }, [router]);
-
+  const [showPartTwo, setShowPartTwo] = useState(false);
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -103,130 +101,86 @@ export default function EditProfile() {
     const file = event.target.files[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
-      setProfileImage(imageUrl);
+      setSelectedImage(imageUrl);
       setImageFile(file);
     } else {
-      setProfileImage(null);
+      setSelectedImage(null);
       setImageFile(null);
     }
   };
 
+  const handleSwitchChange = () => {
+    setFormData((prevState) => ({
+      ...prevState,
+      isFree: !prevState.isFree,
+      ticketPrice: prevState.isFree ? '' : 'free', // Toggle between '' and 'free'
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
+
+    const updatedData = {
+      ...formData,
+      ticketPrice: formData.isFree ? 'free' : formData.ticketPrice,
+    };
 
     try {
       const formDataToSend = new FormData();
-      for (const key in formData) {
-        formDataToSend.append(key, formData[key]);
+      for (const key in updatedData) {
+        formDataToSend.append(key, updatedData[key]);
       }
       if (imageFile) {
-        formDataToSend.append('profileImage', imageFile);
+        formDataToSend.append('image', imageFile);
       }
 
-      const token = localStorage.getItem('token');
-      const response = await fetch('/api/editProfile', {
+      const response = await fetch(`/api/updateEvent/${id}`, {
         method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
         body: formDataToSend,
       });
 
       if (response.ok) {
-        toast.success("Profile updated successfully", {
+        toast.success("Event updated successfully", {
           duration: 4000,
           position: 'top-right',
           style: {
             background: '#4caf50',
             color: '#ffffff',
-            zIndex: 99999,
+            zIndex: 99999
           },
         });
-        router.push('/profile');
+        router.push(`/event/${id}`);
       } else {
         const contentType = response.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
           const errorData = await response.json();
-          toast.error(`Error: ${errorData.message}`, {
-            duration: 4000,
-            position: 'top-right',
-            style: {
-              background: '#ff0000',
-              color: '#ffffff',
-              zIndex: 99999,
-            },
-          });
+          console.error('Failed to update event:', errorData.error);
+          alert(`Error: ${errorData.error}`);
         } else {
           const errorText = await response.text();
-          toast.error(`Error: ${errorText}`, {
-            duration: 4000,
-            position: 'top-right',
-            style: {
-              background: '#ff0000',
-              color: '#ffffff',
-              zIndex: 99999,
-            },
-          });
+          console.error('Failed to update event:', errorText);
+          alert(`Error: ${errorText}`);
         }
       }
     } catch (error) {
-      console.error('Edit profile error:', error);
-      toast.error(`Error: ${error.message}`, {
-        duration: 4000,
-        position: 'top-right',
-        style: {
-          background: '#ff0000',
-          color: '#ffffff',
-          zIndex: 99999,
-        },
-      });
+      console.error('Error updating event:', error);
+      alert(`Error: ${error.message}`);
     }
   };
 
   if (loading) {
     return <p>Loading...</p>;
   }
+
   return (
     <div className="container">
-    <nav className="navbar navbar-expand-lg navbar-light bg-white color-white">
-        <div className="container-fluid justify-content-between">
-          <a className="navbar-brand" href="/">TechPass</a>
-          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarScroll">
-            <ul className="navbar-nav ms-auto my-2 my-lg-0 navbar-nav-scroll" style={{ "--bs-scroll-height": "100px" }}>
-              <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="/">Home</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link text-success" href="/createevent">Create Event</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link link text-success" href="/events">All Events</a>
-              </li>
-              <li className="nav-item dropdown">
-                <a className="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <Image src="/avatar-2.png" width="30" height="30" alt="profile image" className='rounded-circle'></Image>
-                </a>
-                <ul className="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-                  <li><a className="dropdown-item" href="/dashboard">Dashboard</a></li>
-                  <li><a className="dropdown-item" href="/profile">Profile</a></li>
-                  <li></li>
-                  <li><a className="dropdown-item" href="/login">Logout</a></li>
-                </ul>
-              </li>
-            </ul>
-            
-          </div>
-        </div>
-      </nav>
+   <div>
+   <Navbar />
+   </div>
       <h3 className="text-center mt-3">Edit Event</h3>
       <div className="row justify-content-center p-4">
       <div className="col-lg-10 bg-white p-4 rounded shadow-lg">
-        <form onSubmit={handleFormSubmit} className='row mt-4'>
+        <form onSubmit={handleSubmit} className='row mt-4'>
           {/* Part One */}
           {!showPartTwo && (
             <>
