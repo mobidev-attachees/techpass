@@ -7,6 +7,7 @@ import styles from "./page.module.css";
 import PhoneInput from 'react-phone-number-input/input';
 import Image from "next/image";
 import { toast } from 'react-hot-toast';
+import Navbar from '../components/Navbar';
 
 const CreateEvent = () => {
   const [eventName, setEventName] = useState("");
@@ -160,39 +161,7 @@ const CreateEvent = () => {
   };
   return (
     <div className="container">
-      <nav className="navbar navbar-expand-lg navbar-light bg-white color-white">
-        <div className="container-fluid justify-content-between">
-          <a className="navbar-brand" href="/">TechPass</a>
-          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarScroll">
-            <ul className="navbar-nav ms-auto my-2 my-lg-0 navbar-nav-scroll" style={{ "--bs-scroll-height": "100px" }}>
-              <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="/">Home</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="/createevent">Create Event</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link link" href="#">All Events</a>
-              </li>
-              <li className="nav-item dropdown">
-                <a className="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <Image src="/avatar-2.png" width="30" height="30" alt="profile image" className='rounded-circle'></Image>
-                </a>
-                <ul className="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-                  <li><a className="dropdown-item" href="/dashboard">Dashboard</a></li>
-                  <li><a className="dropdown-item" href="#">Profile</a></li>
-                  <li></li>
-                  <li><a className="dropdown-item" href="/login">Logout</a></li>
-                </ul>
-              </li>
-            </ul>
-            
-          </div>
-        </div>
-      </nav>
+      <div><Navbar /></div>
       <h3 className="text-center mt-3">Create Event</h3>
       <main className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
       
