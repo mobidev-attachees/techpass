@@ -1,176 +1,203 @@
 // src/app/editEvent/[id]/page.js
-"use client"; // Ensure this is declared at the top
+"use client"; 
 import React, { useEffect, useState } from 'react';
-import { useRouter, useParams } from 'next/navigation'; // Correct import for useRouter and useParams
+import { useRouter, useParams } from 'next/navigation';
 import Image from 'next/image';
 import styles from "./page.module.css";
 import PhoneInput from 'react-phone-number-input/input';
 import toast from 'react-hot-toast';
-import BannerCarousel from '../../components/BannerCarousel';
+import Spinner from '../../components/Spinner';
 import Navbar from '../../components/Navbar';
 
-
 export default function EditEventPage() {
-  const router = useRouter();
-  const params = useParams();
-  const { id } = params;
+    const router = useRouter();
+    const params = useParams();
+    const { id } = params;
 
-  const [loading, setLoading] = useState(true);
-  const [event, setEvent] = useState(null);
-  const [formData, setFormData] = useState({
-    eventName: '',
-    startDate: '',
-    endDate: '',
-    startTime: '',
-    endTime: '',
-    isFree: true, // Default to free ticket
-    ticketPrice: 'free', // Default ticket price
-    location: 'physical',
-    meetingLink: '',
-    country: '',
-    city: '',
-    eventDescription: '',
-    email: '',
-    tittle: '',
-    firstName: '',
-    middleName: '',
-    lastName: '',
-    phoneNumber: '',
-    websiteLink: '',
-    facebookLink: '',
-    instagramLink: '',
-    twitterLink: '',
-  });
+    const [loading, setLoading] = useState(true);
+    const [event, setEvent] = useState(null);
+    const [formData, setFormData] = useState({
+        eventName: '',
+        startDate: '',
+        endDate: '',
+        startTime: '',
+        endTime: '',
+        isFree: true,
+        ticketPrice: 'free',
+        location: 'physical',
+        meetingLink: '',
+        country: '',
+        city: '',
+        eventDescription: '',
+        email: '',
+        tittle: '',
+        firstName: '',
+        middleName: '',
+        lastName: '',
+        phoneNumber: '',
+        websiteLink: '',
+        facebookLink: '',
+        instagramLink: '',
+        twitterLink: '',
+    });
 
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [imageFile, setImageFile] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [imageFile, setImageFile] = useState(null);
 
-  useEffect(() => {
-    if (id) {
-      fetch(`/api/events/${id}`)
-        .then((response) => response.json())
-        .then((data) => {
-          if (data) {
-            setEvent(data);
-            setFormData({
-              eventName: data.eventName,
-              startDate: new Date(data.startDate).toISOString().split('T')[0],
-              endDate: new Date(data.endDate).toISOString().split('T')[0],
-              startTime: data.startTime,
-              endTime: data.endTime,
-              isFree: data.ticketPrice === 'free',
-              ticketPrice: data.ticketPrice || 'free', // Set ticket price or 'free' for free events
-              location: data.location || 'physical',
-              meetingLink: data.meetingLink || '',
-              country: data.country || '',
-              city: data.city || '',
-              eventDescription: data.eventDescription,
-              email: data.email,
-              tittle: data.tittle,
-              firstName: data.firstName,
-              middleName: data.middleName || '',
-              lastName: data.lastName,
-              phoneNumber: data.phoneNumber,
-              websiteLink: data.websiteLink || '',
-              facebookLink: data.facebookLink || '',
-              instagramLink: data.instagramLink || '',
-              twitterLink: data.twitterLink || '',
-            });
-            setSelectedImage(data.imageUrl || null); // Set the current image URL if available
-          }
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error('Error fetching event:', error);
-          setLoading(false);
-        });
-    }
-  }, [id]);
-
-  const [showPartTwo, setShowPartTwo] = useState(false);
-  
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setSelectedImage(imageUrl);
-      setImageFile(file);
-    } else {
-      setSelectedImage(null);
-      setImageFile(null);
-    }
-  };
-
-  const handleSwitchChange = () => {
-    setFormData((prevState) => ({
-      ...prevState,
-      isFree: !prevState.isFree,
-      ticketPrice: prevState.isFree ? '' : 'free', // Toggle between '' and 'free'
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const updatedData = {
-      ...formData,
-      ticketPrice: formData.isFree ? 'free' : formData.ticketPrice,
+    const checkLoggedIn = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                router.push('/login');
+                toast.error("You are not logged in. Please log in to view events.", {
+                    duration: 4000,
+                    position: 'top-right',
+                    style: {
+                        background: '#f44336',
+                        color: '#ffffff',
+                        zIndex: 99999
+                    },
+                });
+            }
+        } catch (error) {
+            console.error('Error checking login status:', error);
+        }
     };
 
-    try {
-      const formDataToSend = new FormData();
-      for (const key in updatedData) {
-        formDataToSend.append(key, updatedData[key]);
-      }
-      if (imageFile) {
-        formDataToSend.append('image', imageFile);
-      }
+    useEffect(() => {
+        checkLoggedIn();
+    }, []);
 
-      const response = await fetch(`/api/updateEvent/${id}`, {
-        method: 'PUT',
-        body: formDataToSend,
-      });
-
-      if (response.ok) {
-        toast.success("Event updated successfully", {
-          duration: 4000,
-          position: 'top-right',
-          style: {
-            background: '#4caf50',
-            color: '#ffffff',
-            zIndex: 99999
-          },
-        });
-        router.push(`/event/${id}`);
-      } else {
-        const contentType = response.headers.get('content-type');
-        if (contentType && contentType.includes('application/json')) {
-          const errorData = await response.json();
-          console.error('Failed to update event:', errorData.error);
-          alert(`Error: ${errorData.error}`);
-        } else {
-          const errorText = await response.text();
-          console.error('Failed to update event:', errorText);
-          alert(`Error: ${errorText}`);
+    useEffect(() => {
+        if (id) {
+            fetch(`/api/events/${id}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data) {
+                        setEvent(data);
+                        setFormData({
+                            eventName: data.eventName,
+                            startDate: new Date(data.startDate).toISOString().split('T')[0],
+                            endDate: new Date(data.endDate).toISOString().split('T')[0],
+                            startTime: data.startTime,
+                            endTime: data.endTime,
+                            isFree: data.ticketPrice === 'free',
+                            ticketPrice: data.ticketPrice || 'free',
+                            location: data.location || 'physical',
+                            meetingLink: data.meetingLink || '',
+                            country: data.country || '',
+                            city: data.city || '',
+                            eventDescription: data.eventDescription,
+                            email: data.email,
+                            tittle: data.tittle,
+                            firstName: data.firstName,
+                            middleName: data.middleName || '',
+                            lastName: data.lastName,
+                            phoneNumber: data.phoneNumber,
+                            websiteLink: data.websiteLink || '',
+                            facebookLink: data.facebookLink || '',
+                            instagramLink: data.instagramLink || '',
+                            twitterLink: data.twitterLink || '',
+                        });
+                        setSelectedImage(data.imageUrl || null);
+                    }
+                    setLoading(false);
+                })
+                .catch((error) => {
+                    console.error('Error fetching event:', error);
+                    setLoading(false);
+                });
         }
-      }
-    } catch (error) {
-      console.error('Error updating event:', error);
-      alert(`Error: ${error.message}`);
-    }
-  };
+    }, [id]);
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
+    const [showPartTwo, setShowPartTwo] = useState(false);
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
+
+    const handleImageChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const imageUrl = URL.createObjectURL(file);
+            setSelectedImage(imageUrl);
+            setImageFile(file);
+        } else {
+            setSelectedImage(null);
+            setImageFile(null);
+        }
+    };
+
+    const handleSwitchChange = () => {
+        setFormData((prevState) => ({
+            ...prevState,
+            isFree: !prevState.isFree,
+            ticketPrice: prevState.isFree ? '' : 'free',
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const updatedData = {
+            ...formData,
+            ticketPrice: formData.isFree ? 'free' : formData.ticketPrice,
+        };
+
+        try {
+            const formDataToSend = new FormData();
+            for (const key in updatedData) {
+                formDataToSend.append(key, updatedData[key]);
+            }
+            if (imageFile) {
+                formDataToSend.append('image', imageFile);
+            }
+
+            const response = await fetch(`/api/updateEvent/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+                body: formDataToSend,
+            });
+
+            if (response.ok) {
+                toast.success("Event updated successfully", {
+                    duration: 4000,
+                    position: 'top-right',
+                    style: {
+                        background: '#4caf50',
+                        color: '#ffffff',
+                        zIndex: 99999
+                    },
+                });
+
+                router.push(`/event/${id}`);
+            } else {
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    const errorData = await response.json();
+                    console.error('Failed to update event:', errorData.message);
+                    alert(`Error: ${errorData.message}`);
+                } else {
+                    const errorText = await response.text();
+                    console.error('Failed to update event:', errorText);
+                    alert(`Error: ${errorText}`);
+                }
+            }
+        } catch (error) {
+            console.error('Error updating event:', error);
+            alert(`Error: ${error.message}`);
+        }
+    };
+
+    if (loading) {
+        return <div><Spinner/></div>;
+    }
 
   return (
     <div className="container">

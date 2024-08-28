@@ -2,10 +2,9 @@
 import Link from "next/link";
 import styles from "./page.module.css";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import BannerCarousel from '../components/BannerCarousel';
-import { toast } from 'react-hot-toast';
-import { useRouter } from "next/navigation";
+import Navbar from '../components/Navbar';
 
 export default function Events() {
   const [events, setEvents] = useState([]);
@@ -16,33 +15,10 @@ export default function Events() {
   const [hasMore, setHasMore] = useState(true);
   const [totalEvents, setTotalEvents] = useState(0);
   const initialFetchLimit = 6; // Initial number of events to fetch
-  const router = useRouter();
 
-  // Function to fetch user login status
-  const checkLoggedIn = async () => {
+  const fetchEvents = useCallback(async (pageToFetch) => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        router.push('/login');
-        toast.error("You are not logged in. Please log in to view events.");
-      }
-    } catch (error) {
-      console.error('Error checking login status:', error);
-    }
-  };
-
-  useEffect(() => {
-    checkLoggedIn(); // Check login status on component mount
-  }, []);
-
-  const fetchEvents = async (pageToFetch) => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`/api/events/getAllEvents?limit=${initialFetchLimit}&page=${pageToFetch}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(`/api/events/getAllEvents?limit=${initialFetchLimit}&page=${pageToFetch}`);
       if (!response.ok) {
         throw new Error("Failed to fetch events");
       }
@@ -55,7 +31,7 @@ export default function Events() {
       setError(error.message);
       return { events: [], totalEvents: 0 };
     }
-  };
+  }, [initialFetchLimit]);
 
   useEffect(() => {
     const loadInitialEvents = async () => {
@@ -68,10 +44,9 @@ export default function Events() {
     };
 
     loadInitialEvents();
-  }, [page]);
+  }, [page, fetchEvents]);
 
   function convertTime(time) {
-    // Convert time from 24-hour format to AM/PM format
     var hours = parseInt(time.substring(0, 2));
     var minutes = time.substring(3);
     var period = (hours >= 12) ? "PM" : "AM";
@@ -121,43 +96,11 @@ export default function Events() {
     } catch (error) {
       setError(error.message);
     }
-  };
+  }
 
   return (
     <div className="container">
-      <nav className="navbar navbar-expand-lg navbar-light bg-white color-white">
-        <div className="container-fluid justify-content-between">
-          <a className="navbar-brand" href="/">TechPass</a>
-          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarScroll">
-            <ul className="navbar-nav ms-auto my-2 my-lg-0 navbar-nav-scroll" style={{ "--bs-scroll-height": "100px" }}>
-              <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="/">Home</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="/createevent">Create Event</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link link" href="#">All Events</a>
-              </li>
-              <li className="nav-item dropdown">
-                <a className="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <Image src="/avatar-2.png" width="30" height="30" alt="profile image" className='rounded-circle'></Image>
-                </a>
-                <ul className="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-                  <li><a className="dropdown-item" href="/dashboard">Dashboard</a></li>
-                  <li><a className="dropdown-item" href="/profile">Profile</a></li>
-                  <li></li>
-                  <li><a className="dropdown-item" href="/login">Logout</a></li>
-                </ul>
-              </li>
-            </ul>
-            
-          </div>
-        </div>
-      </nav>
+      <div><Navbar /></div>
         <h4 className="text-center mt-3">Events</h4>
         {/* Search Bar */}
         <div className="container mt-5">
@@ -200,7 +143,7 @@ export default function Events() {
         </div>
         {/* Banner Carousel */}
         <div className="rounded">
-            <BannerCarousel />
+            
           </div>
         <div className="row mt-6 rounded bg-white">
           

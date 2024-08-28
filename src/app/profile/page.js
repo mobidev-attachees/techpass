@@ -1,12 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min';
-import toast, { Toaster } from 'react-hot-toast';
+import dynamic from 'next/dynamic';
+import { Calendar } from 'react-bootstrap-icons';
+import toast from "react-hot-toast";
 
-export default function Profile() {
+const Spinner = dynamic(() => import('../components/Spinner'), { ssr: false });
+const Toaster = dynamic(() => import('react-hot-toast').then(mod => mod.Toaster), { ssr: false });
+
+function ProfileContent() {
   const [user, setUser] = useState(null);
   const [events, setEvents] = useState([]);
   const [error, setError] = useState("");
@@ -15,8 +17,72 @@ export default function Profile() {
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
 
+  useEffect(() => {
+    const fetchProfileAndEvents = async () => {
+      if (typeof window !== "undefined") {
+        try {
+          const token = localStorage.getItem('token');
+          if (!token) {
+            router.push('/login?message=You are not logged in. Please log in first.');
+            return;
+          }
+
+          // Fetch user profile
+          const profileResponse = await fetch('/api/profile', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          if (!profileResponse.ok) {
+            const errorData = await profileResponse.json();
+            if (profileResponse.status === 401) {
+              router.push('/login?message=You are not logged in. Please log in first.');
+            } else {
+              setError(errorData.message);
+            }
+            return;
+          }
+
+          const profileData = await profileResponse.json();
+          setUser(profileData);
+
+          // Fetch user events with pagination and search
+          const eventsResponse = await fetch(`/api/events/getEvents?page=${currentPage}&search=${searchQuery}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          if (!eventsResponse.ok) {
+            const errorData = await eventsResponse.json();
+            if (eventsResponse.status === 401) {
+              router.push('/login?message=You are not logged in. Please log in first.');
+            } else {
+              setError(errorData.message);
+            }
+            return;
+          }
+
+          const eventsData = await eventsResponse.json();
+          setEvents(eventsData.events);
+          setTotalPages(Math.ceil(eventsData.total / 10)); // Assuming 10 events per page
+        } catch (error) {
+          console.error('Profile fetch error:', error);
+          setError('An error occurred while fetching profile and events');
+        }
+      }
+    };
+
+    fetchProfileAndEvents();
+  }, [router, currentPage, searchQuery]);
+
   const handleDelete = async (eventId) => {
-    const token = localStorage.getItem('token');
+    const token = typeof window !== "undefined" && localStorage.getItem('token');
     if (!token) {
       router.push('/login?message=You are not logged in. Please log in first.');
       return;
@@ -42,7 +108,6 @@ export default function Profile() {
               zIndex: 99999,
             },
           });
-          // Remove the event from the state
           setEvents(events.filter(event => event.id !== eventId));
         } else {
           const errorData = await response.json();
@@ -59,7 +124,33 @@ export default function Profile() {
   };
 
   const handleEdit = (eventId) => {
-    router.push(`/editEvent/${eventId}`);
+    if (typeof window !== "undefined") {
+      router.push(`/editEvent/${eventId}`);
+    }
+  };
+
+  const handleLogout = () => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem('token');
+      router.push('/login');
+    }
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1); // Reset to first page on new search
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
   };
 
   const formatDate = (dateString) => {
@@ -81,94 +172,20 @@ export default function Profile() {
     return `${day}${daySuffix(day)} ${month} ${year}`;
   };
 
-  useEffect(() => {
-    const fetchProfileAndEvents = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          router.push('/login?message=You are not logged in. Please log in first.');
-          return;
-        }
-
-        // Fetch user profile
-        const profileResponse = await fetch('/api/profile', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
-        });
-
-        if (!profileResponse.ok) {
-          const errorData = await profileResponse.json();
-          setError(errorData.message);
-          if (profileResponse.status === 401) {
-            router.push('/login?message=You are not logged in. Please log in first.');
-          }
-          return;
-        }
-
-        const profileData = await profileResponse.json();
-        setUser(profileData);
-
-        // Fetch user events with pagination and search
-        const eventsResponse = await fetch(`/api/events/getEvents?page=${currentPage}&search=${searchQuery}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
-        });
-
-        if (!eventsResponse.ok) {
-          const errorData = await eventsResponse.json();
-          setError(errorData.message);
-          if (eventsResponse.status === 401) {
-            router.push('/login?message=You are not logged in. Please log in first.');
-          }
-          return;
-        }
-
-        const eventsData = await eventsResponse.json();
-        setEvents(eventsData.events);
-        setTotalPages(Math.ceil(eventsData.total / 10)); // Assuming 10 events per page
-      } catch (error) {
-        console.error('Profile fetch error:', error);
-        setError('An error occurred while fetching profile and events');
-      }
-    };
-
-    fetchProfileAndEvents(); 
-  }, [router, currentPage, searchQuery]);
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    router.push('/login');
-  };
-
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-    setCurrentPage(1); // Reset to first page on new search
-  };
-
-  const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
   if (error) {
-    return <div className="alert alert-danger">{error}</div>;
+    return (
+      <div className="alert alert-danger">
+        {error.includes('login') ? (
+          router.push('/login?message=You are not logged in. Please log in first.')
+        ) : (
+          error
+        )}
+      </div>
+    );
   }
 
   if (!user) {
-    return <div>Loading...</div>;
+    return <div><Spinner /></div>;
   }
   return (
     <div className="d-flex">
@@ -187,7 +204,7 @@ export default function Profile() {
             <strong>{user.username}</strong>
           </a>
           <ul className="dropdown-menu dropdown-menu text-small shadow" aria-labelledby="dropdownUser1">
-            <li><a className="dropdown-item" href="#">
+            <li><a className="dropdown-item" href="/editprofile">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
               <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
               <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
@@ -283,7 +300,7 @@ export default function Profile() {
       <main className="flex-grow-1 p-3">
         <div className="pt-3">
         <Toaster />
-          <h2 className="text-primary">Profile</h2>
+          <h2 className="text-success">Profile</h2>
                 <div className="container  h-100">
                   <div className="row d-flex justify-content-start align-items-center h-100">
                     <div className="col col-lg-8 mb-lg-0">
@@ -307,8 +324,8 @@ export default function Profile() {
                           </div>
                           <div className="col-md-8">
                             <div className="card-body p-4">
-                              <h6> Personal Info</h6>
-                              <hr className="mt-0 mb-4" />
+                              <h5 className="text-success"> Personal Info</h5>
+                              
                               <div className="row pt-1">
                                 <div className="col-6 mb-3">
                                   <h6>Email</h6>
@@ -319,28 +336,44 @@ export default function Profile() {
                                   <p className="text-muted">{ user.phoneNumber}</p>
                                 </div>
                               </div>
-                              <h6>Projects</h6>
-                              <hr className="mt-0 mb-4" />
-                              <div className="row pt-1">
+                              <hr className="mt-0 mb-4" />                             
+                              <div className="row d-flex">
                                 <div className="col-6 mb-3">
-                                  <h6>Recent</h6>
-                                  <p className="text-muted">Lorem ipsum</p>
+                                  <div className="radius-10 shadow">
+                                    <div className="card-body">
+                                      <div className="d-flex align-items-center">
+                                        <div 
+                                          className="rounded-circle p-1 border d-flex justify-content-center align-items-center"
+                                          style={{ width: '30px', height: '30px' }}
+                                        >
+                                          {/* <Calendar size={70} /> */}
+                                        </div>
+                                        <div className="flex-grow-1 ms-3">
+                                          <p className="mt-0">Media heading</p>
+                                          <p className="mb-0">lorem</p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
                                 </div>
                                 <div className="col-6 mb-3">
-                                  <h6>Most Viewed</h6>
-                                  <p className="text-muted">Dolor sit amet</p>
+                                  <div className="radius-10 shadow">
+                                    <div className="card-body">
+                                      <div className="d-flex align-items-center">
+                                        <div 
+                                          className="rounded-circle p-1 border d-flex justify-content-center align-items-center"
+                                          style={{ width: '50px', height: '50px' }}
+                                        >
+                                          <Calendar size={70} />
+                                        </div>
+                                        <div className="flex-grow-1 ms-3">
+                                          <p className="mt-0 text-success">Total events</p>
+                                          <p className="mb-0">lorem</p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
                                 </div>
-                              </div>
-                              <div className="d-flex justify-content-start">
-                                <a href="#!">
-                                  <i className="fab fa-facebook-f fa-lg me-3"></i>
-                                </a>
-                                <a href="#!">
-                                  <i className="fab fa-twitter fa-lg me-3"></i>
-                                </a>
-                                <a href="#!">
-                                  <i className="fab fa-instagram fa-lg"></i>
-                                </a>
                               </div>
                             </div>
                           </div>
@@ -451,3 +484,10 @@ export default function Profile() {
     </div>
   );
 }
+export default function Profile() {
+  return (
+      <ProfileContent />
+    
+  );
+}
+

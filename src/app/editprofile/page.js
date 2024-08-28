@@ -320,7 +320,7 @@ export default function EditProfilePage() {
           </div>
           <div className="col-md-12">
             <div className="d-flex justify-content-between">
-              <button type="submit" className="btn btn-primary">Submit</button>
+              <button type="submit" className="btn btn-success">Submit</button>
               <button type="reset" className="btn btn-light">Reset</button>
             </div>
           </div>

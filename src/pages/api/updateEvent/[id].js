@@ -1,3 +1,4 @@
+// src/pages/api/updateEvent/[id].js
 import formidable from 'formidable';
 import path from 'path';
 import fs from 'fs/promises';
@@ -37,8 +38,8 @@ const handler = async (req, res) => {
       maxFileSize: 1000 * 1024 * 1024, // 1 GB
       filename: (name, ext, part, form) => {
         const timestamp = Date.now();
-        const originalFilename = part.originalFilename;
-        const sanitizedFilename = originalFilename.replace(/\s+/g, '-'); // Replace spaces with dashes
+        const originalFilename = part.originalFilename || 'default-filename';
+        const sanitizedFilename = originalFilename.replace(/\s+/g, '-');
         return `${timestamp}-${sanitizedFilename}`;
       },
     });
@@ -51,7 +52,6 @@ const handler = async (req, res) => {
 
       const eventId = req.query.id;
 
-      // Fetch existing event data
       const existingEvent = await prisma.storeEvent.findUnique({
         where: { id: parseInt(eventId) },
       });
@@ -60,10 +60,11 @@ const handler = async (req, res) => {
         return res.status(404).json({ message: 'Event not found' });
       }
 
-      // Check if the user is authorized to update the event
       if (existingEvent.userId !== userId) {
         return res.status(403).json({ message: 'Forbidden' });
       }
+
+      const normalizeField = (field) => (Array.isArray(field) ? field[0] : field);
 
       const {
         eventName,
@@ -94,10 +95,11 @@ const handler = async (req, res) => {
         return isNaN(date.getTime()) ? null : date.toISOString();
       };
 
-      const newImageUrl = files.image ? `/uploads/${path.basename(files.image[0].path)}` : null;
+      const newImageUrl = files.image && files.image[0] && files.image[0].path
+        ? `/uploads/${path.basename(files.image[0].path)}`
+        : null;
 
-      // Delete the old image if a new image is uploaded
-      if (newImageUrl && existingEvent.imageUrl) {
+      if (newImageUrl && existingEvent.imageUrl && typeof existingEvent.imageUrl === 'string') {
         const oldImagePath = path.join(process.cwd(), 'public', existingEvent.imageUrl);
         try {
           await fs.unlink(oldImagePath);
@@ -111,27 +113,27 @@ const handler = async (req, res) => {
         const updatedEvent = await prisma.storeEvent.update({
           where: { id: parseInt(eventId) },
           data: {
-            eventName: eventName || undefined,
-            eventDescription: eventDescription || undefined,
-            tittle: tittle || undefined,
-            location: location || undefined,
-            country: country || undefined,
-            city: city || undefined,
-            startTime: startTime || undefined,
-            endTime: endTime || undefined,
-            startDate: parseDate(startDate) || undefined,
-            endDate: parseDate(endDate) || undefined,
-            meetingLink: meetingLink || undefined,
-            email: email || undefined,
-            ticketPrice: ticketPrice || undefined,
-            firstName: firstName || undefined,
-            middleName: middleName || undefined,
-            lastName: lastName || undefined,
-            phoneNumber: phoneNumber || undefined,
-            instagramLink: instagramLink || undefined,
-            twitterLink: twitterLink || undefined,
-            websiteLink: websiteLink || undefined,
-            facebookLink: facebookLink || undefined,
+            eventName: normalizeField(eventName) || undefined,
+            eventDescription: normalizeField(eventDescription) || undefined,
+            tittle: normalizeField(tittle) || undefined,
+            location: normalizeField(location) || undefined,
+            country: normalizeField(country) || undefined,
+            city: normalizeField(city) || undefined,
+            startTime: normalizeField(startTime) || undefined,
+            endTime: normalizeField(endTime) || undefined,
+            startDate: parseDate(normalizeField(startDate)) || undefined,
+            endDate: parseDate(normalizeField(endDate)) || undefined,
+            meetingLink: normalizeField(meetingLink) || undefined,
+            email: normalizeField(email) || undefined,
+            ticketPrice: normalizeField(ticketPrice) || undefined,
+            firstName: normalizeField(firstName) || undefined,
+            middleName: normalizeField(middleName) || undefined,
+            lastName: normalizeField(lastName) || undefined,
+            phoneNumber: normalizeField(phoneNumber) || undefined,
+            instagramLink: normalizeField(instagramLink) || undefined,
+            twitterLink: normalizeField(twitterLink) || undefined,
+            websiteLink: normalizeField(websiteLink) || undefined,
+            facebookLink: normalizeField(facebookLink) || undefined,
             imageUrl: newImageUrl || existingEvent.imageUrl,
           },
         });

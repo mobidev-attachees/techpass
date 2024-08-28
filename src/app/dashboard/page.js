@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import Navbar from '../components/Navbar';
 
 
+
 export default function Events() {
   const [events, setEvents] = useState([]);
   const [countries, setCountries] = useState([]);
@@ -198,7 +199,7 @@ export default function Events() {
             
             {/* Map through each event and display it as a card */}
             {events.map(event => (
-              <Link href={`/event/${event.id}`} key={event.id}>
+              <a href={`/event/${event.id}`} key={event.id}>
                 <div className={styles.card}>
                 <img src={event.imageUrl || '/uploads/default-image.jpg'} className={`card-img-top rounded ${styles.cardImage}`} alt="Event Image" />
                   <div className={styles.cardBody}>
@@ -226,7 +227,7 @@ export default function Events() {
                     </div>
                   </div>
                 </div>
-              </Link>
+              </a>
             ))}
           </div>
 

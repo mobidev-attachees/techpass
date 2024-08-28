@@ -149,7 +149,17 @@ const CreateEvent = () => {
       });
 
       if (response.ok) {
-        router.push("/events");
+        toast.success("Event created successfully!", {
+          style: {
+            animation: "fade-in 3s",
+            backgroundColor: 'green',
+            color: 'white',
+            textAlign: 'right',
+          },
+          position: "top-right", // Updated toaster position
+        });
+        const eventData = await response.json();
+        router.push(`/event/${eventData.id}`); // Redirect to the created event page
       } else {
         const data = await response.json();
         setError(data.message);

@@ -1,9 +1,6 @@
 // next.config.mjs
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    appDir: true,
-  },
   // Enables support for environment variables from .env files
   env: {
     CUSTOM_ENV_VARIABLE: process.env.CUSTOM_ENV_VARIABLE,
@@ -39,10 +36,6 @@ const nextConfig = {
         destination: '/api/:path*',
       },
     ];
-  },
-  // Ensuring that future webpack versions do not cause issues
-  future: {
-    webpack5: true,
   },
 };
 
