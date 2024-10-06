@@ -1,16 +1,10 @@
 "use client";
 import { Inter } from "next/font/google";
 import React, { useEffect } from 'react';
-import Head from 'next/head';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./globals.css";
 import { Toaster } from 'react-hot-toast';
 import { ClerkProvider } from '@clerk/nextjs'; 
-// import 'mdb-react-ui-kit/dist/css/mdb.min.css';
-
-
-
-
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,17 +19,14 @@ export default function RootLayout({ children }) {
   }, []);
 
   return (
-    <html lang="en">
-      <Head>
+    <html lang="en" className={inter.className}>
+      <head>
         <title>Techpass</title>
         <meta name="description" content="Techpass" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
-      </Head>
-      <body className={inter.className}>
-        <ClerkProvider
-          frontendApi={process.env.NEXT_PUBLIC_CLERK_FRONTEND_API}
-        >
+      </head>
+      <body>
+        <ClerkProvider frontendApi={process.env.NEXT_PUBLIC_CLERK_FRONTEND_API}>
           <Toaster />
           {children}
         </ClerkProvider>

@@ -1,9 +1,9 @@
 "use client";
 import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from 'next/navigation';
-import Link from 'next/link';
 import { toast, Toaster } from 'react-hot-toast';
 import Spinner from '../components/Spinner';
+import styles from "./page.module.css";
 
 function LoginContent() {
   const [email, setEmail] = useState("");
@@ -59,7 +59,7 @@ function LoginContent() {
         if (typeof window !== "undefined") {
           localStorage.setItem("token", data.token);
           localStorage.setItem("sessionId", data.sessionId);
-          window.location.href = "/dashboard";
+          window.location.href = "/profile";
 
           toast.success("Login successful", {
             style: {
@@ -97,38 +97,41 @@ function LoginContent() {
   };
 
   return (
-    <div className="container">
-      <Toaster /> 
-      <main style={{ 
-        backgroundImage: `url('/login.jpg')`, 
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-      }}>
-        <div className="main-container form" style={{ 
-          maxWidth: '600px', 
-          padding: '20px', 
-          backgroundColor: '#fff', 
-          borderRadius: '8px', 
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.9)' 
-        }}>
-          <div className="form-wrapper" style={{ 
-            display: 'flex', 
-            flexDirection: 'column', 
-            alignItems: 'center' 
-          }}>
-          <div className="mb-3 text-center">
-            <img src="/favicon.ico" width="60" alt="" className="rounded-circle"/>
-          </div>
-          <div className="text-center mb-4">
-            <h5 className="">Techpass</h5>
-            <p className="mb-0 text-success"><i class="bi bi-eye"></i>Please log in to your account</p>
-          </div>
-          <form style={{ width: 'auto' }} onSubmit={handleLogin}>
-              <div className="form-group" style={{ marginBottom: '20px' }}>
+    <div className="container bg-white" style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      minHeight: '100vh',
+      padding: '20px'
+    }}>
+      <Toaster />
+     
+      <div
+        className="row rounded-3 text-black mt-3 mb-3"
+        style={{
+          maxWidth: '1000px',
+          borderRadius: '8px',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+          overflow: 'hidden',
+          backgroundImage: 'url(/login.jpg)', 
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          width: '100%'
+        }}
+      >
+      <div className="row g-0 ">
+        <div className="col-lg-6">
+          <div className="col p-md-5 mx-md-4">
+            <div className="text-center mb-5 rounded-circle">
+              <div className="mb-3 text-center">
+              <img src="/favicon.ico" width="100" alt="Techpass" className="rounded-circle"/>
+              </div>
+            </div>
+
+            <form style={{ width: 'auto' }} onSubmit={handleLogin}>
+              <h4>Sign in to your account</h4>
+
+              <div className="form-group mb-4">
                 <label htmlFor="email">Email:</label>
                 <input
                   type="email"
@@ -137,11 +140,12 @@ function LoginContent() {
                   id="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required // Add required attribute here
+                  required
+                  placeholder="Enter your email"
                 />
               </div>
 
-              <div className="form-group" style={{ marginBottom: '20px' }}>
+              <div className="form-group mb-4">
                 <label htmlFor="password">Password:</label>
                 <div style={{ position: 'relative' }}>
                   <input
@@ -151,8 +155,8 @@ function LoginContent() {
                     id="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    required // Add required attribute here
-                    style={{ paddingRight: '40px' }} // Ensure space for the toggle icon
+                    required
+                    placeholder="Enter your password"
                   />
                   <button
                     type="button"
@@ -186,19 +190,57 @@ function LoginContent() {
                 </div>
               </div>
 
-              <button type="submit" className="btn btn-outline-success" style={{ width: 'auto' }}>
-                Login
-              </button>
+              <div className="text-center pt-1 mb-5 pb-1 row">
+                    <div className="col  shadow-lg rounded btn-block fa-lg gradient-custom-2 mb-3 " style={{background: 'linear-gradient(to right, #005f30, #3cc33c, #00b09b)', color: '#fff', padding: '20px',}}>
+                      <button
+                        className="btn text-white" // Using btn-link for no button style and text-white for white color
+                        type="submit"
+                        style={{ border: 'none', background: 'none', padding: 0, textUnderline:'none' }} // Additional inline styles
+                      >
+                        Login
+                      </button>
+
+                    </div>
+                    <a className="text-muted text-lg" href="#!">Forgot password?</a>
+              </div>
               {error && <p style={{ color: 'red' }}>{error}</p>}
             </form>
 
-            <p> Do not have an account? <a href="/register" className="text-success fs-5">Sign up</a></p>
+            <div className="d-flex align-items-center justify-content-center pb-4">
+              <p className="mb-0 me-2">Don't have an account?</p>
+              <a href="/register" className="text-blue">
+                Sign up
+              </a>
+            </div>
           </div>
         </div>
-      </main>
+
+        {/* Right Column with Gradient Background */}
+        <div
+          className="col-lg-6 d-flex align-items-center"
+          style={{
+            background: 'linear-gradient(to right, #005f30, #3cc33c, #00b09b)',
+            color: '#fff',
+            padding: 'auto',
+            borderTopRightRadius: '0.3rem',
+            borderBottomRightRadius: '0.3rem',
+          }}
+        >
+          <div className="text-white px-3 py-4 p-md-5 mx-md-4">
+            <h4 className="mb-4">Organize your events in one place</h4>
+            <p className="large mb-0">
+              Welcome to TechPass, your ultimate event platform where you can effortlessly create and manage your events with ease, ensuring a seamless experience from start to finish!
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
-  );
-}
+  
+</div>
+
+);
+};
+  
 
 export default function Login() {
   return (

@@ -49,7 +49,7 @@ export default async function handler(req, res) {
     const token = jwt.sign(
       { userId: user.id, sessionId: session.id },
       process.env.JWT_SECRET,
-      { expiresIn: '1h' }
+      { expiresIn: '1d' }
     );
 
     // Return the JWT token and session ID in the response

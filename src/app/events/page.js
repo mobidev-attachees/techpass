@@ -3,7 +3,7 @@ import Link from "next/link";
 import styles from "./page.module.css";
 import Image from "next/image";
 import React, { useEffect, useState, useCallback } from "react";
-import BannerCarousel from '../components/BannerCarousel';
+import EventCarousel from '../components/EventCarousel';
 import Navbar from '../components/Navbar';
 
 export default function Events() {
@@ -142,8 +142,8 @@ export default function Events() {
           </div>
         </div>
         {/* Banner Carousel */}
-        <div className="rounded">
-            
+        <div className="rounded bg-white shadow-sm py-3 my-3">
+        <EventCarousel />
           </div>
         <div className="row mt-6 rounded bg-white">
           
@@ -157,36 +157,55 @@ export default function Events() {
             
             {/* Map through each event and display it as a card */}
             {events.map(event => (
-              <Link href={`/event/${event.id}`} key={event.id}>
-                <div className={styles.card}>
-                <img src={event.imageUrl || '/uploads/default-image.jpg'} className={`card-img-top rounded ${styles.cardImage}`} alt="Event Image" />
-                  <div className={styles.cardBody}>
-                    <div className={styles.cardContent}>
-                      <div className={styles.cardColumnSmall}>
-                        <p className="fw-bold text-uppercase" style={{ color: 'purple' }}>
-                          {new Date(event.startDate).toLocaleString('en-US', { month: 'short' })}
-                        </p>
-                        <p className="fw-bold">
-                          {new Date(event.startDate).getDate()}-{new Date(event.endDate).getDate()}
-                        </p>
-                      </div>
+            <a href={`/event/${event.id}`} key={event.id}>
+              <div key={event.id} className={styles.card}>
+                <img 
+                  src={event.imageUrl || '/uploads/default-image.jpg'} 
+                  className={`card-img-top rounded ${styles.cardImage}`} 
+                  alt="Event Image" 
+                    style={{ 
+                      width: '100%',        // Ensure the image takes up the full width of the container
+                      height: '200px',       // Set a fixed height for all images
+                      objectFit: 'cover',    // Ensure the image covers the container without stretching
+                      borderRadius: '12px'   // Optional: Add a consistent border-radius
+                    }} 
+                />
 
-                      <div className={styles.cardColumnLarge}>
-                        <h5 className="text-capitalize">{event.eventName}</h5>
-                        <p className="fs-6">{event.country}, {event.city}</p>
-                        <p className="fs-6">{convertTime(event.startTime)} - {convertTime(event.endTime)}</p>
-                        <p className="fs-6">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-cash-stack" viewBox="0 0 16 16">
-                            <path d="M1 3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1zm7 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/>
-                            <path d="M0 5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V7a2 2 0 0 1-2-2z"/>
-                          </svg> {event.ticketPrice}
-                        </p>
-                      </div>
+                <div className={styles.cardBody}>
+                  <div className={styles.cardContent}>
+                    <div className={styles.cardColumnSmall}>
+                      <p className="fw-bold text-uppercase" style={{ color: 'purple' }}>
+                        {new Date(event.startDate).toLocaleString('en-US', { month: 'short' })}
+                      </p>
+                      <p className="fw-bold">
+                        {new Date(event.startDate).getDate()}-{new Date(event.endDate).getDate()}
+                      </p>
+                    </div>
+                    <div className={styles.cardColumnLarge}>
+                      <h5 className="text-capitalize">{event.eventName}</h5>
+                      <p className="fs-6">
+                        {event.country || event.city ? (
+                          <>
+                            {event.country || "Virtual"}, {event.city || "Virtual"}
+                          </>
+                        ) : (
+                          "Virtual"
+                        )}
+                      </p>
+
+                      <p className="fs-6">{convertTime(event.startTime)} - {convertTime(event.endTime)}</p>
+                      <p className="fs-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-cash-stack" viewBox="0 0 16 16">
+                          <path d="M1 3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1zm7 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/>
+                          <path d="M0 5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V7a2 2 0 0 1-2-2z"/>
+                        </svg> {event.ticketPrice}
+                      </p>
                     </div>
                   </div>
                 </div>
-              </Link>
-            ))}
+              </div>
+            </a>
+          ))}
           </div>
 
           {/* Load More Button */}

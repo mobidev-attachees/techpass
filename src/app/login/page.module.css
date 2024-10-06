@@ -1,126 +1,24 @@
-/* page.module.css */
 
-/* Move these styles to a global CSS file or remove them if not necessary */
-/*
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-*/
 
-.body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh; /* Ensure it takes up the full height of the viewport */
-  background-color: #f8f9fa; /* Optional: background color for better visibility */
-}
-
-.main-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  width: 100%;
-  max-width: 600px;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  min-height: 50vh; /* Ensure it has some height */
-}
-
-.form-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.btn {
-  width: auto; /* Adjust width as needed */
-}
-/* page.module.css */
-
-.navbar {
-  background-color: #faf4f4; /* Example background color */
-  color: #0c0c0c;
-}
-
-.container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem;
-}
-
-.brand {
-  color: #0c0c0c; /* Example text color */
-  font-size: 1.5rem;
-  text-decoration: none;
-}
-
-.toggleBtn {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0.25rem 0.5rem;
-}
-
-.toggleBtn-lg {
-  display: none; /* Example: hide on larger screens */
-}
-
-.srOnly {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-.iconBar {
-  background-color: #fff; /* Example icon color */
-  display: block;
-  width: 1.5rem;
-  height: 0.2rem;
-  margin: 0.25rem auto;
-}
-
-.collapse {
-  display: flex;
-  flex-grow: 1;
-  justify-content: flex-end;
-}
-
-.nav {
-  display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.navItem {
-  margin-left: 1rem; /* Example spacing between nav items */
-}
-
-.navLink {
-  color: #0c0c0c; /* Example text color */
-  text-decoration: none;
-}
-
-/* Additional styles for the image within the navbar */
-.navImage {
-  max-width: 50px; /* Ensure the image doesn't exceed the width of its container */
-  max-height: 50px; /* Ensure the image doesn't exceed the height of its container */
-  margin-right: 0.5rem; /* Example margin between image and text */
-  border-radius: 100%;
-}
+.gradient-custom-2 {
+  /* fallback for old browsers */
+  background: #fccb90;
+  
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: -webkit-linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+  
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+  }
+  
+  @media (min-width: 768px) {
+  .gradient-form {
+  height: 100vh !important;
+  }
+  }
+  @media (min-width: 769px) {
+  .gradient-custom-2 {
+  border-top-right-radius: .3rem;
+  border-bottom-right-radius: .3rem;
+  }
+  }
