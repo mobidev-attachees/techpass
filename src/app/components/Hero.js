@@ -27,22 +27,21 @@ const MyComponent = () => {
 
             <div className="lc-block mb-3 bg-white">
               <p className="rfs-8">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc et
-                metus id ligula malesuada placerat sit amet quis enim.
+                Organize your events in one place
               </p>
             </div>
 
             <div className="lc-block mb-4">
-              <a className="btn btn-success px-4 me-md-2 btn-lg" href="#" role="button">
-                Get it now
+              <a className="btn btn-success px-4 me-md-2 btn-lg" href="/register" role="button">
+                Get started
               </a>
             </div>
 
-            <div className="lc-block">
+            {/* <div className="lc-block">
               <p className="fw-bold">Business collaboration based on trust:</p>
-            </div>
+            </div> */}
 
-            <div className="row">
+            {/* <div className="row">
               <div className="lc-block col-3">
                 <img
                   className="img-fluid wp-image-975"
@@ -71,7 +70,7 @@ const MyComponent = () => {
                   alt="Samsung"
                 />
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
