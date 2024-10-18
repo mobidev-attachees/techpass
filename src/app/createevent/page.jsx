@@ -178,7 +178,7 @@ const CreateEvent = () => {
       <div className="container mt-3">
 
         <div className="row justify-content-center">
-          <div className="col-lg-10 bg-white p-4 rounded shadow-lg">
+          <div className="col-lg-12 bg-white p-4 rounded shadow-lg">
             
             {error && <p className={styles.error}>{error}</p>}
             <form onSubmit={handleCreateEvent} className={styles.form}>

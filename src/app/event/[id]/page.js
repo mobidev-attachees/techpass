@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Spinner from '../../components/Spinner';// Adjusted path
 import Navbar from '../../components/Navbar'
+import Footer from 'app/components/Footer';
 
 
 function getDayWithSuffix(date) {
@@ -81,12 +82,12 @@ export default function EventPage({ params }) {
   }
 
   return (
-    <div className="container mt-20px">
+    <div className="container">
       <Navbar />
       <h4 className="text-center mt-5">Event Preview</h4>
       <div className="container">
         <div className="row justify-content-center align-items-center vh-100 ">
-          <div className="col-lg-10 mb-3 mt-4 shadow-lg p-3">
+          <div className="col-lg-12 mb-3 mt-4 shadow-lg py-1 my-1">
             <div 
               className="p-1 py-5 mb-0 d-flex justify-content-start align-items-end rounded" 
               style={{ 
@@ -181,5 +182,6 @@ export default function EventPage({ params }) {
         </div>
       </div>
     </div>
+    
   );
 }  
