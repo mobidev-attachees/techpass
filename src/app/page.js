@@ -8,7 +8,7 @@ import React, { useEffect, useState } from "react";
 import EventCarousel from './components/EventCarousel';
 import Homenav from './components/Homenav';
 import Footer from './components/Footer';
-import Hero from './components/hero';
+import Hero from './components/Hero';
 // import EventCarousel from './components/EventCarousel';
 
 export default function Home() {
