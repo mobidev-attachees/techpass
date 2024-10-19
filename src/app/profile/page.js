@@ -9,7 +9,7 @@ import Image from "next/image";
 function PageComponent({ totalEvents }) {
   return (
     <div className="sample-component container">
-      <div className="container shadow rounded bg-white">
+      <div className="">
         <Profille />
       </div>
     </div>
