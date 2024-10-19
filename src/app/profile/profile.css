@@ -36,7 +36,7 @@
     right: 10px;
     cursor: pointer;
     color: black;
-    font-size: x-large;
+    
   }
   
   /* Sidebar header */
@@ -44,7 +44,7 @@
     padding: auto;
     background: white;
     color: #3a8558;
-    font-size: large;
+    
   }
   
   /* Sidebar components */
@@ -132,6 +132,6 @@
   #sidebarCollapse {
     
     color: #0c0c0c;
-    font-size: xx-large;
+    
   }
   

@@ -82,7 +82,7 @@ function Profile() {
       {/* Sidebar */}
       <nav id="sidebar" className={sidebarActive ? "active" : ""}>
         <div id="dismiss"  title=" Close menu" onClick={toggleSidebar}>
-          <i class="fa fa-times" aria-hidden="true"></i>
+          <i className="fa fa-times" aria-hidden="true"></i>
         </div>
         <div className="sidebar-header d-flex justify-content-center">
         <a className="navbar-brand" href="/"><Image src="/favicon.jpeg" width="60" height="60" alt="profile image" className='rounded-circle'></Image><h4>TechPass</h4></a>
@@ -102,7 +102,7 @@ function Profile() {
               className={`collapse list-unstyled ${collapseActive.homeSubmenu ? "show" : ""}`}
               id="homeSubmenu"
             >
-              <li className="py-1 my-1"><a href="/events"><i class="fas fa-calendar" aria-hidden="true"></i> All events</a></li>
+              <li className="py-1 my-1"><a href="/events"><i className="fas fa-calendar" aria-hidden="true"></i> All events</a></li>
               <li className="py-1 my-1"><a href="/createevent">Add event</a></li>
               
             </ul>
@@ -140,10 +140,10 @@ function Profile() {
             <button
               type="button"
               id="sidebarCollapse"
-              className="btn"
+              className="btn text-sm"
               onClick={toggleSidebar}
             >
-             <i class="fa fa-bars" aria-hidden="true"></i>
+             <i className="fa fa-bars" aria-hidden="true"></i>
             </button>
             
 
