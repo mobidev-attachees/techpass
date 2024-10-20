@@ -453,18 +453,21 @@ function ProfileContent() {
             </thead>
             <tbody>
             {events.map((event, index) => (
-              <tr>
-                <td className="fs-5 text-capitalize">{event.eventName}</td>
-                <td>{formatDate(event.startDate)}</td>
-                <td>{formatDate(event.endDate)}</td>
-                <td>
-                  <span className="badge  text-white shadow-sm w-100" style={{ background: 'linear-gradient(to right, #11998e, #38ef7d)'}}>
-                  {event.ticketPrice}
-                  </span>
-                </td>
-                
-              </tr>
-            ))}
+  <tr key={event.id || index}> {/* Add key prop here */}
+    <td className="fs-5 text-capitalize">{event.eventName}</td>
+    <td>{formatDate(event.startDate)}</td>
+    <td>{formatDate(event.endDate)}</td>
+    <td>
+      <span
+        className="badge text-white shadow-sm w-100"
+        style={{ background: 'linear-gradient(to right, #11998e, #38ef7d)' }}
+      >
+        {event.ticketPrice}
+      </span>
+    </td>
+  </tr>
+))}
+
             </tbody>
           </table>
         </div>
