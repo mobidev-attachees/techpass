@@ -232,70 +232,72 @@ function Eventts() {
               </tr>
             </thead>
             <tbody>
-            {events.map((event, index) => (
-              <tr>
-                <td>
-                  <div className="d-flex align-items-center">
-                    <div>
-                      <input
-                        className="form-check-input me-3"
-                        type="checkbox"
-                        value=""
-                        aria-label="..."
-                      />
-                    </div>
-                    <div className="ms-2">
-                      <h6 className="mb-0 font-14">#</h6>
-                    </div>
-                  </div>
-                </td>
-                <td className="text-capitalize">{event.eventName}</td>
-                <td>
-                <span className="badge  text-white shadow-sm w-100" style={{ background: 'linear-gradient(to right, #11998e, #38ef7d)'}}>
-                  {event.ticketPrice}
-                  </span>
-                </td>
-                <td>
-                  <img
-                    src={event.imageUrl || '/uploads/default-image.jpg'}
-                    className="product-img-2 rounded"
-                    alt="product"
-                    width={80}
-                    height={30}
-                  />
-                </td>
-                <td>{formatDate(event.startDate)}</td>
-                <td>{formatDate(event.endDate)}</td>
-                <td>
-                    <a
-                        className="btn btn-info btn-sm radius-30 px-4"
-                        href={`/event/${event.id}`}
-                    >
-                        Details
-                    </a>
-                 </td>
+{events.map((event, index) => (
+  <tr key={event.id || index}> {/* Add key prop here */}
+    <td>
+      <div className="d-flex align-items-center">
+        <div>
+          <input
+            className="form-check-input me-3"
+            type="checkbox"
+            value=""
+            aria-label="..."
+          />
+        </div>
+        <div className="ms-2">
+          <h6 className="mb-0 font-14">#</h6>
+        </div>
+      </div>
+    </td>
+    <td className="text-capitalize">{event.eventName}</td>
+    <td>
+      <span
+        className="badge text-white shadow-sm w-100"
+        style={{ background: 'linear-gradient(to right, #11998e, #38ef7d)' }}
+      >
+        {event.ticketPrice}
+      </span>
+    </td>
+    <td>
+      <img
+        src={event.imageUrl || '/uploads/default-image.jpg'}
+        className="product-img-2 rounded"
+        alt="product"
+        width={80}
+        height={30}
+      />
+    </td>
+    <td>{formatDate(event.startDate)}</td>
+    <td>{formatDate(event.endDate)}</td>
+    <td>
+      <a
+        className="btn btn-info btn-sm radius-30 px-4"
+        href={`/event/${event.id}`}
+      >
+        Details
+      </a>
+    </td>
+    <td>
+      <button
+        type="button"
+        className="btn btn-danger btn-sm radius-30 px-4"
+        onClick={handleDelete}
+      >
+        Delete
+      </button>
+    </td>
+    <td>
+      <button
+        type="button"
+        className="btn btn-warning btn-sm radius-30 px-4"
+        onClick={() => handleEdit(event.id)}
+      >
+        Edit
+      </button>
+    </td>
+  </tr>
+))}
 
-                <td>
-                  <button
-                    type="button"
-                    className="btn btn-danger btn-sm radius-30 px-4"
-                    onClick={handleDelete}
-                  >
-                    Delete
-                  </button>
-                </td>
-                <td>
-                  <button
-                    type="button"
-                    className="btn btn-warning btn-sm radius-30 px-4"
-                    onClick={() => handleEdit(event.id)}
-                  >
-                   Edit
-                  </button>
-                </td>
-                
-              </tr>
-            ))}
             </tbody>
           </table>
         </div>
