@@ -139,7 +139,15 @@ export default function Events() {
       <div>
         <Navbar />
       </div>
-        <h4 className="text-center mt-3">Events</h4>
+      <div className="ps-3">
+						<nav aria-label="breadcrumb ">
+							<ol className="breadcrumb mb-0 p-0 ">
+								<li className="breadcrumb-item"><a href="javascript:;"></a>
+								</li>
+								<li className="breadcrumb-item active text-success fs-6 text-uppercase" aria-current="page"><strong>Events</strong></li>
+							</ol>
+						</nav>
+					</div>
         {/* Search Bar */}
         <div className="container mt-5">
           {/* <!-- Search and City Selection --> */}
@@ -173,13 +181,6 @@ export default function Events() {
             {/* Map through each event and display it as a card */}
             <Eventts />
           </div>
-
-          {/* Load More Button */}
-          {hasMore && !error && (
-            <div className="d-grid col-6 mx-auto mb-4 mt-6">
-              <button className="btn btn-outline-success btn-lg" onClick={loadMoreEvents} type="button">See More</button>
-            </div>
-          )}
 
         </div>
       </div>

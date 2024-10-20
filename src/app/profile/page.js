@@ -102,7 +102,7 @@ function Profile() {
               className={`collapse list-unstyled ${collapseActive.homeSubmenu ? "show" : ""}`}
               id="homeSubmenu"
             >
-              <li className="py-1 my-1"><a href="/events"><i className="fas fa-calendar" aria-hidden="true"></i> All events</a></li>
+              <li className="py-1 my-1"><a href="/dashboard"><i className="fas fa-calendar" aria-hidden="true"></i> Manage  your events</a></li>
               <li className="py-1 my-1"><a href="/createevent">Add event</a></li>
               
             </ul>

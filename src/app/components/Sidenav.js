@@ -185,7 +185,7 @@ const Sidebar = () => {
       <div className={`l-navbar ${isSidebarVisible ? 'show' : ''}`} id="nav-bar">
         <nav className="nav">
           <div>
-            <a href="#" className="nav_logo">
+            <a href="/home" className="nav_logo">
               <span className="nav_logo-name">TechPass</span>
             </a>
             <div className="nav_list">
