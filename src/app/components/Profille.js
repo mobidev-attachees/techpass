@@ -202,7 +202,15 @@ function ProfileContent() {
     <div className="container">
       <main className="">
       <Toaster />
-          <h2 className="text-success">Profile</h2>
+      <div className="ps-3">
+						<nav aria-label="breadcrumb ">
+							<ol className="breadcrumb mb-0 p-0 ">
+								<li className="breadcrumb-item"><a href="javascript:;"></a>
+								</li>
+								<li className="breadcrumb-item active text-success fs-6 text-uppercase" aria-current="page"><strong>User Dashboard</strong></li>
+							</ol>
+						</nav>
+					</div>
           {/* <section className="row">
             <div className="col-md-3 col-lg-3 col-sm-2 rounded shadow  bg-white">
             <div className="align-items-center font-lg">
@@ -328,14 +336,16 @@ function ProfileContent() {
                             <p className="mb-0 font-13">Average clicks</p>
                           </div>
                           <div className="widgets-icons-2 rounded-circle  text-white ms-auto" style={{ background: 'linear-gradient(to right,  #00c6ff, #0072ff)' }}>
+                            
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
-                              width="80" // Adjusted width
-                              height="80" // Adjusted height
-                              viewBox="0 0 24 25" // Original viewBox
+                              width="80"
+                              height="80"
+                              viewBox="0 0 20 30"
                               style={{ fill: 'rgba(255, 255, 255, 1)' }} // Solid black color
                             >
-                              <path d="M12 2C6.579 2 2 6.579 2 12s4.579 10 10 10 10-4.579 10-10S17.421 2 12 2zm0 5c1.727 0 3 1.272 3 3s-1.273 3-3 3c-1.726 0-3-1.272-3-3s1.274-3 3-3zm-5.106 9.772c.897-1.32 2.393-2.2 4.106-2.2h2c1.714 0 3.209.88 4.106 2.2C15.828 18.14 14.015 19 12 19s-3.828-.86-5.106-2.228z" />
+                              <path d="M3 3v17a1 1 0 0 0 1 1h17v-2H5V3H3z" />
+                              <path d="M15.293 14.707a.999.999 0 0 0 1.414 0l5-5-1.414-1.414L16 12.586l-2.293-2.293a.999.999 0 0 0-1.414 0l-5 5 1.414 1.414L13 12.414l2.293 2.293z" />
                             </svg>
                           </div>
                         </div>
@@ -354,26 +364,13 @@ function ProfileContent() {
                           <div className="widgets-icons-2 rounded-circle bg-gradient-ohhappiness text-white ms-auto bg-success " style={{ background: 'linear-gradient(to right, #009B77, #56ab2f, #E2D200)' }}>
                           <svg
                               xmlns="http://www.w3.org/2000/svg"
-                              width="80"
-                              height="80"
-                              viewBox="0 0 20 30"
+                              width="80" // Adjusted width
+                              height="80" // Adjusted height
+                              viewBox="0 0 24 25" // Original viewBox
                               style={{ fill: 'rgba(255, 255, 255, 1)' }} // Solid black color
                             >
-                              <path d="M3 3v17a1 1 0 0 0 1 1h17v-2H5V3H3z" />
-                              <path d="M15.293 14.707a.999.999 0 0 0 1.414 0l5-5-1.414-1.414L16 12.586l-2.293-2.293a.999.999 0 0 0-1.414 0l-5 5 1.414 1.414L13 12.414l2.293 2.293z" />
+                              <path d="M12 2C6.579 2 2 6.579 2 12s4.579 10 10 10 10-4.579 10-10S17.421 2 12 2zm0 5c1.727 0 3 1.272 3 3s-1.273 3-3 3c-1.726 0-3-1.272-3-3s1.274-3 3-3zm-5.106 9.772c.897-1.32 2.393-2.2 4.106-2.2h2c1.714 0 3.209.88 4.106 2.2C15.828 18.14 14.015 19 12 19s-3.828-.86-5.106-2.228z" />
                             </svg>
-                                                      {/* <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="60"
-                                height="60"
-                                viewBox="0 0 20 30"
-                                style={{ fill: 'rgba(255, 255, 255 )' }} // Corrected inline style
-                              >
-                              <path d="M2 20h20v2H2z" />
-                              <rect x="5" y="2" width="6" height="16" rx="1" />
-                              <rect x="13" y="6" width="6" height="12" rx="1" />
-                            </svg> */}
-
                           </div>
                         </div>
                       </div>
@@ -405,158 +402,77 @@ function ProfileContent() {
                   </div>
                 </div>
 
+                <div className="card radius-10 mt-3 mb-3 shadow-sm bg-white border-0">
+      <div className="card-header">
+        <div className="d-flex align-items-center">
+          <div>
+            <h6 className="mb-0 text-success">Events</h6>
+          </div>
+          <div className="dropdown ms-auto">
+            <a
+              className="dropdown-toggle dropdown-toggle-nocaret"
+              href="#"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <i className="bx bx-dots-horizontal-rounded font-22 text-option"></i>
+            </a>
+            <ul className="dropdown-menu rounded shadow">
+              <li>
+                <a className="dropdown-item" href="/events">
+                  Browse all events
+                </a>
+              </li>
+              <li>
+                <a className="dropdown-item" href="/dashboard">
+                  Manage your events
+                </a>
+              </li>
+              <li>
+                <hr className="dropdown-divider" />
+              </li>
+              <li>
+                <a className="dropdown-item" href="/createevent">
+                  Add new event
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div className="card-body">
+        <div className="table-responsive">
+          <table className="table align-middle mb-0">
+            <thead className="table-light">
+              <tr>
+                <th>Event Name</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Ticket Price</th>
+              </tr>
+            </thead>
+            <tbody>
+            {events.map((event, index) => (
+              <tr>
+                <td className="fs-5 text-capitalize">{event.eventName}</td>
+                <td>{formatDate(event.startDate)}</td>
+                <td>{formatDate(event.endDate)}</td>
+                <td>
+                  <span className="badge  text-white shadow-sm w-100" style={{ background: 'linear-gradient(to right, #11998e, #38ef7d)'}}>
+                  {event.ticketPrice}
+                  </span>
+                </td>
+                
+              </tr>
+            ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-                {/* <div className="container py-5 h-100 rounded shadow-sm card">
-              
-                <h6 className="text-primary">Events</h6>
-                  <div className="table-responsive">
-                    <div id="example_wrapper" className="dataTables_wrapper dt-bootstrap5">
-                      <div className="row">
-                        <div className="col-sm-12 col-md-6 mb-3">
-                          <div id="example_filter" className="dataTables_filter">
-                            <label>
-                              Search:
-                              <input
-                                type="search"
-                                className="form-control form-control-sm"
-                                placeholder=""
-                                aria-controls="example"
-                                value={searchQuery}
-                                onChange={handleSearchChange}
-                              />
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-12">
-                          <div className="table-responsive">
-                            <table
-                              id="example"
-                              className="table table-striped table-bordered"
-                              role="grid"
-                              aria-describedby="example_info"
-                            >
-                              <thead>
-                                <tr role="row">
-                                  <th
-                                    className="sorting_asc"
-                                    tabIndex="0"
-                                    aria-controls="example"
-                                    rowSpan="1"
-                                    colSpan="1"
-                                    aria-sort="ascending"
-                                    aria-label="Name: activate to sort column descending"
-                                    style={{ width: '106px' }}
-                                  >
-                                    Event Name
-                                  </th>
-                                  <th
-                                    className="sorting"
-                                    tabIndex="0"
-                                    aria-controls="example"
-                                    rowSpan="1"
-                                    colSpan="1"
-                                    aria-label="Start Date: activate to sort column ascending"
-                                    style={{ width: '200px' }}
-                                  >
-                                    Start Date
-                                  </th>
-                                  <th
-                                    className="sorting"
-                                    tabIndex="0"
-                                    aria-controls="example"
-                                    rowSpan="1"
-                                    colSpan="1"
-                                    aria-label="End Date: activate to sort column ascending"
-                                    style={{ width: '27px' }}
-                                  >
-                                    End Date
-                                  </th>
-                                  <th
-                                    className="sorting"
-                                    tabIndex="0"
-                                    aria-controls="example"
-                                    rowSpan="1"
-                                    colSpan="1"
-                                    aria-label="Event Ticket: activate to sort column ascending"
-                                    style={{ width: '27px' }}
-                                  >
-                                    Event Ticket
-                                  </th>
-                                  <th
-                                    className="sorting"
-                                    tabIndex="0"
-                                    aria-controls="example"
-                                    rowSpan="1"
-                                    colSpan="1"
-                                    aria-label="Action: activate to sort column ascending"
-                                    style={{ width: '67px' }}
-                                  >
-                                    Action
-                                  </th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {events.map((event, index) => (
-                                  <tr key={event.id} role="row" className={index % 2 === 0 ? 'even' : 'odd'}>
-                                    <td className="sorting_1">{event.eventName}</td>
-                                    <td>{formatDate(event.startDate)}</td>
-                                    <td>{formatDate(event.endDate)}</td>
-                                    <td>{event.ticketPrice}</td>
-                                    <td className="d-flex justify-content-evenly">
-                                      <button
-                                        type="button"
-                                        className="btn btn-danger btn-sm px-2"
-                                        title="Delete this event"
-                                        onClick={() => handleDelete(event.id)}
-                                      >
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3" viewBox="0 0 16 16">
-                                          <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
-                                        </svg>
-                                      </button>
-                                      <button
-                                        type="button"
-                                        className="btn btn-success btn-sm px-2"
-                                        title="edit event"
-                                        onClick={() => handleEdit(event.id)}
-                                      >
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-square" viewBox="0 0 16 16">
-                                          <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                                          <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
-                                        </svg>
-                                      </button>
-                                    </td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      </div>
 
-                      <div className="row">
-                        <div className="col-sm-12 col-md-5">
-                          <div className="dataTables_info" id="example_info" role="status" aria-live="polite">
-                            Showing {(currentPage - 1) * 10 + 1} to {Math.min(currentPage * 10, events.length)} of {events.length} entries
-                          </div>
-                        </div>
-                        <div className="col-sm-12 col-md-7">
-                          <div className="dataTables_paginate paging_simple_numbers" id="example_paginate">
-                            <ul className="pagination">
-                              <li className={`paginate_button page-item previous ${currentPage === 1 ? 'disabled' : ''}`} id="example_previous">
-                                <button aria-controls="example" data-dt-idx="0" tabIndex="0" className="page-link" onClick={handlePrevPage}>Previous</button>
-                              </li>
-                              <li className={`paginate_button page-item next ${currentPage === totalPages ? 'disabled' : ''}`} id="example_next">
-                                <button aria-controls="example" data-dt-idx="1" tabIndex="0" className="page-link" onClick={handleNextPage}>Next</button>
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div> */}
+                
       </main>
     </div>
   );
