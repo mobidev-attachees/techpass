@@ -13,7 +13,7 @@ import Image from "next/image";
 const Spinner = dynamic(() => import('../components/Spinner'), { ssr: false });
 const Toaster = dynamic(() => import('react-hot-toast').then(mod => mod.Toaster), { ssr: false });
 
-function profileComponent() {
+function ProfileComponent() {
   const [user, setUser] = useState(null);
   const [events, setEvents] = useState([]);
   const [error, setError] = useState("");
@@ -279,4 +279,4 @@ function profileComponent() {
   
   );
 }
-export default profileComponent;
+export default ProfileComponent;

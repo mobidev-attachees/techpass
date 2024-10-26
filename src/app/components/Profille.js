@@ -362,20 +362,20 @@ function ProfileContent() {
               </tr>
             </thead>
             <tbody>
-            {events.map((event, index) => (
-              <tr>
-                <td className="fs-5 text-capitalize">{event.eventName}</td>
-                <td>{formatDate(event.startDate)}</td>
-                <td>{formatDate(event.endDate)}</td>
-                <td>
-                  <span className="badge  text-white shadow-sm w-100" style={{ background: 'linear-gradient(to right, #11998e, #38ef7d)'}}>
-                  {event.ticketPrice}
-                  </span>
-                </td>
-                
-              </tr>
-            ))}
+              {events.map((event, index) => (
+                <tr key={event.id}> {/* Ensure this is unique */}
+                  <td className="fs-5 text-capitalize">{event.eventName}</td>
+                  <td>{formatDate(event.startDate)}</td>
+                  <td>{formatDate(event.endDate)}</td>
+                  <td>
+                    <span className="badge text-white shadow-sm w-100" style={{ background: 'linear-gradient(to right, #11998e, #38ef7d)'}}>
+                      {event.ticketPrice}
+                    </span>
+                  </td>
+                </tr>
+              ))}
             </tbody>
+
           </table>
         </div>
       </div>
