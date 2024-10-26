@@ -1,4 +1,3 @@
-// next.config.mjs
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Enables support for environment variables from .env files
@@ -36,6 +35,10 @@ const nextConfig = {
         destination: '/api/:path*',
       },
     ];
+  },
+  // Configure image domains
+  images: {
+    domains: ['res.cloudinary.com'], // Allow Cloudinary images
   },
 };
 

@@ -1,9 +1,9 @@
 // src/pages/api/updateEvent/[id].js
 import formidable from 'formidable';
-import path from 'path';
-import fs from 'fs/promises';
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
+import { v2 as cloudinary } from 'cloudinary';
+import path from 'path';
 
 const prisma = new PrismaClient();
 
@@ -13,7 +13,12 @@ export const config = {
   },
 };
 
-const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+// Cloudinary configuration
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const handler = async (req, res) => {
   if (req.method !== 'PUT') {
@@ -30,18 +35,8 @@ const handler = async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decoded.userId;
 
-    await fs.mkdir(uploadDir, { recursive: true });
-
     const form = formidable({
-      uploadDir,
-      keepExtensions: true,
       maxFileSize: 1000 * 1024 * 1024, // 1 GB
-      filename: (name, ext, part, form) => {
-        const timestamp = Date.now();
-        const originalFilename = part.originalFilename || 'default-filename';
-        const sanitizedFilename = originalFilename.replace(/\s+/g, '-');
-        return `${timestamp}-${sanitizedFilename}`;
-      },
     });
 
     form.parse(req, async (err, fields, files) => {
@@ -95,17 +90,22 @@ const handler = async (req, res) => {
         return isNaN(date.getTime()) ? null : date.toISOString();
       };
 
-      const newImageUrl = files.image && files.image[0] && files.image[0].path
-        ? `/uploads/${path.basename(files.image[0].path)}`
-        : null;
+      let newImageUrl = existingEvent.imageUrl;
 
-      if (newImageUrl && existingEvent.imageUrl && typeof existingEvent.imageUrl === 'string') {
-        const oldImagePath = path.join(process.cwd(), 'public', existingEvent.imageUrl);
+      if (files.image) {
         try {
-          await fs.unlink(oldImagePath);
-          console.log(`Deleted old image: ${oldImagePath}`);
-        } catch (error) {
-          console.error(`Error deleting old image: ${oldImagePath}`, error);
+          const uploadResponse = await cloudinary.uploader.upload(files.image[0].filepath, {
+            folder: 'events', // Specify the folder name here
+          });
+          newImageUrl = uploadResponse.secure_url;
+
+          if (existingEvent.imageUrl) {
+            const publicId = existingEvent.imageUrl.split('/').pop().split('.')[0];
+            await cloudinary.uploader.destroy(`events/${publicId}`);
+          }
+        } catch (uploadError) {
+          console.error('Cloudinary upload error:', uploadError);
+          return res.status(500).json({ message: 'Image upload to Cloudinary failed' });
         }
       }
 
@@ -134,7 +134,7 @@ const handler = async (req, res) => {
             twitterLink: normalizeField(twitterLink) || undefined,
             websiteLink: normalizeField(websiteLink) || undefined,
             facebookLink: normalizeField(facebookLink) || undefined,
-            imageUrl: newImageUrl || existingEvent.imageUrl,
+            imageUrl: newImageUrl,
           },
         });
 

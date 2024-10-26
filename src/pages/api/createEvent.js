@@ -1,8 +1,8 @@
 import formidable from "formidable";
 import path from "path";
-import fs from "fs/promises";
 import { PrismaClient } from "@prisma/client";
 import jwt from 'jsonwebtoken';
+import { v2 as cloudinary } from "cloudinary";
 
 const prisma = new PrismaClient();
 
@@ -12,7 +12,12 @@ export const config = {
   },
 };
 
-const uploadDir = path.join(process.cwd(), "public", "uploads");
+// Cloudinary configuration
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const handler = async (req, res) => {
   if (req.method !== "POST") {
@@ -29,18 +34,8 @@ const handler = async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decoded.userId;
 
-    await fs.mkdir(uploadDir, { recursive: true });
-
     const form = formidable({
-      uploadDir,
-      keepExtensions: true,
       maxFileSize: 1000 * 1024 * 1024, // 1 GB
-      filename: (name, ext, part, form) => {
-        const timestamp = Date.now();
-        const originalFilename = part.originalFilename;
-        const sanitizedFilename = originalFilename.replace(/\s+/g, '-'); // Replace spaces with dashes
-        return `${timestamp}-${sanitizedFilename}`;
-      },
     });
 
     form.parse(req, async (err, fields, files) => {
@@ -52,7 +47,7 @@ const handler = async (req, res) => {
       const {
         eventName,
         eventDescription,
-        tittle, // Corrected from tittle to title
+        tittle,
         location,
         country,
         city,
@@ -78,7 +73,19 @@ const handler = async (req, res) => {
         return isNaN(date.getTime()) ? null : date.toISOString();
       };
 
-      const imageUrl = files.image ? `/uploads/${path.basename(files.image[0].filepath)}` : null;
+      let imageUrl = null;
+      if (files.image) {
+        try {
+          // Upload image to Cloudinary in the "events" folder
+          const uploadResponse = await cloudinary.uploader.upload(files.image[0].filepath, {
+            folder: 'events', // Specify the folder name here
+          });
+          imageUrl = uploadResponse.secure_url; // Get the secure URL of the uploaded image
+        } catch (uploadError) {
+          console.error("Cloudinary upload error:", uploadError);
+          return res.status(500).json({ message: "Image upload to Cloudinary failed" });
+        }
+      }
 
       try {
         const event = await prisma.storeEvent.create({

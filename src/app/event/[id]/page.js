@@ -89,16 +89,16 @@ export default function EventPage({ params }) {
         <div className="row justify-content-center align-items-center vh-100 ">
           <div className="col-lg-12 mb-3 mt-4 shadow-lg py-1 my-1">
             <div 
-              className="p-1 py-5 mb-0 d-flex justify-content-start align-items-end rounded" 
-              style={{ 
-                backgroundImage: `url(${event.imageUrl ? event.imageUrl : '/uploads/default-image.jpg'})`, 
-                backgroundPosition: 'center', 
-                backgroundSize: 'cover', 
-                backgroundRepeat: 'no-repeat', 
-                height: 'auto', 
-                minHeight: '300px',
-              }}
-            >
+                className="p-1 py-5 mb-0 d-flex justify-content-start align-items-end rounded" 
+                style={{ 
+                  backgroundImage: `url(${event.imageUrl ? event.imageUrl : '/uploads/default-image.jpg'})`, 
+                  backgroundPosition: 'center', 
+                  backgroundSize: 'cover', 
+                  backgroundRepeat: 'no-repeat', 
+                  height: 'auto', 
+                  minHeight: '300px',
+                }}
+              >
             </div>
             <h3 className="text-capitalize">{event.eventName}</h3>
             <div className="row mb-4 mt-4 rounded">

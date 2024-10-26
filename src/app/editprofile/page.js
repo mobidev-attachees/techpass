@@ -11,10 +11,14 @@ export default function EditProfilePage() {
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     username: '',
+    email: '',
+    firstName: '',
+    lastName: '',
     address: '',
     profileImage: '',
     dob: '',
     country: '',
+    city: '',
     phoneNumber: '',
     github: '',
     twitter: '',
@@ -43,10 +47,14 @@ export default function EditProfilePage() {
         const data = await response.json();
         setFormData({
           username: data.username || '',
+          email: data.email || '',
+          firstName: data.firstName || '',
+          lastName: data.lastName || '',
           address: data.address || '',
           profileImage: data.profileImage || '',
           dob: data.dob ? new Date(data.dob).toISOString().split('T')[0] : '',
           country: data.country || '',
+          city: data.city || '',
           phoneNumber: data.phoneNumber || '',
           github: data.github || '',
           twitter: data.twitter || '',
@@ -56,7 +64,7 @@ export default function EditProfilePage() {
           linkedin: data.linkedin || '',
           bio: data.bio || ''
         });
-        setSelectedImage(data.profileImage || '/default-profile-image.png'); // Default image
+        setSelectedImage(data.profileImage || '/default-profile-image.png');
       } else {
         console.error('Failed to fetch profile data:', response.statusText);
         toast.error("Failed to fetch profile data");
@@ -149,7 +157,6 @@ export default function EditProfilePage() {
       toast.error(`Error: ${error.message}`);
     }
   };
-
   if (loading) {
     return <div>
 
@@ -201,6 +208,46 @@ export default function EditProfilePage() {
               <input type="text" className="form-control" id="username" name="username" value={formData.username} onChange={handleInputChange} placeholder="Username"  disabled/>
             </div>
           </div>
+          <div className="col-md-12">
+  <label htmlFor="firstName" className="form-label">First Name</label>
+  <div className="input-group">
+    <span className="input-group-text">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-person" viewBox="0 0 16 16">
+        <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+      </svg>
+    </span>
+    <input 
+      type="text" 
+      className="form-control" 
+      id="firstName" 
+      name="firstName" 
+      value={formData.firstName} 
+      onChange={handleInputChange} 
+      placeholder="First Name" 
+    />
+  </div>
+</div>
+
+<div className="col-md-12 mt-3">
+  <label htmlFor="lastName" className="form-label">Last Name</label>
+  <div className="input-group">
+    <span className="input-group-text">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-person" viewBox="0 0 16 16">
+        <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+      </svg>
+    </span>
+    <input 
+      type="text" 
+      className="form-control" 
+      id="lastName" 
+      name="lastName" 
+      value={formData.lastName} 
+      onChange={handleInputChange} 
+      placeholder="Last Name" 
+    />
+  </div>
+</div>
+
           <div className="col-md-12">
             <label htmlFor="address" className="form-label">Address</label>
             <div className="input-group">

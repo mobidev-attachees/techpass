@@ -1,8 +1,8 @@
+// src/pages/editProfile.js
 import formidable from 'formidable';
-import path from 'path';
-import fs from 'fs/promises';
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
+import { v2 as cloudinary } from 'cloudinary';
 
 const prisma = new PrismaClient();
 
@@ -12,7 +12,12 @@ export const config = {
   },
 };
 
-const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'profiles');
+// Cloudinary configuration
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const handler = async (req, res) => {
   if (req.method !== 'PUT') {
@@ -29,18 +34,8 @@ const handler = async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decoded.userId;
 
-    await fs.mkdir(uploadDir, { recursive: true });
-
     const form = formidable({
-      uploadDir,
-      keepExtensions: true,
       maxFileSize: 1000 * 1024 * 1024, // 1 GB
-      filename: (name, ext, part, form) => {
-        const timestamp = Date.now();
-        const originalFilename = part.originalFilename;
-        const sanitizedFilename = originalFilename.replace(/\s+/g, '-'); // Replace spaces with dashes
-        return `${timestamp}-${sanitizedFilename}`;
-      },
     });
 
     form.parse(req, async (err, fields, files) => {
@@ -68,7 +63,20 @@ const handler = async (req, res) => {
         bio,
       } = fields;
 
-      const newProfileImageUrl = files.profileImage ? `/uploads/profiles/${path.basename(files.profileImage[0].filepath)}` : null;
+      let newProfileImageUrl = null;
+
+      if (files.profileImage) {
+        try {
+          // Upload profile image to Cloudinary in the "profiles" folder
+          const uploadResponse = await cloudinary.uploader.upload(files.profileImage[0].filepath, {
+            folder: 'profiles',
+          });
+          newProfileImageUrl = uploadResponse.secure_url;
+        } catch (uploadError) {
+          console.error('Cloudinary upload error:', uploadError);
+          return res.status(500).json({ message: 'Image upload to Cloudinary failed' });
+        }
+      }
 
       // Fetch existing user data
       const existingUser = await prisma.user.findUnique({
@@ -77,17 +85,6 @@ const handler = async (req, res) => {
 
       if (!existingUser) {
         return res.status(404).json({ message: 'User not found' });
-      }
-
-      // Delete the old profile image if a new image is uploaded
-      if (newProfileImageUrl && existingUser.profileImage) {
-        const oldImagePath = path.join(process.cwd(), 'public', existingUser.profileImage);
-        try {
-          await fs.unlink(oldImagePath);
-          console.log(`Deleted old profile image: ${oldImagePath}`);
-        } catch (error) {
-          console.error(`Error deleting old profile image: ${oldImagePath}`, error);
-        }
       }
 
       try {

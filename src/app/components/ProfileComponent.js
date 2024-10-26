@@ -7,12 +7,13 @@ import { Calendar } from 'react-bootstrap-icons';
 import toast from "react-hot-toast";
 import 'boxicons/css/boxicons.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Image from "next/image";
 
 
 const Spinner = dynamic(() => import('../components/Spinner'), { ssr: false });
 const Toaster = dynamic(() => import('react-hot-toast').then(mod => mod.Toaster), { ssr: false });
 
-function Eventts() {
+function profileComponent() {
   const [user, setUser] = useState(null);
   const [events, setEvents] = useState([]);
   const [error, setError] = useState("");
@@ -21,6 +22,7 @@ function Eventts() {
   const [totalEvents, setTotalEvents] = useState(0); // State for total number of events
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
+  
 
   useEffect(() => {
     const fetchProfileAndEvents = async () => {
@@ -195,121 +197,86 @@ function Eventts() {
     return <div className="d-flex justify-content-center"><Spinner /></div>;
   }
 
-  return(
-    <div className="card border-0 mt-4 mb-4 shadow bg-white">
+  return (
+    <div className="col-12 col-lg-8 col-xl-6 d-flex shadow-sm bg-white">
+    <div className="card w-100 radius-10 border-0">
       <div className="card-body">
-        <div className="d-lg-flex align-items-center mb-4 gap-3">
-          <div className="position-relative">
-            <input
-              type="text"
-              className="form-control ps-5 radius-30"
-              placeholder="Search Event"
-            
-            aria-controls="example"
-            value={searchQuery}
-            onChange={handleSearchChange}
-            />
-          </div>
-          <div className="ms-auto">
-            <a className="btn btn-success radius-30 mt-2 mt-lg-0" href="/createevent">
-              <i className="bx bxs-plus-square"></i> Add New Event
-            </a>
-          </div>
-        </div>
-        <div className="table-responsive">
-          <table className="table mb-0">
-            <thead className="table-light">
-              <tr>
-                <th>#</th>
-                <th>Event Name</th>
-                <th>Event Ticket</th>
-                <th>Event Banner</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Details</th>
-                <th>Delete</th>
-                <th>Edit</th>
-              </tr>
-            </thead>
-            <tbody>
-            {events.map((event, index) => (
-              <tr>
-                <td>
-                  <div className="d-flex align-items-center">
-                    <div>
-                      <input
-                        className="form-check-input me-3"
-                        type="checkbox"
-                        value=""
-                        aria-label="..."
-                      />
-                    </div>
-                    <div className="ms-2">
-                      <h6 className="mb-0 font-14">#</h6>
-                    </div>
-                  </div>
-                </td>
-                <td className="text-capitalize">{event.eventName}</td>
-                <td>
-                <span className="badge  text-white shadow-sm w-100" style={{ background: 'linear-gradient(to right, #11998e, #38ef7d)'}}>
-                  {event.ticketPrice}
-                  </span>
-                </td>
-                <td>
-                  <img
-                    src={event.imageUrl || '/uploads/default-image.jpg'}
-                    className="product-img-2 rounded"
-                    alt="product"
-                    width={80}
-                    height={30}
+        <div className="card radius-10  border-start border-0 border-4 border-success shadow-sm bg-white mt-3 mb-3">
+          <div className="card-body">
+            <div className="d-flex align-items-center">
+              <div>
+              <h3> Personal info</h3>
+                <p className="mb-0 text-success">Name: {user.firstName} {user.lastName}</p>
+                <h4 className="my-1 text-success">{user.email}</h4>
+                <p className="mb-0 font-13 text-success">{user.phoneNumber}</p>
+              </div>
+              <div className="widgets-icons-2 bg-gradient-cosmic text-dark ms-auto">
+              <img 
+                    src={user?.profileImage || '/uploads/profiles/default-image.jpg'} 
+                    alt="User profile" 
+                    width="100" 
+                    height="100" 
+                    className="rounded-circle me-2" 
                   />
-                </td>
-                <td>{formatDate(event.startDate)}</td>
-                <td>{formatDate(event.endDate)}</td>
-                <td>
-                    <a
-                        className="btn btn-info btn-sm radius-30 px-4"
-                        href={`/event/${event.id}`}
-                    >
-                        Details
-                    </a>
-                 </td>
-
-                <td>
-                  <button
-                    type="button"
-                    className="btn btn-danger btn-sm radius-30 px-4"
-                    onClick={handleDelete}
-                  >
-                    Delete
-                  </button>
-                </td>
-                <td>
-                  <button
-                    type="button"
-                    className="btn btn-warning btn-sm radius-30 px-4"
-                    onClick={() => handleEdit(event.id)}
-                  >
-                   Edit
-                  </button>
-                </td>
-                
-              </tr>
-            ))}
-            </tbody>
-          </table>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="row mt-2 mb-2">
-            <div className="col-sm-12 col-md-5">
-                <div className="dataTables_info" id="example_info" role="status" aria-live="polite">
-                    Showing {(currentPage - 1) * 10 + 1} to {Math.min(currentPage * 10, events.length)} of {events.length} entries
+        <div className="card radius-10 shadow-sm border-start border-0 border-4 border-info mt-3 mb-3 bg-white"> 
+          <div className="card-body">
+            <div className="d-flex align-items-center flex-wrap">
+              <div className="d-flex flex-column" style={{ width: '100%' }}>
+                <h4 className="mb-0 text-secondary">Bio:</h4>
+                <p className="mb-0 font-13 text-wrap" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{user.bio}</p>
+              </div>
+
+              
+            </div>
+          </div>
+        </div>
+
+        <div className="card radius-10 mb-0  border-start border-0 border-4 border-warning shadow-sm bg-white">
+          <div className="card-body">
+            <div className="d-flex align-items-center">
+            <div className="row row-cols-auto g-3">
+                  <div className="col">
+                    <a type="button" className="btn btn-success" href="/editprofile">
+                      Edit profile 
+                    </a>
+                  </div>
+                  {/* <div className="col">
+                    <button type="button" className="btn btn-danger">
+                      Notifications 
+                    </button>
+                  </div>
+                  <div className="col">
+                    <button type="button" className="btn btn-success">
+                      Notifications 
+                    </button>
+                  </div>
+                  <div className="col">
+                    <button type="button" className="btn btn-warning">
+                      Notifications 
+                    </button>
+                  </div>
+                  <div className="col">
+                    <button type="button" className="btn btn-info">
+                      Notifications 
+                    </button>
+                  </div>
+                  <div className="col">
+                    <button type="button" className="btn btn-dark">
+                      Notifications <span className="badge bg-secondary">4</span>
+                    </button>
+                  </div> */}
                 </div>
-            </div>                
+            </div>
+          </div>
         </div>
       </div>
     </div>
-
-                
+  </div>
+  
   );
 }
-  export default Eventts;
+export default profileComponent;

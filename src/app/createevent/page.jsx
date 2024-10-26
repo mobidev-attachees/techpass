@@ -1,6 +1,6 @@
 // src/app/createevent/page.jsx
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from 'next/link';
 import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
@@ -8,8 +8,11 @@ import PhoneInput from 'react-phone-number-input/input';
 import Image from "next/image";
 import { toast } from 'react-hot-toast';
 import Navbar from '../components/Navbar';
+import useAuthCheck from '../../hooks/useAuthCheck'; // Import the useAuthCheck hook
 
 const CreateEvent = () => {
+  const isLoggedIn = useAuthCheck(); // Use the useAuthCheck hook to check login status
+
   const [eventName, setEventName] = useState("");
   const [eventDescription, setEventDescription] = useState("");
   const [location, setLocation] = useState('physical');
@@ -21,7 +24,7 @@ const CreateEvent = () => {
   const [endTime, setEndTime] = useState("");
   const [meetingLink, setMeetingLink] = useState("");
   const [email, setEmail] = useState("");
-  const [tittle, setTittle] = useState('Mr.'); // Corrected variable name from tittle to title
+  const [tittle, setTittle] = useState('Mr.'); // Corrected variable name from title to tittle
   const [firstName, setFirstName] = useState("");
   const [middleName, setMiddleName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -37,23 +40,6 @@ const CreateEvent = () => {
   const [image, setImage] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const router = useRouter();
-
-  // Function to fetch user login status
-  const checkLoggedIn = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        router.push('/login');
-        toast.error("You are not logged in. Please log in to create events.");
-      }
-    } catch (error) {
-      console.error('Error checking login status:', error);
-    }
-  };
-
-  useEffect(() => {
-    checkLoggedIn(); // Check login status on component mount
-  }, []);
 
   const countries = ['USA', 'Canada', 'UK'];
   const citiesByCountry = {
@@ -116,7 +102,7 @@ const CreateEvent = () => {
       const formData = new FormData();
       formData.append("eventName", eventName);
       formData.append("eventDescription", eventDescription);
-      formData.append("tittle", tittle); // Changed tittle to title
+      formData.append("tittle", tittle); // Updated title field
       formData.append("location", location);
       formData.append("country", country);
       formData.append("city", city);

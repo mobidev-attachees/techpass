@@ -1,10 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import './profile.css';
 import Profille from '../components/Profille';
 import Image from "next/image";
+import toast from "react-hot-toast";
 
 function PageComponent({ totalEvents }) {
   return (
@@ -17,21 +19,27 @@ function PageComponent({ totalEvents }) {
 }
 
 function Profile() {
-  // Set sidebar to be hidden by default
-  const [sidebarActive, setSidebarActive] = useState(true); // Sidebar hidden on load
+  // State for sidebar visibility, collapse, and dropdown
+  const [sidebarActive, setSidebarActive] = useState(true);
   const [collapseActive, setCollapseActive] = useState({
     homeSubmenu: false,
     pageSubmenu: false,
   });
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [totalEvents, setTotalEvents] = useState(0); // State to store total events
+  
+  // State for authentication, user info, and total events
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
+  const [totalEvents, setTotalEvents] = useState(0);
+  
+  const router = useRouter();
 
-  // Function to toggle sidebar visibility
+  // Toggle sidebar visibility
   const toggleSidebar = () => {
     setSidebarActive(!sidebarActive);
   };
 
-  // Function to handle collapse of sidebar submenus
+  // Handle sidebar submenu collapse
   const toggleCollapse = (menu) => {
     setCollapseActive({
       ...collapseActive,
@@ -39,7 +47,7 @@ function Profile() {
     });
   };
 
-  // Function to toggle dropdown in navbar
+  // Toggle dropdown in navbar
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
@@ -47,7 +55,7 @@ function Profile() {
   // Fetch total number of events from API
   const fetchTotalEvents = async () => {
     try {
-      const token = localStorage.getItem("token"); // Retrieve token from local storage
+      const token = localStorage.getItem("token");
       if (!token) {
         console.error("No token found in local storage");
         return;
@@ -55,14 +63,14 @@ function Profile() {
 
       const response = await fetch("/api/Events/getEvents", {
         headers: {
-          Authorization: `Bearer ${token}`, // Pass token to the API
+          Authorization: `Bearer ${token}`,
         },
       });
       
       const data = await response.json();
       
       if (response.ok) {
-        setTotalEvents(data.totalEvents); // Set total events from API response
+        setTotalEvents(data.totalEvents);
       } else {
         console.error("Failed to fetch events:", data.message);
       }
@@ -71,10 +79,57 @@ function Profile() {
     }
   };
 
-  // Call fetchTotalEvents when component mounts
+  // Fetch user profile from API
+  const fetchUserProfile = async (token) => {
+    try {
+      const response = await fetch('/api/profile', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const userData = await response.json();
+        setUser(userData);
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+        localStorage.removeItem('token');
+      }
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+      setIsLoggedIn(false);
+      localStorage.removeItem('token');
+    }
+  };
+
+  // Logout function
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsLoggedIn(false);
+    toast.success("Logged out successfully", {
+      duration: 4000,
+      position: 'top-right',
+      style: {
+        background: '#4caf50',
+        color: '#ffffff',
+        zIndex: 99999,
+      },
+    });
+    router.push('/login');
+  };
+
+  // Check authentication and fetch data when component mounts
   useEffect(() => {
-    fetchTotalEvents(); // Fetch total events when the component mounts
-  }, [])
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetchUserProfile(token);
+      fetchTotalEvents();
+    }
+  }, []);
+ 
   
 
   return (
@@ -107,28 +162,8 @@ function Profile() {
               
             </ul>
           </li>
-          <li className="py-2 my-2 "><a href="#">Profile</a></li>
-          <li className={collapseActive.pageSubmenu ? "active" : ""}>
-            <a
-              href="#pageSubmenu"
-              onClick={() => toggleCollapse("pageSubmenu")}
-              aria-expanded={collapseActive.pageSubmenu}
-              className="dropdown-toggle"
-            >
-              Pages
-            </a>
-            <ul
-              className={`collapse list-unstyled ${collapseActive.pageSubmenu ? "show" : ""}`}
-              id="pageSubmenu"
-            >
-              <li><a href="#">Page 1</a></li>
-              <li><a href="#">Page 2</a></li>
-              <li><a href="#">Page 3</a></li>
-            </ul>
-          </li>
-          <li><a href="#">Portfolio</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
+          <li className="py-2 my-2 "><a href="/userProfile">Profile</a></li>
+          </ul>
       </nav>
 
       {/* Page Content */}
@@ -149,38 +184,47 @@ function Profile() {
 
             {/* Profile and Dropdown */}
             <div className="ml-auto d-flex align-items-center">
-              <div className="dropdown">
-                <button
-                  className="btn dropdown-toggle"
-                  id="profileDropdown"
-                  aria-haspopup="true"
-                  aria-expanded={dropdownOpen}
-                  onClick={toggleDropdown}
-                >
-                  <img
-                    src="/favicon.jpeg" // Placeholder for profile image
-                    alt="Profile"
-                    className="rounded-circle"
-                    style={{ width: "40px", height: "40px" }}
-                  />
-                </button>
-                <div
-                  className={`dropdown-menu dropdown-menu-right ${dropdownOpen ? "show" : ""}`}
-                  aria-labelledby="profileDropdown"
-                >
-                  <a className="dropdown-item" href="#">
-                    Profile
-                  </a>
-                  <a className="dropdown-item" href="#">
-                    Settings
-                  </a>
-                  <div className="dropdown-divider"></div>
-                  <a className="dropdown-item" href="#">
-                    Logout
-                  </a>
-                </div>
-              </div>
-            </div>
+  {isLoggedIn ? (
+    <div className="dropdown">
+      <button
+        className="btn dropdown-toggle"
+        id="profileDropdown"
+        aria-haspopup="true"
+        aria-expanded={dropdownOpen}
+        onClick={toggleDropdown}
+      >
+        <img
+          src={user.profileImage || '/uploads/profiles/default-image.jpg'} // Display user's profile image or placeholder
+          alt="Profile"
+          className="rounded-circle"
+          style={{ width: "40px", height: "40px" }}
+        />
+      </button>
+      <div
+        className={`dropdown-menu dropdown-menu-right ${dropdownOpen ? "show" : ""}`}
+        aria-labelledby="profileDropdown"
+      >
+        <a className="dropdown-item" href="/userProfile">
+          Profile
+        </a>
+        <div className="dropdown-divider"></div>
+        <a className="dropdown-item" onClick={handleLogout}>
+          Logout
+        </a>
+      </div>
+    </div>
+  ) : (
+    <div className="d-flex">
+      <a className="btn btn-link" href="/login">
+        Login
+      </a>
+      <a className="btn btn-link" href="/register">
+        Register
+      </a>
+    </div>
+  )}
+</div>
+
           </div>
         </nav>
 
