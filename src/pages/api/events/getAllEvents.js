@@ -1,4 +1,3 @@
-// pages/api/events/getAllEvents.js
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -9,16 +8,15 @@ export default async function handler(req, res) {
     return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 
-  const { limit, page } = req.query;
+  const { limit, skip } = req.query;
   const eventsLimit = limit ? parseInt(limit) : 6; // Default to 6 if no limit is specified
-  const pageIndex = page ? parseInt(page) : 1;
-  const skip = (pageIndex - 1) * eventsLimit;
+  const skipEvents = skip ? parseInt(skip) : 0; // Skip 0 by default
 
   try {
     const totalEvents = await prisma.storeEvent.count(); // Get the total number of events
     const events = await prisma.storeEvent.findMany({
       take: eventsLimit,
-      skip: skip,
+      skip: skipEvents,
       orderBy: {
         startDate: 'asc', // Order by start date
       },

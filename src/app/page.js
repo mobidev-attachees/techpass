@@ -9,24 +9,23 @@ import EventCarousel from './components/EventCarousel';
 import Homenav from './components/Homenav';
 import Footer from './components/Footer';
 import Hero from './components/Hero';
-// import EventCarousel from './components/EventCarousel';
 
 export default function Home() {
   const [events, setEvents] = useState([]);
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState("");
   const [error, setError] = useState(null);
-  const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [totalEvents, setTotalEvents] = useState(0);
   const initialFetchLimit = 6;
 
+  // Fetch the first 6 events on initial load
   useEffect(() => {
-    const fetchEvents = async () => {
+    const fetchInitialEvents = async () => {
       try {
-        const response = await fetch(`/api/events/getAllEvents?limit=${initialFetchLimit}&page=${page}`);
+        const response = await fetch(`/api/events/getAllEvents?limit=${initialFetchLimit}&skip=0`);
         if (!response.ok) {
-          throw new Error("Failed to fetch events");
+          throw new Error("Failed to fetch initial events");
         }
         const data = await response.json();
         if (!Array.isArray(data.events) || typeof data.totalEvents !== 'number') {
@@ -34,16 +33,33 @@ export default function Home() {
         }
         setEvents(data.events);
         setTotalEvents(data.totalEvents);
-        if (data.events.length < initialFetchLimit) {
-          setHasMore(false);
-        }
+        setHasMore(data.events.length < data.totalEvents); // Check if there are more events available
       } catch (error) {
         setError(error.message);
       }
     };
 
-    fetchEvents();
-  }, [page]);
+    fetchInitialEvents();
+  }, []);
+
+  // Fetch all remaining events when "Load More" is clicked
+  const loadMoreEvents = async () => {
+    const remainingEventsCount = totalEvents - events.length;
+    try {
+      const response = await fetch(`/api/events/getAllEvents?limit=${remainingEventsCount}&skip=${initialFetchLimit}`); // Skip the first 6 events
+      if (!response.ok) {
+        throw new Error("Failed to fetch remaining events");
+      }
+      const data = await response.json();
+      if (!Array.isArray(data.events)) {
+        throw new Error("Invalid response format");
+      }
+      setEvents((prevEvents) => [...prevEvents, ...data.events]); // Append the remaining events
+      setHasMore(false); // All events have been loaded
+    } catch (error) {
+      setError(error.message);
+    }
+  };
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -79,29 +95,6 @@ export default function Home() {
   const handleCountryChange = (e) => {
     setSelectedCountry(e.target.value);
   };
-
-  const loadMoreEvents = async () => {
-    const nextPage = page + 1;
-    try {
-      const response = await fetch(`/api/events/getAllEvents?limit=${initialFetchLimit}&page=${nextPage}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch more events");
-      }
-      const data = await response.json();
-      if (!Array.isArray(data.events)) {
-        throw new Error("Invalid response format");
-      }
-      setEvents(prevEvents => [...prevEvents, ...data.events]);
-      setPage(nextPage);
-      if (events.length + data.events.length >= totalEvents) {
-        setHasMore(false);
-      }
-    } catch (error) {
-      setError(error.message);
-    }
-  };
-
-
   return (
     <div className="container">
  

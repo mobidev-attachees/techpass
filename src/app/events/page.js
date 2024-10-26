@@ -11,14 +11,14 @@ export default function Events() {
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState("");
   const [error, setError] = useState(null);
-  const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [totalEvents, setTotalEvents] = useState(0);
   const initialFetchLimit = 6; // Initial number of events to fetch
 
-  const fetchEvents = useCallback(async (pageToFetch) => {
+  // Function to fetch events with specified limit and skip values
+  const fetchEvents = useCallback(async (limit, skip = 0) => {
     try {
-      const response = await fetch(`/api/events/getAllEvents?limit=${initialFetchLimit}&page=${pageToFetch}`);
+      const response = await fetch(`/api/events/getAllEvents?limit=${limit}&skip=${skip}`);
       if (!response.ok) {
         throw new Error("Failed to fetch events");
       }
@@ -31,21 +31,23 @@ export default function Events() {
       setError(error.message);
       return { events: [], totalEvents: 0 };
     }
-  }, [initialFetchLimit]);
+  }, []);
 
+  // Load the initial 6 events
   useEffect(() => {
     const loadInitialEvents = async () => {
-      const data = await fetchEvents(page);
+      const data = await fetchEvents(initialFetchLimit);
       setEvents(data.events);
       setTotalEvents(data.totalEvents);
-      if (data.events.length < initialFetchLimit) {
-        setHasMore(false);
+      if (data.events.length < initialFetchLimit || data.totalEvents <= initialFetchLimit) {
+        setHasMore(false); // No more events if less than initial limit or total is within limit
       }
     };
 
     loadInitialEvents();
-  }, [page, fetchEvents]);
+  }, [fetchEvents]);
 
+  // Convert event time to 12-hour format
   function convertTime(time) {
     var hours = parseInt(time.substring(0, 2));
     var minutes = time.substring(3);
@@ -60,6 +62,7 @@ export default function Events() {
     return hours + ':' + minutes + ' ' + period;
   }
 
+  // Fetch countries list on load
   useEffect(() => {
     const fetchCountries = async () => {
       try {
@@ -77,26 +80,22 @@ export default function Events() {
     fetchCountries();
   }, []);
 
+  // Handle country change
   const handleCountryChange = (e) => {
     setSelectedCountry(e.target.value);
   };
 
+  // Load remaining events when "Load More" is clicked
   const loadMoreEvents = async () => {
-    const nextPage = page + 1;
     try {
-      const data = await fetchEvents(nextPage);
-      if (!Array.isArray(data.events)) {
-        throw new Error("Invalid response format");
-      }
+      const remainingLimit = totalEvents - events.length;
+      const data = await fetchEvents(remainingLimit, initialFetchLimit); // Skip the initial events
       setEvents(prevEvents => [...prevEvents, ...data.events]);
-      setPage(nextPage);
-      if (events.length + data.events.length >= totalEvents) {
-        setHasMore(false);
-      }
+      setHasMore(false); // Disable further loading
     } catch (error) {
       setError(error.message);
     }
-  }
+  };
 
   return (
     <div className="container">
