@@ -75,7 +75,7 @@ const EventCarousel = () => {
 
           {/* Image Section */}
           <div className="col-md-8 py-3 my-3 p-2">
-            <img
+            <Image
               src={event.imageUrl || "/placeholder.jpg"}
               className="d-block w-100 rounded"
               alt={event.eventName}
