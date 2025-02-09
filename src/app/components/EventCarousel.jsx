@@ -31,78 +31,91 @@ const EventCarousel = () => {
   
 
   return (
-    <div id="eventCarousel" className="carousel slide" data-bs-ride="carousel">
-        <div className="carousel-inner">
-          {events.map((event, index) => (
-            <div
-              key={event.id}
-              className={`carousel-item ${index === 0 ? "active" : ""}`}
-            >
-                <div className="row align-items-end ">
-                  <div className="flex-column col-md-4 col-sm-2 carousel-caption text-start position-absolute bottom-0 start-0 p-2 text-dark">
-                    
-                      <div className="p-3" style={{
-                        whiteSpace: "normal",
-                        wordWrap: "break-word",
-                        backgroundColor: "rgba(255, 255, 255, 0.5)", // semi-transparent background
-                        backdropFilter: "blur(0.05px)", // blur the background
-                        borderRadius: "2.5px",
+    <div id="eventCarousel" className="carousel slide carousel-dark" data-bs-ride="carousel">
+  {/* Carousel Indicators */}
+  <ol className="carousel-indicators">
+    {events.map((_, index) => (
+      <li
+        key={index}
+        data-bs-target="#eventCarousel"
+        data-bs-slide-to={index}
+        className={index === 0 ? "active" : ""}
+      ></li>
+    ))}
+  </ol>
 
-                      }}> 
-                        <h5 className="text-white"><strong>{event.eventName}</strong></h5>
-                        <p>
-                          {event.eventDescription
-                            .split(" ")
-                            .slice(0, 7)
-                            .join(" ")}
-                          {event.eventDescription.split(" ").length > 7 && "..."}
-                        </p>
-                      </div>
-                  </div>
-                  <div className="col-md-8 py-3 my-3 p-2 ">
-                    <img
-                      src={event.imageUrl || "/placeholder.jpg"} // Fallback to placeholder if no imageUrl
-                      className="d-block w-100 rounded"
-                      alt={event.eventName}
-                      style={{ objectFit: "cover", height: "300px" }}
-                    />
-                  </div>
-                </div>
-              
+  {/* Carousel Inner */}
+  <div className="carousel-inner">
+    {events.map((event, index) => (
+      <div
+        key={event.id}
+        className={`carousel-item ${index === 0 ? "active" : ""}`}
+        data-bs-interval={index === 0 ? "10000" : "2000"}
+      >
+        <div className="row align-items-end">
+          {/* Caption Section */}
+          <div className="flex-column col-md-4 col-sm-2 carousel-caption text-start position-absolute bottom-0 start-0 p-2 text-dark">
+            <div
+              className="p-3"
+              style={{
+                whiteSpace: "normal",
+                wordWrap: "break-word",
+                backgroundColor: "rgba(255, 255, 255, 0.5)",
+                backdropFilter: "blur(0.05px)",
+                borderRadius: "2.5px",
+              }}
+            >
+              <h5 className="text-white"><strong>{event.eventName}</strong></h5>
+              <p>
+                {event.eventDescription.split(" ").slice(0, 7).join(" ")}
+                {event.eventDescription.split(" ").length > 7 && "..."}
+              </p>
             </div>
-          ))}
+          </div>
+
+          {/* Image Section */}
+          <div className="col-md-8 py-3 my-3 p-2">
+            <img
+              src={event.imageUrl || "/placeholder.jpg"}
+              className="d-block w-100 rounded"
+              alt={event.eventName}
+              style={{ objectFit: "cover", height: "300px" }}
+            />
+          </div>
         </div>
-  
-    {/* Updated Previous and Next buttons */}
-    <button
-      className="carousel-control-prev"
-      type="button"
-      data-bs-target="#eventCarousel"
-      data-bs-slide="prev"
-      style={{  }} 
-    >
-      <span
-        className="carousel-control-prev-icon"
-        aria-hidden="true"
-        style={{ filter: "invert(1)" }} // Makes the icon visible (white)
-      ></span>
-      <span className="visually-hidden">Previous</span>
-    </button>
-    <button
-      className="carousel-control-next"
-      type="button"
-      data-bs-target="#eventCarousel"
-      data-bs-slide="next"
-      style={{}} 
-    >
-      <span
-        className="carousel-control-next-icon"
-        aria-hidden="true"
-        style={{ filter: "invert(1)" }} // Makes the icon visible (white)
-      ></span>
-      <span className="visually-hidden text-dark">Next</span>
-    </button>
+      </div>
+    ))}
   </div>
+
+  {/* Previous and Next Buttons */}
+  <a
+    className="carousel-control-prev"
+    href="#eventCarousel"
+    role="button"
+    data-bs-slide="prev"
+  >
+    <span
+      className="carousel-control-prev-icon"
+      aria-hidden="true"
+      style={{ filter: "invert(1)" }}
+    ></span>
+    <span className="visually-hidden">Previous</span>
+  </a>
+  <a
+    className="carousel-control-next"
+    href="#eventCarousel"
+    role="button"
+    data-bs-slide="next"
+  >
+    <span
+      className="carousel-control-next-icon"
+      aria-hidden="true"
+      style={{ filter: "invert(1)" }}
+    ></span>
+    <span className="visually-hidden">Next</span>
+  </a>
+</div>
+
   
 
   );

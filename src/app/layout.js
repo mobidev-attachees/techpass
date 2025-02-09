@@ -24,6 +24,7 @@ export default function RootLayout({ children }) {
         <title>Techpass</title>
         <meta name="description" content="Techpass" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="google-site-verification" content="bSMCyyhoPqQ_80xKSOCdpDkR0QzcNuKG3dWeq9fLJcQ" />
       </head>
       <body>
         <ClerkProvider frontendApi={process.env.NEXT_PUBLIC_CLERK_FRONTEND_API}>

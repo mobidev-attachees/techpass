@@ -141,7 +141,7 @@ export default function Events() {
           </div>
         </div>
         {/* Banner Carousel */}
-        <div className="rounded bg-white shadow-sm py-3 my-3">
+        <div className=" row rounded bg-white shadow-sm py-3 my-3">
         <EventCarousel />
           </div>
         <div className="row mt-6 rounded bg-white">
